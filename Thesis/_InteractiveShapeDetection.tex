@@ -62,7 +62,7 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 
 
 \newcommand{\authorname}{Bernhard Rainer} % The author name without titles.
-\newcommand{\thesistitle}{Interactive Shape Detection in Out-of-Core Point-Clouds for assisted User Interactions} % The title of the thesis. The English version should be used, if it exists.
+\newcommand{\thesistitle}{Interactive Shape Detection in Out-of-Core Point-Clouds for Assisted User Interactions} % The title of the thesis. The English version should be used, if it exists.
 
 % Set PDF document properties
 \hypersetup{
@@ -88,7 +88,7 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 %  {title before name}{name}{title after name}{gender}
 %  where both titles are optional (i.e. can be given as empty brackets {}).
 \setauthor{}{\authorname}{BSc.}{male}
-\setadvisor{Pretitle}{Michael Wimmer}{Posttitle}{male}
+\setadvisor{Associate Prof. Dipl.-Ing. Dipl.-Ing. Dr.techn.}{Michael Wimmer}{}{male}
 
 % For bachelor and master theses:
 %\setfirstassistant{Pretitle}{Forename Surname}{Posttitle}{male}
@@ -105,7 +105,7 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 % Required data.
 \setaddress{Heigerleinstraße 53 8, 1170 Wien}
 \setregnumber{0828592}
-\setdate{1}{03}{2017} % Set date with 3 arguments: {day}{month}{year}.
+\setdate{18}{08}{2017} % Set date with 3 arguments: {day}{month}{year}.
 \settitle{\thesistitle}{\thesistitle} % Sets English and German version of the title (both can be English or German).
 %\setsubtitle{Optional Subtitle of the Thesis}{Optionaler Untertitel der Arbeit} % Sets English and German version of the subtitle (both can be English or German).
 
@@ -148,9 +148,9 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 
 \begin{acknowledgements*}
 
-This thesis would not have been possible without the help of a handful engaged people. 
-My first and foremost gratitude goes out to the VRVis Zentrum für Virtual Reality und Visualisierung for providing me with the opportunity to serve an internship and in consequence conduct this thesis. Within the VRVis, I would like to thank the Semantic Modeling and Acquisition (SMAQ) group for integrating me into their team, both on a professional level and amicably. A special thank you goes out to my Aardvark, and F\# Gurus Harald Steinlechner, Georg Haaser, and Attila Szabo, whose help and expertise eased the execution of this thesis enormously. 
-I would also like to thank Stefan Maierhofer, leader of the SMAQ group, and my project manager Michael Schwärzler for their ideas and continuous support. 
+This thesis would not have been possible without the help of a handful of engaged people. 
+My first and foremost gratitude goes to the VRVis Zentrum für Virtual Reality und Visualisierung for providing me with the opportunity to do an internship and in consequence conduct this thesis. Within the VRVis, I would like to thank the Semantic Modeling and Acquisition (SMAQ) group for integrating me into their team, both on a professional level and amicably. A special thank you goes out to my Aardvark and F\# Gurus Harald Steinlechner, Georg Haaser, and Attila Szabo, whose help and expertise eased the execution of this thesis enormously. 
+I would also like to thank Stefan Maierhofer, leader of the SMAQ group, and my project manager Michael Schwärzler for their ideas, continuous support, and proof-reading this thesis. 
 \\
 A big thank you goes out to Michael Wimmer from the Technische Universität Wien for his supervision on not only this thesis but all preceding courses and practica. 
 
@@ -158,7 +158,9 @@ Thanks to Lisa Kellner, who accompanied me through this thesis on a daily basis 
 
 Thanks to Phillip Erler, a fellow diploma student, for all the exchange of knowledge on both our thesis’s. 
 
-Last but not least, I would like to thank my friends and family that endured my ongoing talks about my thesis for the bigger part of a year and encouraged me to pursue an academic career.  
+Last but not least, I would like to thank my friends and family who encouraged me to pursue an academic career and endured my ongoing talks about point clouds and shape detection for the bigger part of a year.
+
+This work was enabled by the Competence Centre VRVis. VRVis is funded by BMVIT, BMWFW, Styria, SFG and Vienna Business Agency in the scope of COMET - Competence Centers for Excellent Technologies (854174) which is managed by FFG.
 
 \end{acknowledgements*}
 
@@ -168,11 +170,12 @@ Last but not least, I would like to thank my friends and family that endured my 
 
 \begin{abstract}
 
+In recent years
+
 This thesis presents an interactive method of shape detection for out-of-core point clouds. By utilizing the results of the shape detection, improvements are proposed to existing two-dimensional interaction metaphors. Usually, shape detection is performed on the whole point cloud. Thus results are obtained after an extended period of time. Instead, the point cloud is split into chunks of neighboring points that can be processed efficiently in near real-time. The user can select such a region of interest for it to be segmented and is provided with feedback within a fraction of a second, thus making the detected geometry usable almost immediately. This geometry, called primitive shapes, is used to improve existing two-dimensional interaction metaphors. Lasso Selection, as well as Volumetric Brush Selection, benefit from the use of primitive shapes to support the interaction, such that only points are selected that lie roughly follow the curvature of the shape. Thus, the selection of unwanted points in the foreground or background is reduced. Point Picking is improved by the use of a primitive shape as support, as only points are pickable that also belong to the detected primitive shape.\textit{Local Level-of-Detail Increment} is a novel interaction that increases the level-of-detail along a primitive shape, such that additional points that would otherwise be culled are rendered as well. 
 \\
 
 As modern point clouds can contain billions of points and the memory capacity of consumer PCs is usually insufficient to store all points at all time, a level-of-detail data structure is used to store the point cloud on the hard disc and data is loaded into memory only on use. This thesis uses a functional octree as data structure to store all points and create a level-of-detail representation of the point cloud. The level-of-detail representation of the point cloud, based on the camera's relative position, is used for interactions and rendering of the point cloud, such that distant regions are presented to the user at lower point resolutions. 
-This work was enabled by the Competence Centre VRVis. 
 
 \end{abstract}
 
