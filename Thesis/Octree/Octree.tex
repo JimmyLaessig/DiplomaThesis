@@ -22,12 +22,12 @@ Other implementations, such as Potree \cite{SCHUETZ-2016-POT}, where some points
 \section{Out-of-core Functionalities}
 
 \textit{Out-of-core} describes a way of handling datasets that are too large to fit into system memory. Small chunks of data are loaded into memory on demand, while a significant part of the dataset remains on the hard drive. If an octree node is loaded into memory, its content, points and child nodes, remains on the disc until needed. Thus, quick interactions can be performed with an octree node without the need of loading the content into memory. 
-Loading data into memory can only be done as long as free memory is available. Unused chunks of data are removed from memory after not access happened for a certain amount of time. 
+Loading data into memory can only be done as long as free memory is available. Unused chunks of data are removed from memory after not being accessed for a distinct amount of time.
 
 
 \section{Octree Postprocessing}
 
-Point clouds often only contain information on position and color and lack distinct geometric features such as normal vectors. Normal vectors are significant for shape detection as they introduce information on the local curvature to the point cloud. After the octree build process is completed, additional properties are computed to enrich the dataset with more specific information. 
+Point clouds often only contain information on position and color, and lack distinct geometric features such as normal vectors. Normal vectors are significant for shape detection as they introduce information on the local curvature to the point cloud. After the octree build process is completed, additional properties are computed to enrich the dataset with more specific information. 
 
 
 \subsection{rkd-Tree}
@@ -37,7 +37,7 @@ An rkd-tree by Tobler \cite{tobler2011rkd} is an efficient datastructure to perf
 
 \subsection{Normals}
 
-For lighting and shape detection, each point must possess a normal vector. The local neighborhood determines a point's normal. Using the node's rkd-tree a $k$-nearest-neighbor search is performed to get the $k$ closest neighbors. Principal Component Analysis \cite{jolliffe2002principal} is used to fit a plane into the neighborhood whose normal vector is used as the point's normal.
+For lighting and shape detection, each point must possess a normal vector. The local neighborhood determines a point's normal. Using the node's rkd-tree a $k$-nearest-neighbor search is performed to retrieve the $k$ closest neighbors. Principal Component Analysis \cite{jolliffe2002principal} is used to fit a plane into the neighborhood whose normal vector is used as the point's normal.
 
 
 \subsection{Centroid}
@@ -47,13 +47,13 @@ The centroid of a node provides an indicator of the distribution of points in th
 
 \subsection{Density}
 
-The density describes the average distance between a point and its nearest neighbor. The density increases with higher \textit{level-of-detail} since more points are contained in a smaller region. To find the nearest neighbor, again, the node's rkd-tree is used. 
+The density describes the average distance between a point and its nearest neighbor. The density increases with higher \textit{level-of-detail} since more points are contained in a smaller region. To find the nearest neighbor the node's rkd-tree is used again.
 
 
 \section{Octree Culling and Render Horizon}
 \label{sec:renderHorizon}
 
-As a point cloud contains more data than the GPU can render, only points from nodes are drawn that contribute to the currently viewed scene. The result of the culling operation is a new octree that contains only nodes that are currently rendered. 
+As a point cloud contains more data than the GPU can render, only points from nodes are drawn that contribute to the currently viewed scene. The result of the culling operation is a new octree that contains only nodes that are currently rendered. The culled octree uses the same cached point information as the original octree, thus memory consumption is minimal. 
 \\
 \\
 A simple, yet powerful culling heuristic is view frustum culling. Nodes that are outside of the view frustum are discarded. By using view frustum culling, whole branches of the octree are removed. However, the remaining branches are still too large to be rendered completely. A \textit{level-of-detail} decision function determines if a node should be rendered. Depending on the node's distance to the nearplane and its volume a decision is made if the node should be rendered or not. 
@@ -67,7 +67,7 @@ A simple, yet powerful culling heuristic is view frustum culling. Nodes that are
 \end{figure}
 
 
-The \textit{Render horizon} describes a cut that separates the octree into a rendered part and an unrendered part. The nodes of which some of the children are affected by the cut create the render horizon. Nodes along the render horizon share the property that one of its direct children contains points that are not rendered anymore. This property is useful when additional information should be displayed. 
+The \textit{render horizon} describes a cut that separates the octree into a rendered part and an unrendered part. The nodes of which some of the children are affected by the cut create the render horizon. Nodes along the render horizon share the property that one of its direct children contains points that are not rendered anymore. This property is useful when additional information should be displayed. 
 \\
 Figure \ref{fig:renderHorizon} showcases an example of a cut, displayed as a dashed line, through an octree along with its created render horizon. Rendered nodes are colored in turquoise. A dashed line originating from a node indicates that the node contains children who are not rendered. Nodes whose border is colored in magenta belong to the set of nodes of the render horizon. These nodes contain edges that are intersected by the cut. 
 \\

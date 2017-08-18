@@ -4,7 +4,7 @@
 
 \section{Overview}
 
-Shape detection is an automated approach to detect geometric primitives in point clouds. Results are usually computed offline, as the computation takes an extensive amount of time. This thesis utilizes shape detection in a semi-automatic way. Rather than performing shape detection on the complete point cloud, the procedure is performed only on a small subset of points at a time. Larger coherent shapes are later reconstructed by clustering neighboring shapes that share similarities. 
+Shape detection is an automated approach to detect geometric primitives in point clouds. Results are usually computed offline, as the computation takes an extensive amount of time. This thesis utilizes shape detection in a semi-automatic way. Rather than performing shape detection on the complete point cloud, the procedure is executed only on a small subset of points at a time. The octree's nodes are used as subsets for shape detection. Larger coherent shapes are later reconstructed by clustering neighboring shapes that share geometric similarities. 
 By performing shape detection for small regions at a time, the user receives immediate feedback of local geometry for the region. 
 \\
 This thesis utilizes an automated shape detection algorithm that is capable of detecting different types of primitive shapes. It is designed to find shapes in point clouds that consist of several million points within minutes. However, when looking at the performance for smaller samples, results can be achieved at interactive time rates. Section \ref{sec:schnabel} describes the algorithm for shape detection in point clouds by Schnabel et al. \cite{schnabel-2007-efficient} in depth. 
@@ -26,13 +26,13 @@ Schnabel et al. \cite{schnabel-2007-efficient} propose an automated way to detec
 
 \subsection{Minimal sets}
 
-A minimal set describes the set of points that are needed to construct a candidate shape. 
+A minimal set describes the set of points along the surface of the shape that are needed to construct a candidate shape. 
 For each type of shape, the following rule applies: A shape is only considered as candidate shape if all points from the minimal set are within a distance $\epsilon$ to the shape and the normal does not deviate from the shape's normal by more than an angle $\alpha$. 
 
 \begin{itemize}
-    \item \textbf{Plane}: A plane is constructed from three points $p_0, p_1, p_2$ whose normals do deviate from the plane's normal less than the angle $\alpha$. 
+    \item \textbf{Plane}: The minimal set of a plane is constructed from three points $p_0, p_1, p_2$ whose normals do deviate from the plane's normal less than the angle $\alpha$. 
     
-    \item \textbf{Sphere}: A sphere is fully defined by two points $p_0, p_1$ with corresponding normal vectors $n_0, n_1$. The center $c$ of the sphere is defined by the midpoint shortest line segment between the parametric lines $p_0 + tn_0$ and $p_1 + sn_1$. The radius is constructed by averaging the distance of $p_0$ and $p1$ to $c$.
+    \item \textbf{Sphere}: The minimal set to construct a sphere shape consists of two points $p_0, p_1$ with corresponding normal vectors $n_0, n_1$. The center $c$ of the sphere is defined by the midpoint shortest line segment between the parametric lines $p_0 + tn_0$ and $p_1 + sn_1$. The radius is constructed by averaging the distance of $p_0$ and $p1$ to $c$.
 
     \item \textbf{Cylinder}:
     In order to create a cylinder, a minimal set of two points  $p_0, p_1$ with corresponding normal vectors $n_0, n_1$ is used. The direction $d$ of the axis is established by $d = n_0 \times n_1$. The origin $c$ of the cylinder is created by projecting the parametric lines $p_0 + tn_0$ and $p_1 + sn_1$ onto the plane $d \cdot x = 0$ and taking their intersection as origin $c$. The radius is the shortest distance between $p_0$ and the axis $c + ud$

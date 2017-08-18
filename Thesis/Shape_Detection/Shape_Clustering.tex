@@ -1,7 +1,7 @@
 \section{Shape Matching}
 \label{sec:shapeMatching}
 
-Since shape detection is performed on multiple scales and shapes are extracted for small regions at a time, a heuristic is needed to determine if shapes from different nodes belong to the same structure. While on a low \textit{level-of-detail}, a wall may be contained by a single octree node, on a higher level, a node will only contain parts of the wall, and multiple nodes contain primitive shapes that share this wall. This section presents a set of matching functions to determine if two shapes originate from the same geometry within the RANSAC tolerance. Only shapes of the same type can be matching. Hence, it is not necessary to define functions to match for example a plane shape with a cone shape since the result will always be \verb|false|. 
+Since shape detection is performed on multiple scales and shapes are extracted for small regions at a time, a heuristic is needed to determine if shapes from different can be connected to create a larger coherent structure. While on a low \textit{level-of-detail}, a wall may be contained by a single octree node, on a higher level, a node will only contain parts of the wall, and multiple nodes contain primitive shapes that share this wall. This section presents a set of matching functions to determine if two shapes originate from the same geometry within the RANSAC tolerance. Only shapes of the same type can be matching. Hence, it is not necessary to define functions to match for example a plane shape with a cone shape since the result will always be \verb|false|. 
 
 
 \subsection{Elementary Matching Functions}
@@ -41,7 +41,7 @@ Two sphere shapes are matching if the center positions and the radii are matchin
 A torus consists of a center position, an axis and a major and minor radius. Two torus shapes are matching if the center position, axes, major radii, and minor radii are matching. 
 \end{itemize}
 
-The matching result heavily depends on the chosen threshold values. Table \ref{tab:matchingThresholds} shows the $\lambda$ values that are used for this implementation. Plane matching uses a custom heuristic that is not depicted in the table. For this heuristic, $\lambda_2 = 0.05$ is chosen. Note that matching floats is a relative measure, whereas matching positions and axes uses world space distances as the threshold. Matching vectors uses the angle between the two vectors to calculate a matching. 
+The matching result heavily depends on the chosen threshold values. Table \ref{tab:matchingThresholds} shows the $\lambda$ values that are used for this implementation. Plane matching uses a custom heuristic that is not depicted in the table. For this heuristic, $\lambda_2 = 0.05$ is chosen. Note that matching floats is a relative measure, whereas matching positions and axes compares absolute distances. Matching vectors uses the angle between the two vectors to calculate a matching. 
 
 \begin{table}
 \centering
@@ -65,7 +65,7 @@ The matching result heavily depends on the chosen threshold values. Table \ref{t
 
 The size of a primitive shape is limited by the size of the region of the shape detection input. For user interactions, it is not sufficient to interact with a single, possibly small, shape only. To determine the global extent of a primitive shape, more information is needed. Section \ref{sec:primitiveShapeMatchingFuns} describes a set of heuristics to determine if two primitive shapes originate from a larger coherent structure in the point cloud. These heuristics are used in this section in order to create larger representations of a primitive shape. 
 
-\textit{Shape Clustering} aims to find matching primitive shapes for a base shape and build a larger coherent cluster of primitive shapes over multiple level-of-details. The types of primitive shapes can be categorized as finite and infinite shapes. Spheres and tori are finite objects per definition, thus it is sufficient enough to find a set of matching primitive shapes to create a cluster. For infinite shapes, such as planes, cones, and cylinders, additional computations are needed in order to create a coherent shape cluster. Figure \ref{fig:cuboids} shows the case of two cuboids, whose front face share a plane. By only using the matching functions to create a cluster, both front faces are packed into the cluster, even tough there is a visible gap between them.
+\textit{Shape clustering} aims to find matching primitive shapes for a base shape and build a larger coherent cluster of primitive shapes over multiple level-of-details. The types of primitive shapes can be categorized as finite and infinite shapes. Spheres and tori are finite objects per definition, thus it is sufficient enough to find a set of matching primitive shapes to create a cluster. For infinite shapes, such as planes, cones, and cylinders, additional computations are needed in order to create a coherent shape cluster. Figure \ref{fig:cuboids} shows the case of two cuboids, whose front face share a plane. By only using the matching functions to create a cluster, both front faces are packed into the cluster, even tough there is a visible gap between them.
 
 \begin{figure}
     \centering
@@ -124,4 +124,4 @@ Figure \ref{fig:regionGrowingPlanes} shows an exemplary illustration on region g
 Figure \ref{fig:regionGrowingConeCylinder} showcases region growing for both, cylinder shapes and cone shapes. The matching heuristic already confirms that the shapes lie on the same axis and share a similar radius. Therefore, instead of a three-dimensional world distance, a one-dimensional distance between two points is sufficient to build a shape cluster. 
 \\
 \\
-The region growing component of the clustering heavily depends on the $\epsilon$ distance threshold. A proper distance threshold that mirrors the region's topology well is the density of an octree node as described in Section \ref{sec:shapeDetectionParameterSelection}. For this task, we chose the density of the node of the base shape, more specific: $\epsilon = density \cdot 2.0$.
+The region growing component of the clustering heavily depends on the $\epsilon$ distance threshold. A proper distance threshold that mirrors the region's topology well is the density of an octree node as described in Section \ref{sec:shapeDetectionParameterSelection}. For this task, we chose the density of the node of the base shape, more specific: $\epsilon = 2 \cdot density $.
