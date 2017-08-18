@@ -13,7 +13,7 @@ The 2D Hough transform \cite{hough1962method} is a technique usually used in the
     \label{fig:hough_planes}
 \end{figure}
 
-Figure \ref{fig:hough_planes} shows a city model consisting of planes, detected by using 3d Hough transform, in a point cloud obtained from airborne laser scanning. Figure \ref{fig:hough_cylinder} showcases a point cloud obtained by a 3d scan and the detected cylinder. 
+Figure \ref{fig:hough_planes} shows a city model consisting of planes, detected using 3d Hough transform, in a point cloud obtained from airborne laser scanning. Figure \ref{fig:hough_cylinder} showcases a point cloud obtained by a 3d scan and the detected cylinder. 
 
 
 \begin{figure}
@@ -30,7 +30,7 @@ Figure \ref{fig:hough_planes} shows a city model consisting of planes, detected 
 \end{figure}
 
 
-A more recent approach by Schnabel et al. \cite{schnabel-2007-efficient} utilizes RANSAC\cite{fischler1981random} to extract a minimal set of primitive shapes that approximate the global structure of the point cloud. The algorithm randomly selects a set of points that roughly follow the curvature of a shape. If a certain number of point follow this shape's curvature as well, the shape is considered to be valid. This approach is capable of detecting planes, cylinders, spheres, cones, and tori and has evolved into one of the most prominent shape detection algorithms. 
+A more recent approach by Schnabel et al. \cite{schnabel-2007-efficient} utilizes Random Sampling Consens \cite{fischler1981random} to extract a minimal set of primitive shapes that approximate the global structure of the point cloud. The algorithm randomly selects a set of points that roughly follow the curvature of a shape. If a defined number of points follow this shape's curvature as well, the shape is considered to be valid. This approach is capable of detecting planes, cylinders, spheres, cones, and tori and has evolved into one of the most prominent shape detection algorithms and is used in this thesis as well. 
 
 \begin{figure}
     \centering
@@ -40,7 +40,7 @@ A more recent approach by Schnabel et al. \cite{schnabel-2007-efficient} utilize
     \label{fig:schnabel_church}
 \end{figure}
 
-Figure \ref{fig:schnabel_church} shows the results of the RANSAC approach on a point cloud. Not only does this approach provide the geometry of the detected shapes, but it also determines the membership of a point to a shape. This method has evolved into one of the most prominent shape detection algorithms and is used in this thesis as well. 
+Figure \ref{fig:schnabel_church} shows the results of the RANSAC approach on a point cloud. Not only does this approach provide the geometry of the detected shapes, it also determines the membership of a point to a shape. 
 \\
 \\
 Tarsha-Kurdi \cite{tarsha2007hough} analyzes the performance of the 3D Hough transform and RANSAC for detecting roof planes from airborne laser data. RANSAC proves to be more robust to noise and more efficient.
@@ -52,4 +52,4 @@ GlobFit is a system by Li et al. \cite{li2011globfit} that aims to recover a set
 Golvinskiy et al. \cite{golovinskiy2009shape} utilize graph-based methods to recognize shapes in urban environments in 3D point clouds. This method can detect objects, such as cars, newspaper boxes and traffic lights. Potential object locations are identified by clustering nearby points before the point cloud is segmented into foreground and background. For each cluster, a feature vector is built, before using it as input for a trained classifier to obtain a final classification. 
 \\
 \\
-Oesau et al. \cite{oesau2016planar} propose an alternative approach to detect planar shapes in point clouds using region growing. A shape is represented as a set of points and an associated fitting plane. Points or shapes from the neighborhood are added consecutively to the plane, thus growing the region. 
+Oesau et al. \cite{oesau2016planar} propose an alternative approach to detect planar shapes in point clouds by using region growing. A shape is represented as a set of points and an associated fitting plane. Points or shapes from the neighborhood are added consecutively to the plane, thus growing the region. 
