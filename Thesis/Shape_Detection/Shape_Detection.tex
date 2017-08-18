@@ -4,10 +4,13 @@
 
 \section{Overview}
 
-This thesis utilizes shape detection to automatically detect primitive shapes for small parts of the point cloud at a time. It is designed in such a way that the user receives immediate feedback of local geometry for the region under the mouse cursor. The approach utilizes an automated shape detection algorithm that is capable of detecting different types of primitive shapes. This algorithm is designed to find shapes in point clouds that consist of several million points within minutes. However, when looking at the performance for smaller samples, results can be achieved at interactive time rates. Section \ref{sec:schnabel} describes the shape detection algorithm in detail. 
+Shape detection is an automated approach to detect geometric primitives in point clouds. Results are usually computed offline, as the computation takes an extensive amount of time. This thesis utilizes shape detection in a semi-automatic way. Rather than performing shape detection on the complete point cloud, the procedure is performed only on a small subset of points at a time. Larger coherent shapes are later reconstructed by clustering neighboring shapes that share similarities. 
+By performing shape detection for small regions at a time, the user receives immediate feedback of local geometry for the region. 
+\\
+This thesis utilizes an automated shape detection algorithm that is capable of detecting different types of primitive shapes. It is designed to find shapes in point clouds that consist of several million points within minutes. However, when looking at the performance for smaller samples, results can be achieved at interactive time rates. Section \ref{sec:schnabel} describes the algorithm for shape detection in point clouds by Schnabel et al. \cite{schnabel-2007-efficient} in depth. 
 \\
 
-Before using the detected shapes for rendering or interactions, the shapes must be postprocesssed. Since some of the shapes are of infinite size, they need to be refitted to encapsulate the corresponding support points and create a minimal boundary. Section \ref{sec:Refitting} describes this task. 
+Before using the detected shapes for rendering or interactions, the shapes must be postprocessed. Since some of the shapes are of infinite size, they need to be refitted to encapsulate the corresponding support points and create a minimal boundary. Section \ref{sec:Refitting} describes this task. 
 \\
 
 Section \ref{sec:shapeMatching} proposes a set of heuristics to determine if detected primitive shapes originate from the same geometric structure. Section \ref{sec:shapeClustering} explains the usage of this heuristics in order to create larger, homogeneous cluster of shapes, used for interactions. 
@@ -62,23 +65,23 @@ All points that are within a distance $\epsilon$ are taken into account. However
 \begin{table}
     \centering
     \includegraphics[width=0.7\textwidth]{Shape_Detection/schnabel-performance.png}
-    \caption[Original statistics of the shape detection algorithm by Schabel et al.]{The original statistics by Schnabel et al. \cite{schnabel-2007-efficient} on processed models. $\epsilon$ is given as ration of maximum bounding box with. Results have been averaged over 5 runs and rounded.}
+    \caption[Original statistics of the shape detection algorithm by Schabel et al.]{The original statistics by Schnabel et al. \cite{schnabel-2007-efficient} on processed models. $\epsilon$ is chosen as a constant fraction of the bounding box width. Results have been averaged over 5 runs and rounded.}
     \label{table:schnabel_performance}
 \end{table}
 
-Table \ref{table:schnabel_performance} describes the statistical results for different models. $|P|$ is the number of points, $\epsilon$ the distance threshold, $\alpha$ the maximum normals deviation, $\tau$ is the minimum number of support points, $\|Psi|$ the number of shapes found, $|R|$ the number of RANSAC iterations. It can be seen that for small a small number of points and weaker constraints the algorithm returns plausible results within a fraction of a second. We utilize this feature the detect shapes in our application for small regions at a time to give immediate feedback to the user. 
+Table \ref{table:schnabel_performance} describes the statistical results for different models. $|P|$ is the number of points, $\epsilon$ the distance threshold, $\alpha$ the maximum normals deviation, $\tau$ is the minimum number of support points, $|\Psi|$ the number of shapes found, $|R|$ the number of RANSAC iterations. It can be seen that for small a small number of points and weaker constraints the algorithm returns plausible results within a fraction of a second. We utilize this feature the detect shapes in our application for small regions at a time to give immediate feedback to the user. 
 
 
 \section{Refitting}
 \label{sec:Refitting}
 
-Planes, cylinder, and cones are infinite shapes. Therefore, to use those shapes for rendering and interactions, it is necessary to create finite representations for each shape. Each shape comes with the corresponding set of support points that are used to refit the shape. Spheres and Tori are finite by definition. Therefore they do not require refitting. 
+Planes, cylinder, and cones are infinite shapes. To use those shapes for rendering and interactions, it is necessary to create finite representations for each shape. Each shape comes with the corresponding set of support points that are used to refit the shape. Spheres and Tori are finite by definition. Hence, they do not require refitting. 
 
 
 \subsection{Refitting planes}
 
-Planes, however, are represented by a point and a vector. All support points are projected onto the plane, thus reducing the fitting problem to two dimensions. The procedure starts by computing the convex hull of the projected points with the help of Andrew's monotone chain 2d convex hull algorithm\cite{andrew1979another}. 
-More complex polygons can be computed. However, for this purpose, a quad is sufficient. The quad is obtained by using the minimum-bounding-rectangle algorithm by Freeman\cite{freeman1975determining}. 
+Planes, however, are represented by a point and a vector. All support points are projected onto the plane, thus reducing the fitting problem to two dimensions. The procedure starts by computing the convex hull of the projected points with the help of Andrew's monotone chain 2D convex hull algorithm\cite{andrew1979another}. 
+For this purpose, a bounding quad is used as the representation of the plane. The quad is obtained by using the minimum-bounding-rectangle algorithm by Freeman\cite{freeman1975determining}. 
 
 
 \subsection{Refitting cylinder}
@@ -94,7 +97,7 @@ A cone is defined by its apex $c$, axis direction $v$, and opening angle $\theta
 \section{Shape Detection Parameter Selection}
 \label{sec:shapeDetectionParameterSelection}
 
-This section briefly discusses the issue of selecting optimal parameters for the shape detection. The $\epsilon$ parameter creates an $\epsilon$-band that follows the curvature of the shape. All points within this $\epsilon$ band are considered to be candidates. The authors propose to use the point cloud's bounding boxes largest dimension times $0.1$ as $\epsilon$. However, using such a static parameter yields problems with extremely sparse regions and regions that are populated very densely. In this thesis, shape detection is performed dynamically on local regions of the point cloud at a time. The local density of an octree node is chosen as $\epsilon$. The density is calculated per octree node by averaging the distance of each point to its nearest neighbor. Thus, nodes that are populated more densely create finer geometry. 
+This section briefly discusses the issue of selecting optimal parameters for the shape detection. The $\epsilon$ parameter creates an $\epsilon$-band that follows the curvature of the shape. All points within this $\epsilon$ band are considered to be candidates. The authors propose to use the point cloud's bounding boxes largest dimension times $0.1$ as $\epsilon$. However, using such a static parameter yields problems with extremely sparse regions and regions that are populated very densely. In this thesis, shape detection is performed semi-automatic on local regions of the point cloud at a time. The density of this region, calculated by averaging the distances of each point to its nearest neighbor, is chosen as $\epsilon$. Thus, regions that are populated more densely create finer geometry. 
 
 The $\alpha$ parameter is used to determine the deviation between two directions. As the normals are the same at different level-of-detail, this parameter is static. We use an $\alpha$ value of $0.95$. 
 

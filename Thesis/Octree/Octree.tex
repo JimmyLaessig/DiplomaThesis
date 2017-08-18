@@ -27,12 +27,12 @@ Loading data into memory can only be done as long as free memory is available. U
 
 \section{Octree Postprocessing}
 
-Point clouds often only contain information on position and color and lack distinct geometric features such as normal vectors. Normal vectors are significant for shape detection as they introduce information on the local curvature to the point cloud.  After the octree build process is completed, additional properties are computed to enrich the dataset with additional information. 
+Point clouds often only contain information on position and color and lack distinct geometric features such as normal vectors. Normal vectors are significant for shape detection as they introduce information on the local curvature to the point cloud. After the octree build process is completed, additional properties are computed to enrich the dataset with more specific information. 
 
 
 \subsection{rkd-Tree}
 
-A rkd-tree by Tobler \cite{tobler2011rkd} is an efficient datastructure for point queries. While the octree partitions the space into somewhat small regions, the rkd-tree is used to find distinct points within a node at a specified location quickly. 
+An rkd-tree by Tobler \cite{tobler2011rkd} is an efficient datastructure to perform fast n-nearest neighbour searches in static data sets. While the octree partitions the space into somewhat small regions, the rkd-tree further bisects along point space's axis until only a single point is contained in each section. The rkd-tree improves the kd-tree by Friedman and Bentley \cite{friedman1975algorithm} by storing the radius of the sphere containing all points from the node's left and right subtrees. Thus, an early exclusion test with the sphere improves the performance of point queries.  
 
 
 \subsection{Normals}
@@ -62,12 +62,12 @@ A simple, yet powerful culling heuristic is view frustum culling. Nodes that are
     \centering
     \includegraphics[width=0.5\textwidth]{Octree/renderHorizon.png}
     \caption[Illustration of the render horizon of an octree.]
-		{The render horizon of an octree is showcased as a dashed line. Nodes that are rendered, are colored in turquoise, nodes that are part of the render horizon, are bordered in magenta. }
+		{The render horizon of an octree is showcased as a dashed line. Nodes that are rendered are colored in turquoise, nodes that are part of the render horizon are bordered in magenta. }
     \label{fig:renderHorizon}
 \end{figure}
 
 
-The \textit{Render horizon} describes a cut that separates the octree into a rendered part and an unrendered part. The nodes of which some of the children are affected by the cut create the render horizon. Nodes along the render horizon share the property that one of its direct children contains points that are are not rendered anymore. This property is useful when additional information should be displayed. 
+The \textit{Render horizon} describes a cut that separates the octree into a rendered part and an unrendered part. The nodes of which some of the children are affected by the cut create the render horizon. Nodes along the render horizon share the property that one of its direct children contains points that are not rendered anymore. This property is useful when additional information should be displayed. 
 \\
 Figure \ref{fig:renderHorizon} showcases an example of a cut, displayed as a dashed line, through an octree along with its created render horizon. Rendered nodes are colored in turquoise. A dashed line originating from a node indicates that the node contains children who are not rendered. Nodes whose border is colored in magenta belong to the set of nodes of the render horizon. These nodes contain edges that are intersected by the cut. 
 \\

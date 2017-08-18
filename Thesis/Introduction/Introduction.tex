@@ -26,10 +26,10 @@ The task of precisely selecting regions or points of interest in point clouds ca
 
 \section{Contributions}
 
-The main contribution of this diploma thesis is the implementation of an alternative way of detecting shapes on multiple level-of-details in point clouds. Instead of performing shape detection on the complete point cloud at once, we use an approach that lets the user control the region in which shapes should be detected. By reducing those regions to a suitable size, a well-known shape detection algorithm can return meaningful results in interactive time, such that the user is presented with immediate feedback on his selection. 
+The main contribution of this diploma thesis is the implementation of an alternative way of detecting shapes on multiple levels-of-detail in point clouds. Instead of performing shape detection on the complete point cloud at once, we use an approach that lets the user control the region in which shapes should be detected. By reducing those regions to a suitable size, a well-known shape detection algorithm can return meaningful results in interactive time, such that the user is presented with immediate feedback on his selection. 
 \\
 \\
-Shapes are detected on multiple level-of-details in the point cloud. A clustering algorithm takes shapes from different \textit{level-of-detail}, based on a similarity heuristic, and creates a larger connected cluster of shapes. This cluster is used to present information on a larger scale to the user, rather than each shape separately. 
+Shapes are detected on multiple levels-of-detail in the point cloud. A clustering algorithm takes shapes from different \textit{level-of-detail}, based on a similarity heuristic, and creates a larger connected cluster of shapes. This cluster is used to present information on a larger scale to the user, rather than each shape separately. 
 \\
 \\ 
 This thesis proposes several improvements to commonly known user interactions. \textit{Point Picking} and \textit{Region Selection} are improved by consulting the local geometry of the point cloud to assist the user. By using a shape as support, the interaction dimensions are reduced to the parameter space of the shapes, allowing to exclude unwanted points from interactions easily. 
