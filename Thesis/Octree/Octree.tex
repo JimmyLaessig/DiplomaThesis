@@ -15,8 +15,8 @@ Numerous decision rules exist that determine whether a node is split or not. A n
 Having a consistent number of points in an octree node allows for little variation in loading time and data size. With nodes of consistent size, the runtime of procedures for different nodes is similar as well. Therefore, such methods can be used in a context where immediate feedback is useful, such as user interactions, since the execution time can be estimated. In this thesis, a point count $n = 5000$ is chosen. 
 \\
 \\
-If a node is partitioned, its elements are replaced by a random subset of points of size $n$ from its children, thus creating an efficient \textit{level-of-detail} representation of the point cloud on multiple scales. 
-Other implementations, such as Potree \cite{SCHUETZ-2016-POT}, where some points remain in the parent instead of being stored in a child node, are more efficient regarding disc space. However, in this application, each node can be viewed as self-contained, such that no points from predecessor nodes are needed to represent the point cloud for this region and \textit{level-of-detail} entirely. 
+If a node is partitioned, its elements are replaced by a random subset of points of size $n$ from its children, thus creating an efficient level-of-detail representation of the point cloud on multiple scales. 
+Other implementations, such as Potree \cite{SCHUETZ-2016-POT}, where some points remain in the parent instead of being stored in a child node, are more efficient regarding disc space. However, in this application, each node can be viewed as self-contained, such that no points from predecessor nodes are needed to represent the point cloud for this region and level-of-detail entirely. 
 
 
 \section{Out-of-core Functionalities}
@@ -47,7 +47,7 @@ The centroid of a node provides an indicator of the distribution of points in th
 
 \subsection{Density}
 
-The density describes the average distance between a point and its nearest neighbor. The density increases with higher \textit{level-of-detail} since more points are contained in a smaller region. To find the nearest neighbor the node's rkd-tree is used again.
+The density describes the average distance between a point and its nearest neighbor. The density increases with higher level-of-detail since more points are contained in a smaller region. To find the nearest neighbor the node's rkd-tree is used again.
 
 
 \section{Octree Culling and Render Horizon}
@@ -56,7 +56,7 @@ The density describes the average distance between a point and its nearest neigh
 As a point cloud contains more data than the GPU can render, only points from nodes are drawn that contribute to the currently viewed scene. The result of the culling operation is a new octree that contains only nodes that are currently rendered. The culled octree uses the same cached point information as the original octree, thus memory consumption is minimal. 
 \\
 \\
-A simple, yet powerful culling heuristic is view frustum culling. Nodes that are outside of the view frustum are discarded. By using view frustum culling, whole branches of the octree are removed. However, the remaining branches are still too large to be rendered completely. A \textit{level-of-detail} decision function determines if a node should be rendered. Depending on the node's distance to the nearplane and its volume a decision is made if the node should be rendered or not. 
+A simple, yet powerful culling heuristic is view frustum culling. Nodes that are outside of the view frustum are discarded. By using view frustum culling, whole branches of the octree are removed. However, the remaining branches are still too large to be rendered completely. A level-of-detail decision function determines if a node should be rendered. Depending on the node's distance to the nearplane and its volume a decision is made if the node should be rendered or not. 
 
 \begin{figure}
     \centering
