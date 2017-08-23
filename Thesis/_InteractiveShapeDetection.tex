@@ -20,10 +20,12 @@
 \usepackage[usenames,dvipsnames,table]{xcolor} % Allows the definition and use of colors. This package has to be included before tikz.
 \usepackage{nag}       % Issues warnings when best practices in writing LaTeX documents are violated.
 \usepackage{todonotes} % Provides tooltip-like todo notes.
-\usepackage{hyperref}  % Enables cross linking in the electronic document version. This package has to be included second to last.
+\usepackage[hidelinks]{hyperref}  % Enables cross linking in the electronic document version. This package has to be included second to last.
 \usepackage[acronym,toc]{glossaries} % Enables the generation of glossaries and lists fo acronyms. This package has to be included last.
 %\usepackage{algorithm2e}
 % Define convenience functions to use the author name and the thesis title in the PDF document properties.
+
+
 
 \usepackage{listings}
 \usepackage{upquote}
@@ -105,7 +107,7 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 % Required data.
 \setaddress{Heigerleinstraße 53 8, 1170 Wien}
 \setregnumber{0828592}
-\setdate{18}{08}{2017} % Set date with 3 arguments: {day}{month}{year}.
+\setdate{23}{08}{2017} % Set date with 3 arguments: {day}{month}{year}.
 \settitle{\thesistitle}{\thesistitle} % Sets English and German version of the title (both can be English or German).
 %\setsubtitle{Optional Subtitle of the Thesis}{Optionaler Untertitel der Arbeit} % Sets English and German version of the subtitle (both can be English or German).
 

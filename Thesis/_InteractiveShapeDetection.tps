@@ -14,11 +14,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Results\Results.tex
+Document=Implementation\Implementation.tex
 
 [Frame0_View0,0]
-TopLine=213
-Cursor=13473
+TopLine=0
+Cursor=0
 
 [Frame1]
 Flags=0
@@ -32,11 +32,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Conclusion\Conclusion.tex
+Document=System_Design\System_Design.tex
 
 [Frame1_View0,0]
-TopLine=2
-Cursor=1364
+TopLine=166
+Cursor=13001
 
 [Frame2]
 Flags=0
@@ -50,11 +50,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Shape_Detection\Shape_Detection.tex
+Document=Introduction\Introduction.tex
 
 [Frame2_View0,0]
 TopLine=0
-Cursor=78
+Cursor=46
 
 [Frame3]
 Flags=0
@@ -68,11 +68,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Octree\Octree.tex
+Document=Results\Results.tex
 
 [Frame3_View0,0]
-TopLine=0
-Cursor=53
+TopLine=206
+Cursor=13473
 
 [Frame4]
 Flags=0
@@ -86,11 +86,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Related_Work\Out-of-Core_Pointclouds.tex
+Document=Conclusion\Conclusion.tex
 
 [Frame4_View0,0]
-TopLine=0
-Cursor=0
+TopLine=2
+Cursor=1364
 
 [Frame5]
 Flags=0
@@ -104,11 +104,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Related_Work\Related_work.tex
+Document=Shape_Detection\Shape_Detection.tex
 
 [Frame5_View0,0]
 TopLine=0
-Cursor=52
+Cursor=78
 
 [Frame6]
 Flags=0
@@ -122,11 +122,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=_InteractiveShapeDetection.tex
+Document=Octree\Octree.tex
 
 [Frame6_View0,0]
-TopLine=176
-Cursor=8794
+TopLine=0
+Cursor=53
 
 [Frame7]
 Flags=0
@@ -140,7 +140,7 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Related_Work\Shape_Detection.tex
+Document=Related_Work\Out-of-Core_Pointclouds.tex
 
 [Frame7_View0,0]
 TopLine=0
@@ -158,11 +158,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Related_Work\Interactions.tex
+Document=Related_Work\Related_work.tex
 
 [Frame8_View0,0]
 TopLine=0
-Cursor=0
+Cursor=52
 
 [Frame9]
 Flags=0
@@ -176,11 +176,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Shape_Detection\Shape_Clustering.tex
+Document=_InteractiveShapeDetection.tex
 
 [Frame9_View0,0]
-TopLine=127
-Cursor=10907
+TopLine=96
+Cursor=5512
 
 [Frame10]
 Flags=0
@@ -194,11 +194,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Introduction\Introduction.tex
+Document=Related_Work\Shape_Detection.tex
 
 [Frame10_View0,0]
 TopLine=0
-Cursor=46
+Cursor=0
 
 [Frame11]
 Flags=0
@@ -212,11 +212,11 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=System_Design\System_Design.tex
+Document=Related_Work\Interactions.tex
 
 [Frame11_View0,0]
-TopLine=142
-Cursor=13001
+TopLine=0
+Cursor=0
 
 [Frame12]
 Flags=0
@@ -230,15 +230,15 @@ NormalPos.top=26
 NormalPos.right=1562
 NormalPos.bottom=748
 Class=LaTeXView
-Document=Implementation\Implementation.tex
+Document=Shape_Detection\Shape_Clustering.tex
 
 [Frame12_View0,0]
-TopLine=0
-Cursor=0
+TopLine=127
+Cursor=10907
 
 [SessionInfo]
 FrameCount=13
-ActiveFrame=1
+ActiveFrame=9
 
 [Bookmarks]
 Shape_Detection\Shape_Clustering.tex=79 
