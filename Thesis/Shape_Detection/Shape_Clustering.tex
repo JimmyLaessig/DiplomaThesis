@@ -27,7 +27,7 @@ As the primitive shapes are represented by only a handful of parameters, it is s
 \label{sec:primitiveShapeMatchingFuns}
 
 With the elementary matching functions defined in Section \ref{sec:elementarMatchingFuns}, it is easy to define matching functions for two primitive shapes based on the elementary matching functions:
-\todo{Bilder?}
+
 \begin{itemize}
 \item \textbf{Matching plane shapes}: 
 A plane shape consists of a quad that encloses all support points. For distance computation, the plane is used rather than the quad, as the quad is limited to the shape's points. For each corner of each quad, the distance to the other plane is calculated. From those eight values, the largest distance $d$ is chosen. Two plane shapes are matching, if the planes' normal vectors are matching in retrospect to a threshold value $\lambda_1$ and $d$ is smaller than or equal to a threshold value $\lambda_2$.

@@ -12,13 +12,12 @@ Section \ref{sec:shapePicking} describes a picking algorithm to select a primiti
 Section \ref{sec:interactions} provides detailed information on the additional user interactions that use a support shape as assistance. \textit{point picking, region selection, and local level-of-detail increment} are all interactions that benefit from the utilization of a support shape. 
 
 
-
 \section{Term Definitions}
 \label{sec:termDefinitions}
 
 The base of all interactions is the user's cursor on the screen. The \textit{pick ray} is a ray that goes from the cursor’s position in world space in the view direction. 
 Each interaction iteratively filters the octree's data as such that coarse filtering is carried out before finer adjustments are performed on the dataset before choosing a final candidate. Data that survives the coarse filtering is referred to as \textit{candidate} data, e.g. candidate nodes or candidate points. 
-\todo{Skizze??}
+
 
 \section{User-guided Shape Detection}
 \label{sec:user_guided_sd}
@@ -37,7 +36,10 @@ Since the user controls the shape detection, it makes sense that the user only i
 \\
 The culling operation on the octree, described in Section \ref{sec:renderHorizon}, returns an octree that only contains nodes that are rendered. Thus, all nodes in this tree already are visible to the user. Only a single raycast must be performed on the culled octree to obtain the set of candidate nodes. 
 \\
-All nodes from the raycast result are eliminated that do not fulfill the previous constraints. The heuristic favors nodes with higher level-of-detail, such that the user receives geometric information for the most detailed parts of the currently explored region first. The projected distance to the nearplane is used to select between nodes with the same level-of-detail. Algorithm ~\ref{alg:candidateNodeHeuristic} showcases the selection heuristic that is executed for each node that intersects the pick ray. The most suitable node for shape detection is the node with the highest level-of-detail, closest to the nearplane. %Algorithm 
+All nodes from the raycast result are eliminated that do not fulfill the previous constraints. The heuristic favors nodes with higher level-of-detail, such that the user receives geometric information for the most detailed parts of the currently explored region first. The projected distance to the nearplane is used to select between nodes with the same level-of-detail, such that the node closest to the camera is chosen. 
+\\
+\\
+%Algorithm ~\ref{alg:candidateNodeHeuristic} showcases the selection heuristic that is executed for each node that intersects the pick ray. The most suitable node for shape detection is the node with the highest level-of-detail, closest to the nearplane. %Algorithm 
 
 %\begin{algorithm}
     
@@ -105,7 +107,6 @@ The first explored technique is to use a fixed pick radius in world space. The p
 A more consistent way of picking a point is to only use the screen space information for each point. The mouse position $p$ in screen space combined with the pick radius $r$ create the pick circle $c$. This circle corresponds to a projection of a cone. All points that intersect this cone are treated as candidate points. To calculate this intersection, all points are projected to the screen space. The cone intersects a point if $c$ contains the point in screen space. Then the point with the projection closest to the mouse position is picked. This technique works consistently for different depth values. However, since all points are treated equally, the method does not distinguish between foreground and background points, thus introducing possible depth ambiguities. 
 \\
 The projection of points can be executed on the GPU by rendering the projected points, paired with an identifier, to a texture. From this texture, a window around the mouse cursor is downloaded, and the closest point is determined. Reading pixels from a texture forces the CPU and GPU to sync and stalls the graphics pipeline. 
-\todo{skizze?}
 \\
 \\
 The user interacts with points that are presented on the screen only. Moreover, only points are of interest, whose projection on the nearplane lie in proximity to the mouse position. Since this interaction cannot be computed for all points in real-time, unneeded octree nodes must be filtered beforehand. This pre-filtering can easily be achieved by performing a raycast through the octree and collecting all nodes whose bounding boxes intersect the pick ray. However, consider the case, that the pick ray does not intersect a node's bounding box, but the distance of the box to the ray is smaller than the pick radius. Some points might exist that should be considered candidates, but due to the nature of a raycast, are discarded. Therefore, the possibility exists that points that can be the picking result, are not considered, introducing inconsistency to the pick interaction. One solution to overcome this problem is to use a conecast instead. 
@@ -119,16 +120,8 @@ A circle on the nearplane is the projection of a cone in world space. The corner
 Picking comes with the disadvantage that some constellations of points can influence the picking interaction negatively. The user is forced to change the view to pick an otherwise occluded point from the structure of interest. In some cases, a point in the background is favored over the desired point on a structure in the foreground. \textit{shape-assisted point picking} utilizes primitive shapes to perform the picking routine only on points that are part of a structure. The user selects a cluster of shapes, thus reducing the number of possible candidate points to only those that belong to this support shape. 
 \\ 
 Rather than using a cone or raycast to collect all candidate nodes, only nodes whose bounding boxes intersect the support shape are considered. Furthermore, only points are considered that belong to the support shape. The point sets of the intersecting octree nodes are filtered as described in Section \ref{sec:pointFiltering}, leaving only a handful of nodes and points that follow the curvature of the support shape on which the interaction is performed. 
-\\
-\\
-Due to shapes possibly having front and back sides, such as cylinders and spheres, points on the back of a shape are projected near the mouse position as well. By using the projected distances, points that lie on the back side of the shape might get favored over points that are on the front side of the shape (facing the user). 
-\\
-Therefore, the point picking is performed in world space using a pick sphere. The sphere's position is the intersection point of the pick ray with the support shape. The sphere's radius is calculated by unprojecting the pick radius to the intersection point. Only points are considered that lie in the pick sphere, constructed by the intersection point and the pick radius. The point closest to the intersection point is then selected. 
-\\
-\\
-This technique comes not only with interaction benefits; computation time is reduced as well. Usually, a shape cluster intersects fewer nodes than a raycast result since the cluster's extension is limited to a region in the point cloud. The number of points per node is reduced as well, and distance measures are computed only for candidate points. 
-\\
-\begin{figure}
+
+\begin{figure}[p]
 \centering
 \subcaptionbox{ \label{fig:picking_raycast}}{%
   \includegraphics[width=0.6\textwidth]{System_Design/picking_raycast.png}%7
@@ -145,9 +138,15 @@ This technique comes not only with interaction benefits; computation time is red
 \label{fig:picking_overview}
 \end{figure}
 
-
+Due to shapes possibly having front and back sides, such as cylinders and spheres, points on the back of a shape are projected near the mouse position as well. By using the projected distances, points that lie on the back side of the shape might get favored over points that are on the front side of the shape (facing the user). 
+\\
+Therefore, the point picking is performed in world space using a pick sphere. The sphere's position is the intersection point of the pick ray with the support shape. The sphere's radius is calculated by unprojecting the pick radius to the intersection point. Only points are considered that lie in the pick sphere, constructed by the intersection point and the pick radius. The point closest to the intersection point is then selected. 
+\\
+\\
+This technique comes not only with interaction benefits; computation time is reduced as well. Usually, a shape cluster intersects fewer nodes than a raycast result as the cluster's extension is limited to a moderate region in the point cloud. The number of points per node is reduced as well, and distance measures are computed only for candidate points. 
+\\
+\\
 Figure \ref{fig:picking_overview} shows the different picking methods, described in Section \ref{sec:pointPicking}. Figure \ref{fig:picking_raycast} showcases a simple raycast with a radius. The combination of a ray and a radius yields a cylinder, which contains all candidate points on world space. The pick distance is consistent in world space. Figure \ref{fig:picking_conecast} uses a conecast instead. The opening angle is defined by the pick radius in screen space. The pick distance in world space increases the higher the depth value. All points inside the volume are treated equally, introducing consistency in screen space. Figure \ref{fig:picking_assisted} showcases the use of a support shape to filter candidate points. All points that belong to the support shape are filtered prior to being used as input for a spherecast. 
-
 
 \begin{figure}
     \centering
@@ -157,7 +156,7 @@ Figure \ref{fig:picking_overview} shows the different picking methods, described
     \label{fig:picking_assisted_screenshot}
 \end{figure}
 
-The result of \textit{shape-assisted point picking} can be seen in Figure \ref{fig:picking_assisted_screenshot}. The crosshair, even though other points' projections are closer to the cursor, sticks to the structure. Picking points on edges is improved in particular since the picking result follows the edge rather than jumping to a point in the background. 
+The result of \textit{shape-assisted point picking} can be seen in Figure \ref{fig:picking_assisted_screenshot}. The cross hair, even though other points' projections are closer to the cursor, sticks to the structure. Picking points on edges is improved in particular since the picking result follows the edge rather than jumping to a point in the background. 
 
 
 \subsection{Region Selection}
@@ -263,7 +262,7 @@ Increasing the level-of-detail is only useful for nodes that lie on the \textit{
 By adding smaller nodes of higher level-of-detail, the overall detail in the scene is amplified. However, by plainly adding additional nodes, noise and unwanted structures are amplified as well. 
 \\
 
-\textit{shape-assisted local level-of-detail increment} utilizes a selected shape cluster to amplify detail only on structures of interest. The user selects a primitive shape as support shape. Instead of performing a raycast, the nodes on the render horizon that intersect the support shape, are collected. From these nodes, only those points that belong to the support shape, are added to the scene. The membership of a point to the shale cluster is determined by the score function described in Section \ref{sec:scorefun}. 
+\textit{Shape-assisted local level-of-detail increment} utilizes a selected shape cluster to amplify detail only on structures of interest. The user selects a primitive shape as support shape. Instead of performing a raycast, the nodes on the render horizon that intersect the support shape, are collected. From these nodes, only those points that belong to the support shape, are added to the scene. The membership of a point to the shale cluster is determined by the score function described in Section \ref{sec:scorefun}. 
 
 \begin{figure}
 \centering

@@ -10,7 +10,7 @@ O-Snap by Arikan et al. \cite{arikan-2013-osn} utilizes Schnabel's algorithm to 
 \\
 The lasso interaction is a common tool to select regions in the two-dimensional screen space. Yu et al. \cite{yu2012efficient} presents two new methods of interaction using only two-dimensional input. The result are two techniques that turn a two-dimensional lasso into a three-dimensional volume that is fitted to the spatial structure of the point cloud. Similar to sketch-based modeling \cite{igarashi2007teddy}, TeddySelection inflates a user-drawn lasso using a heuristic that takes the local point density into account and fits it to the indented region. CloudLasso uses the Marching Cubes algorithm \cite{lorensen1987marching} to identify and select regions within the lasso where the density is beyond a threshold. Both techniques only use two degrees of freedom, thus can be used in a traditional mouse-based interaction, as well as in direct-touch environments. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.81\textwidth]{Related_Work/teddyCloudSelection.png}%7
     \caption[Comparison of (a) simple lasso selection, (b) TeddySelection and (c) CloudLasso]
