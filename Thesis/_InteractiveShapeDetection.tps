@@ -12,13 +12,13 @@ MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
 NormalPos.right=1562
-NormalPos.bottom=748
+NormalPos.bottom=409
 Class=LaTeXView
 Document=System_Design\System_Design.tex
 
 [Frame0_View0,0]
-TopLine=0
-Cursor=1559
+TopLine=15
+Cursor=1557
 
 [Frame1]
 Flags=0
@@ -30,7 +30,7 @@ MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
 NormalPos.right=1562
-NormalPos.bottom=748
+NormalPos.bottom=409
 Class=LaTeXView
 Document=Shape_Detection\Shape_Detection.tex
 
@@ -48,7 +48,7 @@ MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
 NormalPos.right=1562
-NormalPos.bottom=748
+NormalPos.bottom=409
 Class=LaTeXView
 Document=Octree\Octree.tex
 
@@ -66,15 +66,15 @@ MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
 NormalPos.right=1562
-NormalPos.bottom=748
+NormalPos.bottom=409
 Class=LaTeXView
 Document=Shape_Detection\Shape_Clustering.tex
 
 [Frame3_View0,0]
-TopLine=11
-Cursor=2901
+TopLine=0
+Cursor=716
 
 [SessionInfo]
 FrameCount=4
-ActiveFrame=3
+ActiveFrame=0
 

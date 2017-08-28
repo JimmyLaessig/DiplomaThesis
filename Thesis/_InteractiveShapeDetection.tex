@@ -93,7 +93,7 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 \setadvisor{Associate Prof. Dipl.-Ing. Dipl.-Ing. Dr.techn.}{Michael Wimmer}{}{male}
 
 % For bachelor and master theses:
-%\setfirstassistant{Pretitle}{Forename Surname}{Posttitle}{male}
+\setfirstassistant{Dipl.-Ing. Mag.}{Michael Schwärzler}{}{male}
 %\setsecondassistant{Pretitle}{Forename Surname}{Posttitle}{male}
 %\setthirdassistant{Pretitle}{Forename Surname}{Posttitle}{male}
 
@@ -158,9 +158,9 @@ A big thank you goes out to Michael Wimmer from the Technische Universität Wien
 
 Thanks to Lisa Kellner, who accompanied me through this thesis on a daily basis as she sat next to me and continuously provided me with feedback on my work. 
 
-Thanks to Phillip Erler, a fellow diploma student, for all the exchange of knowledge on both our thesis’s. 
+Thanks to Phillip Erler, a fellow diploma student, for all the exchange of knowledge on both our theses. 
 
-Last but not least, I would like to thank my friends and family who encouraged me to pursue an academic career and endured my ongoing talks about point clouds and shape detection for the bigger part of a year.
+Last but not least, I would like to thank my friends and family, who encouraged me to pursue an academic career and endured my ongoing talks about point clouds and shape detection for the bigger part of a year.
 
 This work was enabled by the Competence Centre VRVis. VRVis is funded by BMVIT, BMWFW, Styria, SFG and Vienna Business Agency in the scope of COMET - Competence Centers for Excellent Technologies (854174) which is managed by FFG.
 
@@ -174,10 +174,10 @@ This work was enabled by the Competence Centre VRVis. VRVis is funded by BMVIT, 
 
 This thesis presents a semi-automated method of shape detection for out-of-core point clouds. Rather than performing shape detection on the entire point cloud at once, a user-controlled interaction determines the region that is to be segmented next. By keeping the size of the region and the number of points small, the algorithm produces meaningful results within a fraction of a second. Thus, the user is presented immediately with feedback on the local geometry. 
 \\
-As modern point clouds can contain billions of points and the memory capacity of consumer PCs is usually insufficient to hold all points in memory at the same time, a level-of-detail data structure is used to store the point cloud on the hard disc and data is loaded into memory only on use. This data structure partitions the point cloud into small regions (\~5000 points) that are used for rendering and shape detection.
+As modern point clouds can contain billions of points and the memory capacity of consumer PCs is usually insufficient to hold all points in memory at the same time, a level-of-detail data structure is used to store the point cloud on the hard disc, and data is loaded into memory only on use. This data structure partitions the point cloud into small regions, each containing around 5000 points, that are used for rendering and shape detection.
 \\
-Interacting with point clouds is a particularly demanding task. A precise selection of a region of interest, using the two-dimensional lasso interaction, often needs multiple view changes and subsequent improvements. This thesis proposes improvements to the lasso interaction, by the selection only on the set of points that follow the curvature of a detected shape. Thus, the selection of undesired points in the fore and background is reduced.
-Point picking is improved as well by the use of a detected shape as well, such that only points are pick-able that follow the curvature. 
+Interacting with point clouds is a particularly demanding task. A precise selection of a region of interest, using the two-dimensional lasso interaction, often needs multiple view changes and subsequent improvements. This thesis proposes improvements to the lasso interaction, by performing selection only on the set of points that follow the curvature of a detected shape. Thus, the selection of undesired points in the fore- and background is reduced.
+Point picking is improved as well by the use of a detected shape, such that only points that follow the curvature are pick-able. 
 \\
 The result of this thesis is an application that allows the user to view point clouds with millions of points. It also provides a novel interaction technique for quick local shape detection as well as shape-assisted interactions that utilize this local semantic information to improve the user's workflow. 
 
