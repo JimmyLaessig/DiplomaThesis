@@ -101,6 +101,27 @@ Such non-plausible shapes can exist due to the density-controlled $\epsilon$ par
 \end{figure}
 
 
+\section{Interaction Performance}
+
+	\begin{center}
+	\begin{tabular}{ r| r | r }
+			\textbf{min}	& \textbf{max}	& \textbf{avg} \\
+			\hline
+			0.348200 & 39.929400 & 3.281752\\
+	13.402100 & 148.346100 & 37.964309 \\
+	\end{tabular}
+	\caption{Benchmark Point Picking}
+	\end{center}
+
+
+without support: 193.628900 ; 2494.494800 ; 748.725405
+with support: 191.082600 ; 923.332500 ; 437.933686
+
+Lasso Performance lasso selection + shape-assisted lasso selection with same lasso ratio between computation time averaged ratio 1.810198
+
+Ration between computation time: 1.810198
+
+
 \subsection{Results}
 
 This section presents results for the RANSAC shape detection performed on three data sets. The results in Figure \ref{fig:synthetic_point_cloud_results}, \ref{fig:JB_haus_results}, and \ref{fig:technologiezentrum_results} are obtained by segmenting the point clouds as a whole. Results for the interactive shape detection can be seen in Figure \ref{fig:technologiezentrum_interactive_shape_detection}. 
@@ -123,28 +144,36 @@ The synthetic test scene consists of two planes, three cylinders, three tori, an
 \begin{figure}
 \centering
 \subcaptionbox{ \label{fig:jb_haus}}{%
-  \includegraphics[width=\textwidth]{Results/jb_haus.png}%7
+  \includegraphics[width=0.7\textwidth]{Results/jb_haus.png}%7
   }
 \subcaptionbox{ \label{fig:jb_haus_shapes}}{%
-  \includegraphics[width=\textwidth]{Results/jb_haus_shapes.png}%
+  \includegraphics[width=0.7\textwidth]{Results/jb_haus_shapes.png}%
   }
-\caption[Rendering of JB\_haus in (a), rendering of the detected shapes in (b)]
-{This figure shows JB\_haus rendered as point cloud in (a), (b) shows all shapes detected in the point cloud. }
+\subcaptionbox{ \label{fig:jb_haus_shapes}}{%
+  \includegraphics[width=0.7\textwidth]{Results/jb_haus_shapes_interactive.png}%
+  }
+\caption[Figure (a) shows a rendering og the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection. ]
+{Figure (a) shows a rendering of the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape detection method.  }
 \label{fig:JB_haus_results}
 \end{figure}
 
 \begin{figure}
 \centering
 \subcaptionbox{ \label{fig:technologiezentrum}}{%
-  \includegraphics[width=\textwidth]{Results/technologiezentrum.png}%7
+  \includegraphics[width=0.7\textwidth]{Results/technologiezentrum.png}%7
   }
 \subcaptionbox{ \label{fig:technologiezentrum_shapes}}{%
-  \includegraphics[width=\textwidth]{Results/technologiezentrum_shapes.png}%
+  \includegraphics[width=0.7\textwidth]{Results/technologiezentrum_shapes.png}%
   }
-\caption[[Rendering of the Technologiezentrum in (a), rendering of the detected shapes in (b)]]
-{This figure shows the Technologiezentrum rendered as point cloud in (a), (b) shows all shapes detected in the point cloud. }
+\subcaptionbox{ \label{fig:technologiezentrum_shapes_interactive}}{%
+  \includegraphics[width=0.7\textwidth]{Results/technologiezentrum_shapes_interactive.png}%
+  }
+\caption[Figure (a) shows a rendering og the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection.]
+{Figure (a) shows a rendering of the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape detection method.}
+
 \label{fig:technologiezentrum_results}
 \end{figure}
+
 
 \begin{figure}
 \centering
@@ -155,7 +184,7 @@ The synthetic test scene consists of two planes, three cylinders, three tori, an
   \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection2.png}%
   }
 \caption[Two examples of user-guided shape detection]
-{Based on the cursor's position a different shapes are selected. (a) and (b) show different shapes for different parts of the point cloud. Both shapes are a part of a wall. }
+{This figure shows a rendering of the Technologiezentrum dataset. Based on the cursor's position (indicated as the red cross hair) a different shape are selected. The shape is rendered in red. (a) and (b) show different shapes for different parts of the point cloud. Both shapes are a part of a wall.}
 \label{fig:technologiezentrum_interactive_shape_detection}
 \end{figure}
 
@@ -207,5 +236,31 @@ This section presents a set of figures that showcase the different interactions 
 \end{figure}
 
 
+% Examples for non-planar shapes
+
+\begin{figure}
+\centering
+\subcaptionbox{ \label{fig:syntheticScene_lasso1}}{%
+  \includegraphics[width=\textwidth]{Results/synthetic_point_cloud_lasso1.png}%7
+  }
+\subcaptionbox{ \label{fig:syntheticScene_lasso2}}{%
+  \includegraphics[width=\textwidth]{Results/synthetic_point_cloud_lasso2.png}%
+  }
+\caption[Example of an improved lasso selection on a cylinder]
+{This figure shows an improved lasso selection performed using a cylinder shape as support. (a) shows the lasso that is drawn on screen, (b) shows the selection result from a different angle. Points in the back of the cylinder are selected as well, as they are approximated by the cylinder as well. }
+\label{fig:syntheticScene_lasso}
+\end{figure}
 
 
+\begin{figure}
+\centering
+\subcaptionbox{ \label{fig:syntheticScene_brush1}}{%
+  \includegraphics[width=\textwidth]{Results/synthetic_point_cloud_brush1.png}%7
+  }
+\subcaptionbox{ \label{fig:syntheticScene_brush2}}{%
+  \includegraphics[width=\textwidth]{Results/synthetic_point_cloud_brush2.png}%
+  }
+\caption[Example of an improved volumetric brush selection on a cylinder]
+{This figure shows the volumetric brush selection on a selected cylinder shape. The brush sticks to the side of the cylinder that is facing the camera.}
+\label{fig:syntheticScene_brush}
+\end{figure}

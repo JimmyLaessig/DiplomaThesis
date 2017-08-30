@@ -63,7 +63,7 @@ If a minimal set does not qualify for a candidate shape, the set is discarded. I
 \subsection{Score function}
 \label{sec:scorefun}
 
-The score function calculates the support of the candidate shape. The support determined by the number of points that are approximated by this shape, i.e., the points roughly follow the curvature of the shape. All remaining points in the point cloud are tested against the candidate shape. Again, for each point to be a support point, the following two rules must apply: 
+The score function calculates the support of the candidate shape. The support is determined by the number of points that are approximated by this shape, i.e., the points roughly follow the curvature of the shape. All remaining points in the point cloud are tested against the candidate shape. Again, for each point to be a support point, the following two rules must apply: 
 
 \begin{itemize}
     \item The distance between the point and the shape must be smaller than $\epsilon$.
