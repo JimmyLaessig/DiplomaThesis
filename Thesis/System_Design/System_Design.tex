@@ -1,93 +1,90 @@
 \chapter{System Design}
 \label{chap:systemDesign}
 
-This chapter discusses the design of the application developed for this thesis. The aim is to develop a stand-alone desktop application to view and interact with out-of-core point clouds. The application offers varius methods for the user to interact with the point cloud. The application has three main elements that interact together, all controlled by the user. 
-\\
-Shape detection, as described in Chapter \ref{chap:shapeDetection} is performed on a sub-region of the point cloud one at a time. Section \ref{sec:user_guided_sd} describes an interactive heuristic that selects an octree node as a region of interest, using the user's cursor position and camera view as input. Using the user's input effectively changes the task of detecting shapes from an automated approach to an user-controlled interaction.
-\\
+This chapter discusses the design of the application developed for this thesis. The aim is to develop a stand-alone desktop application to view and interact with out-of-core point clouds. The application offers various methods for the user to interact with the point cloud. The application has three main elements that work together, all controlled by the user. 
+
+\par
+
+Shape detection, as described in Chapter \ref{chap:shapeDetection}, is performed on a sub-region of the point cloud one at a time. Section \ref{sec:user_guided_sd} describes an interactive heuristic that selects an octree node as a region of interest, using the user's cursor position and camera view as input. Using the user's input effectively changes the task of detecting shapes from an automated approach to a user-controlled interaction.
+
+\par
+
 Most interactions presented in this thesis share similar techniques and naming conventions. Therefore, some terms that are used throughout this chapter are defined in Section \ref{sec:termDefinitions}. 
-\\
+
+\par
+
 Section \ref{sec:shapePicking} describes a picking algorithm to select a primitive shape from the screen that can later be used as support shape for assisted user interactions. 
-\\
+
+\par
+
 Section \ref{sec:interactions} provides detailed information on the additional user interactions that use a support shape as assistance. \textit{point picking, region selection, and local level-of-detail increment} are all interactions that benefit from the utilization of a support shape. 
 
 
 \section{Term Definitions}
 \label{sec:termDefinitions}
 
-The base of all interactions is the user's cursor on the screen. The \textit{pick ray} is a ray that goes from the cursor’s position in world space in the view direction. 
-Each interaction iteratively filters the octree's data as such that coarse filtering is carried out before finer adjustments are performed on the dataset before choosing a final candidate. Data that survives the coarse filtering is referred to as \textit{candidate} data, e.g. candidate nodes or candidate points. 
+The basis of all interactions is the user's cursor on the screen. The \textit{pick ray} is a ray that origins from the cursor’s position in world space and goes in the direction of the camera to the cursor position. 
+Each interaction iteratively filters the octree's data such that coarse filtering is carried out before finer adjustments are performed on the dataset before choosing a final candidate. Data that survives the coarse filtering is referred to as \textit{candidate}, e.g., candidate nodes or candidate points. 
 
 
 \section{User-guided Shape Detection}
 \label{sec:user_guided_sd}
 
-Shape Detection by Schnabel et al. \cite{schnabel-2007-efficient} usually is performed on the whole point cloud at once. However, this computation might take several minutes, depending on the size of the point cloud. The aim of this thesis is to implement a method such that the user is provided with feedback for a region immediately. Therefore, the point cloud is processed in chunks of roughly the same size instead of as a whole. The octree already provides the point cloud as pieces of spatial-neighboring data, such that a node describes an enclosed subset of the point cloud at a specific level-of-detail. Furthermore, using chunks of the same size, allows the user to expect results in about the same time for each node. This response time should ideally be a fraction of a second, at best $0-250$ milliseconds. 
+The shape-detection algorithm is already described in Chapter \ref{chap:shapeDetection}. As the shape detection computation usually takes several minutes, the approach in this thesis performs this computation on small chunks of roughly the same size of point-cloud data at a time. The octree already provides the point cloud as pieces of spatially-neighboring data, such that each node describes an enclosed subset of the point cloud at a specific level-of-detail. Using chunks of the same size allows the user to expect results in about the same time for each node. This response time should ideally be a fraction of a second, at best less than $250$ milliseconds. 
 
 The \textit{user-guided shape detection} is updated continuously in the background, relying only on the user's current mouse position and view. Thus, only nodes are considered that intersect the pick ray. To be selected as candidate node from the octree, a node must fulfill the following constraints: 
-\begin{itemize}
-    \item The node must intersect the pick ray.
+\begin{enumerate}
     \item The node must currently be rendered and visible to the user. 
+    \item The node must intersect the pick ray.
     \item The node must contain at least $n$ points, the same amount used as minimal support point count for shape detection.
-    \item The node must not already contain detected shapes.
-\end{itemize}
+    \item The node must not have been processed before. Hence, it already contains detected shapes. 
+\end{enumerate}
 
-Since the user controls the shape detection, it makes sense that the user only interacts with what is presented on screen. Therefore the node must currently be rendered and visible. To reduce the amount of redundant computation, only nodes that contain enough points to fit at least one shape, are considered to be candidates. Lastly, the shape detection algorithm works under the probabilistic assumption that, once it terminates, all shapes in this region are detected. Therefore, nodes that already contain detected shapes do not qualify as candidates as well. 
-\\
-The culling operation on the octree, described in Section \ref{sec:renderHorizon}, returns an octree that only contains nodes that are rendered. Thus, all nodes in this tree already are visible to the user. Only a single raycast must be performed on the culled octree to obtain the set of candidate nodes. 
-\\
-All nodes from the raycast result are eliminated that do not fulfill the previous constraints. The heuristic favors nodes with higher level-of-detail, such that the user receives geometric information for the most detailed parts of the currently explored region first. The projected distance to the nearplane is used to select between nodes with the same level-of-detail, such that the node closest to the camera is chosen. 
-\\
-\\
-%Algorithm ~\ref{alg:candidateNodeHeuristic} showcases the selection heuristic that is executed for each node that intersects the pick ray. The most suitable node for shape detection is the node with the highest level-of-detail, closest to the nearplane. %Algorithm 
+These constraints have the following motivation: Since the user controls the shape-detection process, it makes sense that the user only interacts with what is presented on screen. Therefore, the node must currently be rendered and visible. To reduce the amount of redundant computation, only nodes that contain enough points to fit at least one shape are considered to be candidates. Lastly, the shape-detection algorithm works under the probabilistic assumption that, once it terminates, all shapes in this region are detected. Therefore, nodes that already contain detected shapes do not qualify as candidates as well. 
 
-%\begin{algorithm}
-    
-%    \KwData{raycastResults : OctreeNode[]}
-%    \KwResult{node : OctreeNode}
-%    node     = null\;
-%    level = 0\;
-%    npd     = 1.0\;
-%\ForEach{currentNode \normalfont{\textbf{in}} raycastResults}
-%    {            
-%        currentNpd = calculateDistanceToNearPlane(node)    \;
-%        currentLevel = node.getLodLevel()\;
-%        \If{currentLevel > level \normalfont{\textbf{or}} (currentLevel == level \normalfont{\textbf{and}} currentNpd < npd)}{
-%            node $\leftarrow$ currentNode\;
-%            level $\leftarrow$ currentLevel\;
-%            npd $\leftarrow$ currentNpd\;                            
-%        }
-%    }
-%\caption[A heuristic that chooses the most suitable candidate node]{selectCandidateNode}
-%\label{alg:candidateNodeHeuristic}
-%\end{algorithm}
+\par
 
-The selection of a suitable candidate node heavily depends on the camera's position. When zooming out, the camera moves away from the scene, thus reducing the render horizon and therefore reducing the maximum level-of-detail. By ranking different nodes that fulfill the candidate criteria, even when the view does not change, a multi-scale representation of the local geometry is constructed over time, creating a level-of-detail for primitive shapes as well. 
+The culling operation on the octree, described in Section \ref{sec:renderHorizon}, returns an octree that only contains nodes that are rendered. Thus, all nodes in this tree are already visible to the user and fulfill constraint 1. Only a single raycast with the pick ray needs to be performed on the culled octree to obtain the set of candidate nodes that fulfill constraints 1 and 2. 
+
+\par
+
+From this set, nodes are eliminated that do not fulfill constraints 3 and 4. The heuristic favors nodes with higher level-of-detail, such that the user receives geometric information for the most detailed parts of the currently explored region first. The projected distance to the nearplane is used to select between nodes with the same level of detail. The node closest to the camera is chosen. 
+
+\par
+
+The selection of a suitable candidate node depends heavily on the camera position. When zooming out, the camera moves away from the scene, thus reducing the render horizon and therefore reducing the maximum level-of-detail. If the node with the highest level of detail is processed already the heuristic chooses a node from a lower level of detail. Thus, a multi-scale representation of the local geometry is constructed over time, creating a level of detail for primitive shapes as well. 
 
 
 \section{Shape Picking}
 \label{sec:shapePicking}
 
-This thesis presents several interactions that are supported by detected shapes to ease interactions with point clouds.  
-However, this raises the need for an additional interaction to pick a primitive shape. A raycast is performed on the octree using the pick ray. Only those nodes are filtered that contain primitive shapes. Furthermore, only those shapes are used that intersect the pick ray. The picking heuristic prefers primitive shapes of higher level-of-detail that are closer to the camera. All primitive shapes are collected from the candidate nodes and sorted using a custom key. Primitive shapes that intersect the pick ray come with information on the nearest intersection point and the level-of-detail. For the intersection points, the $depth$ is calculated. The sort key is composed as follows: 
+This thesis presents several interactions that are supported by using detected shapes to ease interactions with point clouds. The use of a support shape raises the need for an initial interaction to pick a primitive shape. A raycast is performed on the culled octree using the pick ray to create an initial filtering of octree nodes. From this set of nodes only those shapes are collected that intersect the pick ray. The picking heuristic prefers primitive shapes of higher level of detail that are closer to the camera. All primitive shapes are collected from the candidate nodes and sorted using a custom key. Primitive shapes that intersect the pick ray come with information on the nearest intersection point and the level of detail. For each intersection point, the $depth$ in range of $[0,1]$, where $0$ is at the near plane and $1$ is at the far plane, is calculated. For shapes that have more than one intersection points, the intersection point closest to the camera is chosen. The sort key is composed as follows: 
 
-$$key = level + 1 - depth$$
+$$key = level + 1 - depth$$.
 
-The primitive shape with the highest key is chosen as support shape. The composition of the key ensures that a shape with the highest level-of-detail that is closest to the camera is picked.
-\\
-As a primitive shape only spans over a small local region and user interactions usually are performed on larger areas, a single primitive shape is not sufficient to provide semantic information to the user. Therefore, once a shape is picked, a cluster is created from this shape using primitive shapes that are similar to this shape. This clustering is described in Section \ref{sec:shapeClustering} in depth. Shape clustering creates a homogenous cluster of shapes from different octree nodes. The cluster has the property that each of its shapes has a neighbor within $\epsilon$,
- as described in Chapter \ref{chap:shapeDetection}. Thus, a cluster can be seen as a single, larger shape that is referred to as \textit{support shape}.
+The primitive shape with the highest key is chosen as support shape. The composition of the key ensures that a shape with the highest level of detail that is closest to the camera is picked. 
+
+\par
+
+As a primitive shape only covers a small region, limited by the extents of the octree node, and user interactions are usually performed on larger areas, a single primitive shape is not sufficient to provide semantic information to the user. Therefore, once a shape is picked, a cluster is created from this shape using primitive shapes that are similar to this shape. This clustering is described in Section \ref{sec:shapeClustering} in depth. All shapes are collected from visible nodes that match the picked shape. From this set of shape a coherent cluster is created, such that each shape has a neighbor within $\epsilon$ distance, as described in Chapter \ref{chap:shapeDetection}. A cluster can be seen as a single, multi-level shape and is referred to as \textit{support shape}.
 
 
 \section{Shape-Assisted Interactions}
 \label{sec:interactions}
 
-Creating new interactions is a key topic in this thesis. Classic two-dimensional interaction metaphors, such as \textit{lasso selection} and \textit{point picking} are limited due to the lack of information on the desired depth. Therefore those interactions must either guess the desired depth boundaries or ignore them. Furthermore, such interactions lack the possibility to mask out unwanted points from a selection. Unwanted points are selected on a regular basis. Hence, many view changes are necessary to select points that are of interest only. Using a primitive shape as support, the user can easily interact with the point cloud, such that only points are considered which belong the support shape. 
+Creating new interactions is a key topic in this thesis. In 3D applications, classic two-dimensional interaction metaphors, such as \textit{lasso selection} and \textit{point picking}, are limited by the lack of information on the desired depth. In a 3D setting,  these interactions must either guess the desired depth boundaries or ignore them. Furthermore, these interactions lack the possibility to mask out unwanted points from a selection. Unwanted points are selected on a regular basis. Hence, many view changes are necessary to select only points that are of interest. Using a primitive shape as support, the user can easily interact with the point cloud in a way that only points are considered that belong the support shape. 
 \\
-The use of a support shape for interactions can been seen as an additional filtering step, that reduces the set of candidate point to only those, that follow the curvature of the shape. Section \ref{sec:pointFiltering} gives a brief overview on this filtering step that is used for all assisted interactions. 
+The use of a support shape for interactions can been seen as an additional filtering step that reduces the set of candidate points to only those that follow the curvature of the shape. Section \ref{sec:pointFiltering} gives a brief overview on this filtering step which is used throughout all assisted interactions. 
 \\
 Sections \ref{sec:pointPicking} and \ref{sec:regionSelection} describe the pros and cons of current state-of-the-art two-dimensional interactions and propose improvements using a detected primitive shape as support shape. Furthermore, Section \ref{sec:lod_increment} proposes a technique to locally increment the visible level-of-detail along structures of interest to amplify details. 
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{System_Design/interaction_workflow.png}%7
+    \caption[Screenshot of Shape-assisted Point Picking]
+		{\textit{This figure shows the basic workflow for the assisted interactions. First, a shape is picked, from this picked shape larger cluster is created. }
+    \label{fig:interaction_workflow}
+\end{figure}
 
 \subsection{Shape-Assisted Point Filtering}
 \label{sec:pointFiltering}
