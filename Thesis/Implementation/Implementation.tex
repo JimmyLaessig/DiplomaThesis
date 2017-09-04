@@ -1,11 +1,15 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-This chapter gives an overview of implementation details for this thesis. the implementation of the application is guided by the \textit{functional-first} programming paradigm. \textit{Functional-first} takes inspiration from functional programming, as well as other paradigms, such as object-oriented programming. However, the majority of the application is written purely functional, with connections to non-functional components, such as .NET libraries for multi threading or Schnabel et al.'s shape detection implementation \cite{schnabel-2007-software}. 
-\\
-This chapter starts with an introduction to functional programming and the programming language \verb|F#|\cite{FSharp} before introducing the key features of the Aardvark platform \cite{aardvark}  in Section \ref{sec:aardvark}. The primary data structure used for organizing the point cloud data is an octree with out-of-core capability. A set of functions that simplify querying with the octree is proposed in Section \ref{sec:funcOctree}. 
-\\
-Multiple coroutines are performed in the background that produces a stream of data for the point cloud. The multi-threaded architecture of the application is discussed in Section \ref{sec:multithreading}. Section \ref{sec:rendering} concludes this chapter by briefly discussing implementation details of the point-cloud rendering system. 
+This chapter gives an overview of implementation details for this thesis. The implementation of the application is guided by the \textit{functional-first} programming paradigm. \textit{Functional-first} takes inspiration from functional programming, as well as other paradigms, such as object-oriented programming. However, the majority of the application is written in a purely functional way, with connections to non-functional components, such as .NET libraries for multi threading or Schnabel et al.'s shape detection implementation \cite{schnabel-2007-software}. The backbone of the application is the Aardvark platform \cite{aardvark}. It is a functional-first incremental rendering engine in active development at the VRVis Zentrum für Virtual Reality und Visualisierung \cite{vrvis}.
+
+\par
+
+This chapter starts with an introduction to functional programming and the programming language \verb|F#| \cite{FSharp} before introducing the key features of the Aardvark platform in Section \ref{sec:aardvark}. The primary data structure used for organizing the point cloud data is an octree with out-of-core capability. A set of functions that simplify querying with the octree is proposed in Section \ref{sec:funcOctree}. 
+
+\par
+
+Multiple coroutines are performed in the background and produce a stream of updates on the point-cloud data. The multi-threaded architecture of the application is discussed in Section \ref{sec:multithreading}. Section \ref{sec:rendering} concludes this chapter by briefly discussing implementation details of the point-cloud rendering system. 
 
 
 \section{Functional Programming}
@@ -28,30 +32,29 @@ let result = compute 10.0 square
 \end{lstlisting}
 
 \verb|result| is an expression that executes the \verb|compute| function with arguments $10.0$ of type \verb|float| and \verb|square| of type \verb|float -> float|. Even though this is just a simple example, it showcases the strength of functional programming.  Using functions as input allows the user to create complex and dynamic computations with ease. 
-\\
-\\
+
+\par
+
 Each expression in a functional context is mathematically defined, parameter space and result space are fully known and must be fully defined on type level. No values that the program does not expect ever occur, thus eliminating undefined behavior. 
-\\
-Functional programming tries to limit mutation, e.g. change of an external variable's value (program state), as much as possible. A program without mutation is called "`pure"'. Each call to a pure expression with the same parameters must produce the same results. External mutation can change the behavior of expressions that depend on the mutated field, thus changing the result without changing the input. Therefore, avoiding mutation means avoiding undefined behavior.
-\\
-Finally, strict purity and full type level specification make it possible to reason and construct proofs about programs. This gives the programmer tools to manage very high complexity and reduces the need for debugging significantly.
-\\
-\\
-\verb|F#|\cite{FSharp} is a functional programming language developed and maintained by Microsoft\cite{Microsoft}. F\# is fully integrated into the .NET framework\cite{DotNet} and is built upon the Common Language Infrastructure\cite{CLI}, thus allowing it to use resources written in other languages, such as C\#\cite{CSharp}. Even though F\# is a functional language, it also supports object-oriented programming, such that classes with member functions can be used as well. 
+Functional programming tries to limit mutation, e.g., change of an external variable's value (program state), as much as possible. A program without mutation is called \'pure\'. Each call to a pure expression with the same parameters must produce the same results. External mutation can change the behavior of expressions that depend on the mutated field, thus changing the result without changing the input. Therefore, avoiding mutation means avoiding undefined behavior.
+Finally, strict purity and full type-level specification make it possible to reason and construct proofs about programs. This gives the programmer tools to manage very high complexity and reduces the need for debugging significantly.
+
+\par
+
+\verb|F#| \cite{FSharp} is a functional programming language developed and maintained by Microsoft \cite{Microsoft}. F\# is fully integrated into the .NET framework \cite{DotNet} and is built upon the Common Language Infrastructure \cite{CLI}, thus allowing it to use resources written in other languages, such as C\# \cite{CSharp}. Even though F\# is a functional language, it also supports object-oriented programming, such that classes with member functions can be used as well. 
 
 
 \section{Aardvark}
 \label{sec:aardvark}
 
-The Aardvark platform\cite{aardvark} is a functional-first incremental rendering engine in active development at the VRVis Zentrum für Virtual Reality und Visualisierung\cite{vrvis}. It is an implementation of research results on the field of incremental rendering \cite{worister2013lazy, haaser2015incremental} and semantic shader composition\cite{haaser2014cosmo, haaser2014semantic}. 
-
-The key feature of the Aardvark platform is incremental rendering. In a conventional engine, updates are performed periodically. Each scene object is re-evaluated, even though the simulation or user-input may not yield any changes. Incremental rendering counters this overhead by reacting to changes, such that only components that depend on changed values are re-evaluated. This section describes some of Aardvark's key features that are used throughout this thesis. Section \ref{sec:adaptive} shows the language-specific constructs on how to build adaptive blocks that react to changes. A \textit{scene graph} represents an object hierarchy in the scene. Section \ref{sec:isg} describes the composition of a scene graph using only a handful of lines of code. 
+The Aardvark platform \cite{aardvark} is an implementation of research results on the field of incremental rendering \cite{worister2013lazy, haaser2015incremental} and semantic shader composition \cite{haaser2014cosmo, haaser2014semantic}. 
+The key feature of the Aardvark platform is incremental rendering. In a conventional engine, updates are performed periodically. Each scene object is re-evaluated, even though the simulation or user input may not yield any changes. Incremental rendering counters this overhead by reacting to changes in a way that only components that depend on changed values are re-evaluated. This section describes some of Aardvark's key features that are used throughout this thesis. Section \ref{sec:adaptive} shows the language-specific constructs on how to build adaptive blocks that react to changes. A \textit{scene graph} represents an object hierarchy in the scene. Section \ref{sec:isg} describes the composition of a scene graph using only a handful of lines of code. 
 
  
 \subsection{Adaptive - IMod - transact}
 \label{sec:adaptive}
 
-As mentioned in Section \ref{sec:funprog} mutations are often the cause of undefined behavior and bugs. To introduce state-changeable variables into a functional environment, Aardvark provides the \verb|IMod<'a>| type. This generic type is a wrapper around a particular value, whose value might change over time. The programmer does not care about the concrete value, and only specifies the computation applied to the value instead. Aardvark contains an extensive implementation for a three-dimensional transformation, called \verb|Trafo3d|. The type \verb|IMod<Trafo3d>| listens to changes of the transformation. The following example shows the composition of a model transformation from a position, scale, and rotation, all of which can change over time. 
+As mentioned in Section \ref{sec:funprog}, mutations are often the cause of undefined behavior and bugs. To introduce state-changeable variables into a functional environment, Aardvark provides the \verb|IMod<'a>| type. This generic type is a wrapper around a particular value, whose value might change over time. The programmer does not care about the concrete value, and only specifies the computation applied to the value instead. Aardvark contains an extensive implementation for a three-dimensional transformation, called \verb|Trafo3d|. The type \verb|IMod<Trafo3d>| listens to changes of the transformation. The following example shows the composition of a model transformation from a position, scale, and rotation, all of which can change over time. 
 
 \begin{lstlisting}[language = FSharp]
 
@@ -78,7 +81,7 @@ let trafo : IMod<Trafo3d> =
 The \verb|adaptive| computation expression builder allows the system to keep track of the state of all IMods that are accessed using the \verb|let!| operator. This \textit{binding} operator makes a computation react to their changes. The result of the adaptive block, again, is an IMod<Trafo3d>. If one of the accessed IMods changes its value, the code below, including the \verb|let!| statement, is reevaluated. The computation is kept minimal using caching. 
 \\
 
-To actively change a value, a subtype of \verb|IMod<'a>|, \verb|ModRef<'a>| is needed. The type \verb|ModRef<'a>| contains the functionality to allow changes to the value, thus causing re-evaluation. All state transactions are collected and executed sequentially, thus reducing the number of re-evaluations and circumventing race conditions. Each change must be wrapped in a \verb|transact| function, , representing transactional logic. 
+To actively change a value, a subtype of \verb|IMod<'a>|, \verb|ModRef<'a>| is needed. The type \verb|ModRef<'a>| contains the functionality to allow changes to the value, thus causing re-evaluation. All state transactions are collected and executed sequentially, thus reducing the number of re-evaluations and circumventing race conditions. Each change must be wrapped in a \verb|transact| function, representing transactional logic. 
 The following example uses the Aardvark-specific mouse callback function to trigger a reevaluation based on mouse movement. The Move-callback is called each time the mouse moves and provides the user with the old position and the new position. The difference on the x-axis controls the y-value of the rotation. 
 
 \begin{lstlisting}[language = FSharp]
@@ -103,10 +106,10 @@ The \verb|ModRef| \verb|rotation| can then be used bound within an \verb|adaptiv
 Transactions are usually used to handle user input. However, asynchronous computations that produce results in parallel use transactions as well to mitigate race conditions on shared data and notify the rest of the program on completion. 
 
 
-\subsection{Scene graph composition}
+\subsection{Scene-graph composition}
 \label{sec:isg}
 
-A scene graph (\verb|ISg|) contains all information that is needed to render an object. A common paradigm in functional programming is to split functionality from data, such that the functions that utilize this data are stored in a different namespace than the data. In combination with the pipe operator ($|>$) clean and easy-to-read code can be produced. The following example showcases the composition of an \verb|ISg|. 
+A scene graph (\verb|ISg|) contains all information that is needed to render an object. A common paradigm in functional programming is to separate functionality from data, such that the functions that utilize this data are stored in a different namespace than the data. In combination with the pipe operator ($|>$) clean and easy-to-read code can be produced. The following example showcases the composition of an \verb|ISg|. 
 
 \begin{lstlisting}[language = FSharp]
 
@@ -136,7 +139,7 @@ The field \verb|sg| represents a scene graph with transformations, geometry, sha
 
 \subsection{Out-of-core capabilites}
 
-The Aardvark platform contains functionality to handle out-of-core data. The type \verb|Database| provides means to store data. A chunk of data that is stored on in this database is called \verb|thunk<'a>| where \verb|'a| is the type of the data to be stored. The following code shows how to create a \verb|thunk<'a>|. 
+The Aardvark platform contains functionality to handle out-of-core data. The type \verb|Database| provides means to store data. A chunk of data stored in this database is called \verb|thunk<'a>| where \verb|'a| is the type of the data to be stored. The following code shows how to create a \verb|thunk<'a>|. 
 
 \begin{lstlisting}[language = FSharp]
     let db : Database = ...
@@ -160,7 +163,7 @@ The octree's out-of-core capability is managed by an interleaved structure of \v
 
 \subsection{Elementary functions}
 
-The interaction methods described in Section \ref{sec:interactions} heavily rely on the efficient collection of octree nodes that fulfill certain criteria. Thus, a set of routines is implemented that can easily be parameterized and reused. \verb|F#| collections contain several functions that use a lambda function as input and perform this function on elements in the collection. Two examples are \verb|map| and \verb|filter|. both take two arguments, an array and a function that takes an element as input. All operations on collections can be composed from these basic functions. This is called the \textit{mapReduce pattern}. One example of such a composition is the \verb|choose| function. Even though the octree is not generic, these functions are implemented similarly, to provide a uniform interface to query the octree efficiently. 
+The interaction methods described in Section \ref{sec:interactions} rely heavily on the efficient collection of octree nodes that fulfill certain criteria. Thus, a set of routines is implemented that can easily be parameterized and reused. \verb|F#| collections contain several functions that use a lambda function as input and perform this function on elements in the collection. Two examples are \verb|map| and \verb|filter|. Both take two arguments, an array and a function that takes an element as input. All operations on collections can be composed from these basic functions. This is called the \textit{mapReduce pattern}. One example of such a composition is the \verb|choose| function. Even though the octree is not generic, these functions are implemented similarly, to provide a uniform interface to query the octree efficiently. 
 
 
 \subsubsection{Filter}
@@ -190,7 +193,7 @@ Contrary to the filter function, the \verb|map| function does not return a new o
 
 \subsubsection{Choose}
 
-A similar task to filtering is the choose function. However, instead of returning the filtered values directly, the decision function also maps the values to the desired type \verb|'T|. The decision function uses the same input as the decision function for filtering. Its return type is a tuple that consists of a \verb|Option<'T>| and a \verb|bool|. The option type is used to introduce null-mechanics into the functional context. An option can either be \verb|Some value| or \verb|None|. If the \verb|choose| function's returned type is \verb|Some value|, its value is filtered, the \verb|bool| value decides whether or not to traverse the children. 
+A similar task to filtering is the choose function. However, instead of returning the filtered values directly, the decision function also maps the values to the desired type \verb|'T|. The decision function uses the same input as the decision function for filtering. Its return type is a tuple that consists of an \verb|Option<'T>| and a \verb|bool|. The option type is used to introduce null-mechanics into the functional context. An option can either be \verb|Some value| or \verb|None|. If the \verb|choose| function's returned type is \verb|Some value|, its value is filtered, the \verb|bool| value decides whether or not to traverse the children. 
 The function's definition looks as follows: 
 
 \begin{lstlisting}[language = FSharp]
@@ -243,7 +246,7 @@ Spatial subdivision accelerates ray casting. If the ray does not intersect the b
 Culling utilizes the octree's \verb|filter| function to create a new octree that only contains nodes that are currently rendered. The culling function performs view-frustum culling as well as a level-of-detail culling heuristic based on the node's size and distance to the near plane. Figure \ref{fig:octreeCulling} shows an exemplary culling performed on a tree. The level-of-detail decreases for nodes that are further away from the camera and only those nodes are used that intersect the view frustum.
 
 \begin{figure}
-    \centering
+   	\centering
     \includegraphics[width=0.8\textwidth]{Implementation/octreeCulling.png}
     \caption[Exemplary octree culling]
 		{An exemplary culling is performed on a tree. Octree nodes that are darker with a thicker edge have a higher level-of-detail. Only close to the camera (red), the nodes with the highest level-of-detail are rendered. Nodes that are outside the view frustum (orange) are discarded. }
@@ -251,7 +254,7 @@ Culling utilizes the octree's \verb|filter| function to create a new octree that
 \end{figure}
 
 
-Let $V$ be the volume of the node's bounding box, $win_x, win_y$ the dimensions of the window and $d_min$ be the smallest distance from the bounding box to the near plane in world space, clamped by the near and far plane. Furthermore, let $t$ be a user-controlled distance threshold. For this application, $t = 2$ is used. 
+Let $V$ be the volume of the node's bounding box, $win_x, win_y$ the dimensions of the window and $d_{min}$ be the smallest distance from the bounding box to the near plane in world space, clamped by the near and far plane. Furthermore, let $t$ be a user-controlled distance threshold. For this application, $t = 2$ is used. 
 
 \begin{center}
 $t_{win} = \frac{t}{max (win_x, win_y)}$ \\
@@ -262,7 +265,7 @@ The decision whether or not to render the node is determined by:
 $g > t_{win}$
 \end{center}
 
-The user-controlled threshold $t$ is divided by the largest window dimension to allows the level-of-detail the adapt to the window size. $d_{min}$ is calculated by projecting all corners of the node's bounding box to view space and negating the $z$ value. The smallest value is then clamped to the view frustum, so the computation stays in visible view space. A smaller $t$ win allows for higher level-of-detail to be displayed. The granularity $g$ of an octree node is controlled by the minimal distance and the size of the node. Nodes close to the camera have higher the granularity. Smaller nodes have smaller granularity. Figure \ref{fig:targetpointDistance} shows the usage of different thresholds $t$ on a point cloud. 
+The user-controlled threshold $t$ is divided by the largest window dimension that allows the level-of-detail to adapt to the window size. $d_{min}$ is calculated by projecting all corners of the node's bounding box to view space and negating the $z$ value. The smallest value is then clamped to the view frustum, so the computation stays in visible view space. A smaller $t_{win}$ allows for higher level-of-detail to be displayed. The granularity $g$ of an octree node is controlled by the minimal distance and the size of the node. Nodes close to the camera have higher granularity. Smaller nodes have smaller granularity. Figure \ref{fig:targetpointDistance} shows the usage of different thresholds $t$ on a point cloud. 
 
 \begin{figure}
     \centering
@@ -283,11 +286,11 @@ The user-controlled threshold $t$ is divided by the largest window dimension to 
 
 \subsection{Diff}
 
-As discussed in Section \ref{sec:renderHorizon}, the render horizon is the set of nodes that are still rendered, and at least one of the children is not. The \textit{shape-assisted local level-of-detail increment} interaction, described in Section \ref{sec:lod_increment}, uses the render horizon to collect a set of nodes that are beyond the horizon to draw additional points onto the screen. This set of nodes is obtained by the octree's \verb|diff| function. 
+As discussed in Section \ref{sec:renderHorizon}, the render horizon is the set of nodes that are still rendered, and at least one of the children is not. The \textit{shape-assisted local level-of-detail increment} interaction, described in Section \ref{sec:lod_increment}, uses the render horizon to collect a set of nodes that are beyond the horizon to draw additional points on the screen. This set of nodes is obtained by the octree's \verb|diff| function. 
 \\
-Let $t1, t2$ be two octrees where $t2$ is a sub tree of $t1$. The function \verb|diff| $t1 t2$ returns all nodes from $t1$, whose parents exist in $t1$ and $t2$, but the node itself only exists in $t1$.
+Let $t1, t2$ be two octrees where $t2$ is a sub tree of $t1$. The function \verb|diff| $t1 t2$ returns all nodes from $t1$ whose parents exist in $t1$ and $t2$, but the node itself only exists in $t1$.
 \\
-The \verb|diff| function takes nodes that are in the first octree and not in the second octree. In the case of the \textit{shape-assisted local level-of-detail Increment}, interaction $t1$ is the complete octree, $t2$ is the culled octree that only contains nodes that are rendered. 
+The \verb|diff| function takes nodes that are in the first octree and not in the second octree. In the case of the \textit{shape-assisted local level-of-detail increment}, interaction $t1$ is the complete octree, $t2$ is the culled octree that only contains nodes that are rendered. 
 \\
 Additionally, not only the children are collected, but depending on a depth value, the children's successors are collected as well. 
 
@@ -296,12 +299,12 @@ Additionally, not only the children are collected, but depending on a depth valu
 
 The octree receives changes on a regular basis from multiple sources in this application. The shape detection coroutine continuously inserts detected primitive shapes into the octree, resulting in a new octree every time. User interactions change the point set by selecting regions of interest. To synchronize the octree access, locking mechanics can be used. However, such mechanics can get confusing easily, especially when the application grows. 
 \\
-All changes to the octree are dependent on the state of the octree that, in the meantime, may be altered by an operation from a different thread. Furthermore, since a new octree is created every time, the result of an operation may be overwritten by a second operation that starts while the first operation has not yet finished. All subsequent operations depend on the result of the previous operation. Thus a structure is needed that handles such dependent operations. 
+All changes to the octree depend on the state of the octree that, in the meantime, may be altered by an operation from a different thread. Furthermore, since a new octree is created every time, the result of an operation may be overwritten by a second operation that starts while the first operation has not yet finished. All subsequent operations depend on the result of the previous operation. Thus, a structure is needed that handles such dependent operations. 
 \\
 The \textit{sequential computation applicator} is a structure that provides a synchronized way of processing sequential operations. The applicator's functionality is synchronized such that multiple threads can dispatch operations on the octree. The \textit{sequential computation applicator} is a wrapper around a \verb|ModRef<'T>| that invokes changes on this value regularly. 
 In this case, the type of the applicator wraps around a \verb|ModRef<Octree>|. 
 
-All dispatched operations are processed sequentially, and the \verb|ModRef|'s value is changed after an operation is completed, thus notifying the Aardvark engine. Since Aardvark evaluates adaptives lazily, operations simply get aggregated as long as no results are requested (i.e. rendering is never stalled). 
+All dispatched operations are processed sequentially, and the \verb|ModRef|'s value is changed after an operation is completed, thus notifying the Aardvark engine. Since Aardvark evaluates adaptives lazily, operations simply get aggregated as long as no results are requested (i.e., rendering is never stalled). 
 The applicator provides the interfaces to dispatch an operation, as well as to dispatch an operation with high priority to enqueue an operation on the front. 
 
 \begin{lstlisting}[language = FSharp]
@@ -318,14 +321,14 @@ The type \verb|'T| is the generic type of the \textit{sequential computation app
 \section{Multi-Threaded Environment}
 \label {sec:multithreading}
 
-Multithreading can be achieved on multiple scales, depending on the tasks need. The application uses three primary threads that run in parallel. 
-\\
-The Aardvark rendering engine, combined with the \verb|IMod| evaluation system and user interactions build the main thread of the application. One pitfall of the \verb|IMod| system is that it only reacts to changes in the system, however, to invoke procedures after a particular time without direct changes is not possible since that would involve mutation.
-\\
+Multithreading can be achieved on multiple granularities, depending on the task's needs. The application uses three primary threads that run in parallel. The Aardvark rendering engine, combined with the \verb|IMod| evaluation system and user interactions build the main thread of the application. One pitfall of the \verb|IMod| system is that it only reacts to changes in the system, however, to invoke procedures after a particular time without direct changes is not possible since that would involve mutation.
 
+\par
 
 The \textit{user-guided shape detection} in Section \ref{sec:user_guided_sd} is triggered when the camera has not changed for a particular amount of time. As the Aardvark \verb|IMod| system only reacts to changes, such no-changes must be invoked by a separate thread that continuously checks for changes. If a shape detection should be performed, this thread dispatches the computation to the applicator thread.
-\\
+
+\par
+
 The \textit{sequential computation applicator} performs changes on the octree. All tasks that are dispatched from multiple threads are executed in a sequential order in the background. The thread transacts the changes to the main thread once a computation has finished. 
 
 \begin{figure}[b]
@@ -337,10 +340,11 @@ The \textit{sequential computation applicator} performs changes on the octree. A
 \end{figure}
 
 As Figure \ref{fig:multiThreading} shows, multiple threads are dispatching computations to the applicator thread. However, only this thread transacts changes to the main thread. The shape detection invoker thread works independently of the main thread. 
-\\
+
+\par
 
 The second parallelization technique used in this thesis is task-based multithreading. The goal is to identify tasks that are executable in parallel for multiple instances of the same type, such as per-point or per-node computations. As long as shared resources are accessed as read-only, tasks can be executed in parallel without race conditions and the need for locking. The input is an array of elements and a mapping function. The mapping function is executed for each element of the input array using the .Nets \verb|System.Threading.Tasks.Parallel.For| statement. The return type is a new array containing the results of the computation for each element at the original position. The function's signature looks as follows: 
-\\
+
 \begin{lstlisting}[language = FSharp]
 module Parallel = 
   let map (computation : 'T1->'T2)(array : 'T1[]) : 'T2[]= ...
@@ -353,14 +357,19 @@ The technique is realized as an parallel implementation of F\#s \verb|map| funct
 \section{Point-Cloud Rendering}
 \label{sec:rendering}
 
-Modern point clouds often contain several billion points. Current GPUs are not able to handle such amounts of points. The culling heuristic in Section \ref{sec:renderHorizon} already reduces the octree to set of nodes that can be processed by the GPU and can be drawn in real time. However, the point data may still be located on the hard drive and must be loaded into memory. 
-\\
-The Aardvark platform already contains a level-of-detail point cloud rendering system that can handle out-of-core datasets. The rendering system uses a cache to store nodes that were rendered previously. Once a frame is redrawn, all rendered nodes are collected, and for new nodes, the data is being loaded into the memory. New nodes are added to the cache, nodes that are not used for this frame, are kept in the cache until the memory consumption requires removal of unused data. For each node new to the cache, a queue entry is added for a worker thread to load the point data into memory. The frame is drawn even though not all nodes are loaded. The frame is redrawn once the outstanding data is loaded onto the GPU, thus popping effects occur when the view changes drastically. 
-\\
-\\
+The culling heuristic described in Section \ref{sec:renderHorizon} reduces the octree to set of nodes that can be processed by the GPU and can be drawn in real time. The point data may still be located on the hard drive and must be loaded into memory. 
+
+\par
+
+The Aardvark platform already provides a level-of-detail point cloud rendering system that can handle out-of-core datasets. The rendering system uses a cache to store nodes that were rendered previously. Once a frame is redrawn, all rendered nodes are collected, and for new nodes, the data is loaded into the memory. New nodes are added to the cache, nodes that are not used for this frame, are kept in the cache until the memory consumption requires removal of unused data. For each node new to the cache, a queue entry is added for a worker thread to load the point data into memory, stored in a working set. This working set reacts to changes like an \verb|IMod| so that every time a new entry is created, re-evaluation is triggered and a frame is drawn. Thus, the point-cloud data that is loaded into memory appears gradually on the screen. 
+
+\par
+
 Mathematically, a point has no extent. Therefore it cannot be depicted directly. A common way to draw points is to interpret them as splats of certain size and shape. In this thesis, the points are represented by a sphere imposter. For each point, a camera-aligned quad is created in a geometry shader, whose size is the diameter of the sphere, pixels that are outside the radius of the sphere are discarded. 
-\\
-Popping effects occur when the view changes and overlapping imposters change their order. Giving the splat a depth displacement that follows a sphere, counters such popping effects. The splat is extruded in world space, such that the depth value follows the curvature of the sphere, causing the imposters to intersect correctly. Figure \ref{fig:point_sprites} shows a direct comparison of using spheres and circular splats. 
+
+\par
+
+Popping effects occur when the view changes and overlapping impostors change their order. Similar tp the approach of Schütz and Wimmer \cite{SCHUETZ-2015-HQP} each splat is given a depth displacement that mimics a sphere's curvature. The splat is extruded towards the camera with a depth value dependent on the distance to the splat's center. This displacement causes the impostors to intersect naturally, thus reducing depth-related popping effects. Figure \ref{fig:point_sprites} shows a direct comparison of using spheres and circular splats. 
 
 
 \begin{figure}
@@ -372,7 +381,7 @@ Popping effects occur when the view changes and overlapping imposters change the
   \includegraphics[width=0.48\textwidth]{Implementation/pointSpheres.png}%
   }
   
-\caption[Comparison of (a) circular splats and (b) sphere imposters]
-{This figure shows a direct comparison of using (a) circular splats and (b) sphere imposters with depth displacement. In (b) the intersections between points are visible due to the spherical shape, whereas points that are little below other points are occluded almost entirely.}
+\caption[Comparison of (a) circular splats and (b) sphere impostors]
+{This figure shows a direct comparison of using (a) circular splats and (b) sphere impostors with depth displacement. In (b) the intersections between points are visible due to the spherical shape, whereas points that are a little below other points are occluded almost entirely.}
 \label{fig:point_sprites}
 \end{figure}
