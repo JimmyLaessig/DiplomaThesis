@@ -17,8 +17,8 @@ Class=LaTeXView
 Document=System_Design\System_Design.tex
 
 [Frame0_View0,0]
-TopLine=98
-Cursor=10439
+TopLine=375
+Cursor=31462
 
 [Frame1]
 Flags=0
@@ -35,7 +35,7 @@ Class=LaTeXView
 Document=Results\Results.tex
 
 [Frame1_View0,0]
-TopLine=262
+TopLine=273
 Cursor=16659
 
 [Frame2]
@@ -53,7 +53,7 @@ Class=LaTeXView
 Document=Introduction\Introduction.tex
 
 [Frame2_View0,0]
-TopLine=61
+TopLine=72
 Cursor=7781
 
 [Frame3]
@@ -71,7 +71,7 @@ Class=LaTeXView
 Document=_InteractiveShapeDetection.tex
 
 [Frame3_View0,0]
-TopLine=198
+TopLine=209
 Cursor=11948
 
 [SessionInfo]
