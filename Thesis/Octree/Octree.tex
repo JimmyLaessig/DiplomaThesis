@@ -4,7 +4,7 @@
 
 \section{Overview}
 
-The term \textit{out-of-core} is used to describe the management of datasets whose size exceed the available system memory. In this thesis, an out-of-core data structure is needed to handle large-scale point clouds efficiently. 
+The term \textit{out of core} is used to describe the management of datasets whose size exceed the available system memory. In this thesis, an out-of-core data structure is needed to handle large-scale point clouds efficiently. 
 
 An octree is a hierarchical data structure in which each node represents a spatial region defined by a three-dimensional bounding box. If the decision is made to split a node, eight children are created, each representing an octant of the parent's bounding box. Due to the spatial subdivision properties, an octree is a popular data structure for storing point clouds. The spatial subdivision is a characteristicthat is shared amongst almost all octree implementations. A characteristic that varies in each application is the composition of the content of octree's nodes. Various approaches exist that store point clouds in different ways. 
 
