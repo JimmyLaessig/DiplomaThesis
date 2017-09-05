@@ -17,8 +17,8 @@ Class=LaTeXView
 Document=Results\Results.tex
 
 [Frame0_View0,0]
-TopLine=273
-Cursor=16659
+TopLine=322
+Cursor=20115
 
 [Frame1]
 Flags=0
@@ -35,7 +35,7 @@ Class=LaTeXView
 Document=_InteractiveShapeDetection.tex
 
 [Frame1_View0,0]
-TopLine=200
+TopLine=207
 Cursor=11255
 
 [Frame2]
@@ -53,8 +53,8 @@ Class=LaTeXView
 Document=Conclusion\Conclusion.tex
 
 [Frame2_View0,0]
-TopLine=36
-Cursor=4613
+TopLine=0
+Cursor=231
 
 [SessionInfo]
 FrameCount=3

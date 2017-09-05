@@ -4,9 +4,9 @@
 
 This chapter completes this thesis by presenting a conclusion on the work and proposing future work.
 
-\subsection*{Out-of-core Representation of Point Clouds}
+\subsection*{Out-of-core Representation and Manipulation of Point Clouds}
 
-Modern point clouds often consist of several billion points and consume several gigabytes of memory. They are simply too large to fit into system memory as a whole. This thesis describes a functional octree structure that can handle the out-of-core functionality of the point cloud. Data is stored in chunks in a file and is loaded into system memory when needed. Additionally, the point cloud's octree nodes contain a subset of points from its children, thus creating a multi-scale representation of the point cloud that is used for rendering and interactions. 
+As the size of point clouds often exceeds the available system memory, a sophisticated out-of-core storage infrastructure is used to access chunks point-cloud data based on a level-of-detail decision. This out-of-core octree stores a multi-scale representation of the point cloud and is used for both rendering and interactions. The functional implementation of the octree paired with a computation pipeline allow for multi-threaded manipulation of the point-cloud data without stalling the rendering process or need of complex locking mechanisms. 
 
 
 \subsection*{User-Guided Shape Detection}
