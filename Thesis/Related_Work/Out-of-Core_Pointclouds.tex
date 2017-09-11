@@ -1,19 +1,31 @@
 \section {Out-of-core Point-Clouds}
 \label{sec:related_work_point_clouds}
-As the size of modern point clouds often exceeds the available memory, special data structures and rendering techniques are needed that can handle such amounts of data. 
 
-The QSplat System \cite{rusinkiewicz2000qsplat} was one of the earliest systems that was capable of handling datasets with well over hundred million points. It uses a hierarchy of bounding spheres that makes it easy to perform visibility culling and level-of-detail control. The hierarchy itself does not hold information of the containing points. Leaf nodes represent a single points sample from the original point cloud. A node is only rendered if it is a leaf or the decision is made that the benefit of recoursing to the children is too low, otherwise the children are traversed. If a node is rendered, a spherical splat is drawn with the size of the node. 
+As the size of modern point clouds often exceeds the available memory, special data structures, and rendering techniques are needed, that can handle such amounts of data. 
 
-\par
-
-Gobbetti and Marton \cite{gobbetti2004layered} propose a multi-resolution approach for rendering massive point clouds. The point cloud is stored in a binary tree. The root node of the level-of-detail tree contains a subset of uniformly distributed samples of the point cloud. The remaining points are distributed among the two subtree until the number of points deceeds a threshold value. Hence, no duplicate points are stored, making this technique very memory efficient. The structure handles view-frustum culling, occlusion culling, as well as view-dependent progressive transmission. This approach hides out-of-core latency by speculatively fetching data. 
+The QSplat system \cite{rusinkiewicz2000qsplat} was one of the earliest systems that were capable of handling datasets with well over hundred million points. It uses a hierarchy of bounding spheres that makes it easy to perform visibility culling and level-of-detail control. Each node only contains information on the bounding sphere, not the points itself. Leaf nodes represent a single point sample. Hence, the bounding sphere is the point itself. A node is only rendered if it is a leaf or the decision is made that the benefit of traversing to the children is too low; otherwise, the children are traversed. If a node is rendered, a spherical splat is drawn as the node's bounding sphere. 
 
 \par
 
-Wimmer and Scheiblauer \cite{wimmer2006instant} propose an algorithm to display enormous unprocessed point clouds at interactive rates without requiring costly postprocessing. The authors use a nested octree to handle out-of-core data and perform view-frustum culling, and view-dependent level-of-detail culling. Additionally, each node contains a memory optimized Sequential Point Tree (SPT). A SPT is a hierarchical point representation that allows rendering through a sequential processing on the GPU.  
-\\
-\\
-Wand et al. \cite{wand2007interactive} describe an out-of-core multi-resolution data structure for real-time visualization and interactive editing of large point clouds. An octree is used as a dynamic multi-resolution data structure that handles out-of-core functionalities. Inner nodes of the octree contain downsampled point clouds with a sample spacing that is a fixed fraction of the node's bounding cube side length. The grid quantization allows for efficient dynamic updates to the octree, such as insertion and removal of points. 
-\\
-\\
-Wenzel et al. \cite{wenzel2014out} propose an out-of-core octree that manages billions of points. It supports dynamic depth, defined by thresholds for the maximum data storage. The octree implements dynamic memory management, such that as much data is stored in memory, without exceeding the limits of the memory. It also supports tasks such as adding data, splitting and merging of nodes, and node history tracking. 
+Gobbetti and Marton \cite{gobbetti2004layered} propose a multi-resolution approach for rendering massive point clouds, called Layered Point Clouds (LPC). The point cloud is stored in a binary tree in chunks of approximately the same size. The multi-resolution model contains the same points as the point cloud, but grouped into chunks and organized in a level-of-detail representation. The root of the tree contains a subset of uniformly distributed samples of the point cloud. The remaining points are divided among the two subtrees that are further partitioned until the number of points is below a threshold value. Compared to the QSplat system, LPC reduces the cost of traversal on the CPU-side significantly and benefits from the parallel architecture of the GPU. This approach hides out-of-core latency by speculatively fetching data. 
+
+\par
+
+Dachsbauer et al. \cite{dachsbacher2003sequential} introduced Sequential Point Trees (SPT), a data structure that allows adaptive rendering of point clouds completely on the graphics card. A hierarchical point tree is not suited for fast vertex array-based sequential processing by the GPU. Therefore, the point tree's nodes are rearranged into a list, sorted by depth. Rendering then only needs to draw the first $p$ point, where $p$ is controlled by a level-of-detail decision. While their technique allows for adaptive rendering purely on the GPU, it only allows for a single level of detail at a time and can only contain a limited number of points. 
+
+\par
+
+Wimmer and Scheiblauer \cite{wimmer2006instant} introduces nested octrees to create a multi-resolution model similar to LPCs. A nested octree consists of an outer octree that is used for visibility culling and a memory-optimized SPT as inner octree for efficient point rendering. Each node contains a subsample of points from the point cloud. The union of the points from level 0 to a level $k$ creates the level-of-detail representation of the point cloud for level $k$. 
+
+\par
+
+Besides rendering and storing, modifications are a key task for out-of-core point cloud systems. Wand et al. \cite{wand2007interactive} describe an out-of-core octree that also stores a multi-resolution model of the point cloud. The basic idea is to store downsampled point clouds in the inner nodes where each inner node either contains randomly chosen or averaged points from its children. Hence, this octree stored additional points per level of detail. Points are inserted bottom-up, and the multi-resolution model is updated on the way up. Removing points works similarly. The point is deleted from the leaf first, and the ancestor nodes are updated afterward. 
+
+\par
+
+An improvement to nested octrees is the Modifiable Nested Octree (MNO) by Scheiblauer and Wimmer \cite{scheiblauer2011out}. The MNO enhances the nested octree by improving the performance of insertion and deletion operations. A grid replaces the SPTs from the inner nodes. When inserting a new point, an empty grid cell that contains the point is searched. When removing a point from the hierarchy, holes can occur. Therefore, points from a leaf node that intersects the grid cell of the removed point are pulled up. MNO is paired with an out-of-core point-cloud editing system. Since selecting points in an out-of-core setting is not trivial, the authors propose a structure, the so-called Selection Octree to stores the selected points separately. This system allows for interactive selection and modification of arbitrary parts of a point clouds using a so-called selection octree. This structure is a tool that allows to interactively change the visualization model without actually having to modify the original model permanently. 
+
+\par
+
+Until now, the discussed approaches focused on storage and rendering of point clouds. \cite{wenzel2014out} propose an out-of-core octree system that is tailored towards quick data updates and memory management. Parallel to the octree that contains the point cloud, a cycle stack is used as a node history of in-core data. This history allows to keep track of node and prevents premature de-allocation of shared nodes and manages the available memory. 
+
