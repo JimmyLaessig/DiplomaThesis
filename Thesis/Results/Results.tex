@@ -6,10 +6,10 @@ All results were obtained on a PC with an AMD FX-9590 CPU, 16 GB RAM, and an AMD
 \begin{table}
 \centering
 \begin{tabular}{ l | r | r | r }
-						& \textbf{\#Points} & \textbf{\#Nodes}	& \textbf{max. Depth} \\
+                        & \textbf{\#Points} & \textbf{\#Nodes}    & \textbf{max. Depth} \\
     \hline
   JB\_Haus.pts                  & 620.722           & 440   & 15 \\
-  Technologiezentrum\_Teil1.pts	& 11.762.924        & 8863  & 15 \\
+  Technologiezentrum\_Teil1.pts    & 11.762.924        & 8863  & 15 \\
   Synthetic\_Primitives.pts     & 472.000           & 315   & 5 \\
 \end{tabular}
 \caption[Table of point-cloud datasets]
@@ -26,10 +26,10 @@ Section \ref{sec:shape_detection_results} shows comparisons of the classic RANSA
 
 Section \ref{sec:interaction_performance} presents performance measures for picking and selection and compares the performances of the assisted version with the traditional techniques. 
 
-Section \ref{sec:interaction_results} provides a set of screenshots that show the workflow of the user-guided interactions on a different data set. 
+Section \ref{sec:interaction_results} concludes this chapter and provides a set of screenshots that show the workflow of the user-guided interactions on different data sets. 
 
 
-\section{Shape-Detection Performance}
+\section{Interactive Shape-Detection Performance}
 \label{sec:shape_detection_performance}
 
 The goal of \textit{user-guided shape detection} is to provide meaningful results within interactive time, such that detected shapes can be used to support interactions immediately. The capabilities of the implementation by Schnabel et al. \cite{schnabel-2007-software} are benchmarked on three different datasets in Table \ref{tab:datasets}. 
@@ -38,7 +38,13 @@ The goal of \textit{user-guided shape detection} is to provide meaningful result
 
 The tests are performed without user interaction. Instead, all octree nodes are collected and fed into the shape-detection pipeline sequentially to retrieve results for each node of the point cloud independently. Therefore, shape detection is performed on the complete point cloud for each level of detail. Each octree node contains at most 5000 points. The results are averaged over five runs. Table \ref{table:schnabel_benchmarks} shows the results averaged over all nodes. It can be seen that detecting only planes is significantly faster than detecting all types of primitive shapes. Detecting all types of primitive shapes still, produces results within the desired time period. 
 
-\begin{table}
+\par
+
+Figure \ref{fig:shapes_total_vs_lod} shows the total number of shapes per level of detail. All three datasets share an increase in the number of shapes in the third quarter before a rapid decline in the highest level of detail. 
+Figure \ref{fig:shapes_averaged_vs_lod} shows the number of shapes divided by the number of nodes per level of detail. Both figures emphasize that the majority of shapes is not found in the highest level of detail. The reason for this is that many leaf nodes only contain a handful of points or only contain a single structure. 
+Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of detail. Shape detection for smaller, denser nodes takes less time than for larger nodes with lower level of detail because in larger nodes, usually more shapes are found. 
+
+\begin{table}[h]
     \centering
     \begin{tabular}{ l || r | r | r || r | r | r}
             &\multicolumn{3}{c||}{\textbf{\#Shapes}} & \multicolumn{3}{c}{\textbf{Time (ms)}}\\
@@ -57,37 +63,21 @@ The tests are performed without user interaction. Instead, all octree nodes are 
 \end{table}
 
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{Results/shapes_total_vs_lod.png}
-    \caption[Plot of the total number of shapes vs. to the level of detail of the node]
-        {This figure shows a plot of the total number of shapes vs. the level of detail of the node. All values are averaged over all nodes that share the same level of detail.}
-    \label{fig:shapes_total_vs_lod}
+\begin{figure}[p]
+\centering
+\subcaptionbox{ \label{fig:shapes_total_vs_lod}}{%
+  \includegraphics[width=0.8\textwidth]{Results/shapes_total_vs_lod.png}%7
+  }\par\medskip
+\subcaptionbox{ \label{fig:shapes_averaged_vs_lod}}{%
+  \includegraphics[width=0.8\textwidth]{Results/shapes_averaged_vs_lod.png}%
+  }\par\medskip   
+\subcaptionbox{ \label{fig:time_vs_lod}}{%
+  \includegraphics[width=0.8\textwidth]{Results/time_vs_lod.png}%
+  } 
+\caption[Performance graphs of the interactive shape detection.]
+{This set of figures shows different performance measures for the interactive shape detection. All values are averaged over all nodes that share the same level of detail. (a) shows a plot of the total number of shapes vs. the level of detail of the node, (b) shows a plot of the average number of shapes per node vs. the level of detail of the node, and (c) shows a plot of the number of shapes vs. the computation time.}
+\label{fig:shape_detection_graphs}
 \end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{Results/shapes_averaged_vs_lod.png}
-    \caption[Plot of the average number of shapes per node vs. the level of detail of the node]
-        {Plot of the average number of shapes per node vs. the level of detail of the node. All values are averaged over all nodes that share the same level of detail.}
-    \label{fig:shapes_averaged_vs_lod}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=1\textwidth]{Results/time_vs_lod.png}
-    \caption[Plot of the number of shapes vs. the computation time]
-        {This figure shows a plot of the number of shapes vs. the computation time. All values are averaged over all nodes that share the same level of detail.}
-    \label{fig:time_vs_lod}
-\end{figure}
-
-
-Figure \ref{fig:shapes_total_vs_lod} shows the total number of shapes per level of detail. All three datasets share an increase in the number of shapes in the third quarter before a rapid decline in the highest level of detail. Figure \ref{fig:shapes_averaged_vs_lod} shows the number of shapes divided by the number of nodes per level of detail. Both figures emphasize that the majority of shapes is not found in the highest level of detail. The reason for this is that many leaf nodes only contain a handful of points or only contain a single structure. 
-
-\par
-
-Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of detail. Shape detection for smaller, denser nodes takes less time than for larger nodes with lower level of detail because in larger nodes, usually more shapes are found. 
-
 
 
 \section{Shape Detection Problems and Undesired Behavior}
@@ -95,47 +85,33 @@ Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of
 
 A problem with the shape-detection implementation by Schnabel et al. \cite{schnabel-2007-software} are reoccurring non-terminations for some octree nodes, causing the shape-detection coroutine to stall. To circumvent this problem, all shape detection tasks that are dispatched to the \verb|sequential computation applicator| are assigned a timeout value of one second, after which the computation is interrupted. 
 
-\par
-
-Another recurring problem with the shape-detection algorithm is the plausibility of detected shapes. The RANSAC options guarantee that shapes are found that fit the local geometry within a certain margin, $\alpha$ for the normal angle and $\epsilon$ for the distance to the shape. So within theses two parameters, the shape is considered to be valid. However, certain constellations of points allow the shape detection to produce results that are accurate in regards to the RANSAC parameters but are implausible to the eye. A prominent example is a torus that is fitted onto a section that describes a cylinder. The major radius of the torus is of such dimensions that the local cylinder fits within the curvature of the torus. Thus, a torus is detected, rather than the simpler cylinder. Figure \ref{fig:missfittedTorus} shows this behavior within an example scene that consists of multiple primitives. Figure \ref{fig:missfittedTorus2} shows the size of the detected torus. 
-
-\par
-
-Such non-plausible shapes can exist due to the density-controlled $\epsilon$ parameter that weakens the margin for octree nodes of larger volume. Even within a node, the density can vary strongly for different regions. A way to counter this behavior is to create a ranking of the different types of shapes, such that certain types of shapes are detected preferably before other types. A second approach is to check the validity of a detected shape afterward by comparing the dimensions of the detected shape to the extents of the region it was detected in. 
-
-\begin{figure}[h]
+\begin{figure}
 \centering
 \subcaptionbox{ \label{fig:missfittedTorus1}}{%
-  \includegraphics[width=0.49\textwidth]{Results/missfittedTorus1.png}%7
+  \includegraphics[width=0.425\textwidth]{Results/missfittedTorus1.png}%7
   }%\par\medskip
 \subcaptionbox{ \label{fig:missfittedTorus2}}{%
-  \includegraphics[width=0.49\textwidth]{Results/missfittedTorus2.png}%
+  \includegraphics[width=0.425\textwidth]{Results/missfittedTorus2.png}%
   }      
 \caption[Implausible torus is detected instead of a more plausible cylinder. ]
 {This figure shows a cylinder from the synthetic point cloud whose points are classified as a torus instead of a cylinder. Even though the points fit the torus, determined by the RANSAC options, the result is not plausible, since the user would expect a cylinder for this constellation of points. }
 \label{fig:missfittedTorus}
 \end{figure}
 
+Another recurring problem with the shape-detection algorithm is the plausibility of detected shapes. The RANSAC options guarantee that shapes are found that fit the local geometry within a certain margin, $\alpha$ for the normal angle and $\epsilon$ for the distance to the shape. So within theses two parameters, the shape is considered to be valid. However, certain constellations of points allow the shape detection to produce results that are accurate in regards to the RANSAC parameters but are implausible to the eye. A prominent example is a torus that is fitted onto a section that describes a cylinder. The major radius of the torus is of such dimensions that the local cylinder fits within the curvature of the torus. Thus, a torus is detected, rather than the simpler cylinder. Figure \ref{fig:missfittedTorus} shows this behavior within an example scene that consists of multiple primitives. Figure \ref{fig:missfittedTorus2} shows the size of the detected torus. 
+
+\par
+
+Such implausible shapes can exist due to the density-controlled $\epsilon$ parameter that weakens the margin for octree nodes of larger volume. Even within a node, the density can vary strongly for different regions. A way to counter this behavior is to create a ranking of the different types of shapes, such that certain types of shapes are detected preferably before other types. A second approach is to check the validity of a detected shape afterward by comparing the dimensions of the detected shape to the extents of the region it was detected in. 
+
 
 \section{Shape Detection Results}
-\label{ref:shape_detection_results}
+\label{sec:shape_detection_results}
 
-This section presents results for the RANSAC shape detection performed on three data sets. The results in Figure \ref{fig:synthetic_point_cloud_results}, \ref{fig:JB_haus_results}, and \ref{fig:technologiezentrum_results} are obtained by segmenting the point clouds as a whole. Results for the interactive shape detection can be seen in Figure \ref{fig:technologiezentrum_interactive_shape_detection}. 
+Figure \ref{fig:JB_haus_results} and \ref{fig:technologiezentrum_results} compares the results of the RANSAC shape detection on the entire dataset with our interactive approach. Our interactive method finds more shapes that can be grouped into one larger consecutive shape. However, the overall structure of the building is approximated similarly in both techniques as can be seen in (b) and (c) respectively. 
 
-The synthetic test scene consists of two planes, three cylinders, three tori, and three cones.  Figure \ref{fig:synthetic_point_cloud_results} shows the synthetic point cloud, as well as the shapes that are detected within the point cloud. As the RANSAC approach randomly selects a subset of points, the results can be different for different runs. 
+The interactive shape detection on the synthetic point cloud produced undesired results. On coarse levels of detail, implausible shapes are detected that occluded the entire scene. Hence, a visual comparison of the classic shape detection with our approach did not yield any satisfying results. The results of the classic shape detection for the synthetic scene can be seen in Figure \ref{fig:synthetic_point_cloud_results}
 
-\begin{figure}[h]
-\centering
-\subcaptionbox{ \label{fig:synthetic_point_cloud}}{%
-  \includegraphics[width=0.7\textwidth]{Results/synthetic_point_cloud.png}%7
-  }
-\subcaptionbox{ \label{fig:synthetic_point_cloud_shapes}}{%
-  \includegraphics[width=0.7\textwidth]{Results/synthetic_point_cloud_shapes.png}%
-  }
-\caption[Rendering of the synthetic point cloud in (a), rendering of the detected shapes in (b)]
-{(a) shows the synthetic point cloud, consisting of two planes, three cylinders, three tori, and three cones. (b) shows the detected shapes rendered as triangle meshes. For each shape in the point cloud, the RANSAC shape detection has found a suitable primitive shape. }
-\label{fig:synthetic_point_cloud_results}
-\end{figure}
 
 \begin{figure}
 \centering
@@ -148,10 +124,11 @@ The synthetic test scene consists of two planes, three cylinders, three tori, an
 \subcaptionbox{ \label{fig:jb_haus_shapes_interactive}}{%
   \includegraphics[width=0.7\textwidth]{Results/jb_haus_shapes_interactive.png}%
   }
-\caption[Figure (a) shows a rendering og the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection. ]
+\caption[Figure (a) shows a rendering of the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection.]
 {Figure (a) shows a rendering of the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape detection method.  }
 \label{fig:JB_haus_results}
 \end{figure}
+
 
 \begin{figure}
 \centering
@@ -166,22 +143,21 @@ The synthetic test scene consists of two planes, three cylinders, three tori, an
   }
 \caption[Figure (a) shows a rendering of the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection.]
 {Figure (a) shows a rendering of the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape detection method.}
-
 \label{fig:technologiezentrum_results}
 \end{figure}
 
 
-\begin{figure}
+\begin{figure}[p]
 \centering
-\subcaptionbox{ \label{fig:technologiezentrum_interactive_shape_detection1}}{%
-  \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection1.png}%7
+\subcaptionbox{ \label{fig:synthetic_point_cloud}}{%
+  \includegraphics[width=0.7\textwidth]{Results/synthetic_point_cloud.png}%7
   }
-\subcaptionbox{ \label{fig:technologiezentrum_interactive_shape_detection2}}{%
-  \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection2.png}%
+\subcaptionbox{ \label{fig:synthetic_point_cloud_shapes}}{%
+  \includegraphics[width=0.7\textwidth]{Results/synthetic_point_cloud_shapes.png}%
   }
-\caption[Two examples of user-guided shape detection]
-{This figure shows a rendering of the Technologiezentrum dataset. Based on the cursor position (indicated as the red cross hair) a different shape is selected. The shape is rendered in red. (a) and (b) show different shapes for different parts of the point cloud. Both shapes are a part of a wall.}
-\label{fig:technologiezentrum_interactive_shape_detection}
+\caption[Rendering of the synthetic point cloud in (a), rendering of the detected shapes in (b)]
+{(a) shows the synthetic point cloud, consisting of two planes, three cylinders, three tori, and three cones. (b) shows the detected shapes rendered as triangle meshes. For each shape in the point cloud, the RANSAC shape detection has found a suitable primitive shape. }
+\label{fig:synthetic_point_cloud_results}
 \end{figure}
 
 
@@ -190,7 +166,7 @@ The synthetic test scene consists of two planes, three cylinders, three tori, an
 
 The use of support shapes for assisted interaction improves the computation time. \textit{Shape-assisted point picking} is tested against traditional point picking. Point picking is performed only on points that are visible to the user. Hence, the size of the point cloud does not affect the picking performance. However, the level-of-detail culling does. The results in Table \ref{tab:picking_performance} are obtained by randomly picking points with and without support shape on all three datasets. Over all datasets, shape-assisted point picking performs better than traditional point picking. For shape-assisted point picking, the actual per-point processing time is higher due to the additional point-shape relation check. However, the assisted interaction performs significantly better due to the reason that traditional point picking must process a larger set of octree nodes (i.e., all nodes that intersect the pick ray), whereas shape-assisted point picking must only check nodes that intersect with the support shape. 
 
-\begin{table}
+\begin{table}[b]
 \centering
 \begin{tabular}{ l|r| r | r }
                        &\multicolumn{3}{c}{\textbf{Time (ms)}}\\
@@ -220,13 +196,30 @@ With support       & 191.082600 & 923.332500 & 437.933686 \\
 \label{tab:lasso_performance}
 \end{table}
 
-The testing methodology for the lasso selection was to perform the shape-assisted and the traditional lasso selection for the same lasso polygon. Hence, the testing provided direct a comparison of the interactions for the same lasso and the same point cloud. We calculated the ratio between the processing times of both techniques. We obtained an averaged ratio between the shape-assisted and traditional lasso selection of $\sim$1.81, meaning that the traditional lasso selection takes on average about $1.8$ times as long to compute as the shape-assisted lasso selection. 
+The testing methodology for the lasso selection was to perform the shape-assisted and the traditional lasso selection for the same lasso polygon. Hence, the testing provided a direct comparison of the interactions for the same lasso and the same point cloud. We calculated the ratio between the processing times of both techniques. We obtained an averaged ratio between the shape-assisted and traditional lasso selection of $\sim$1.81, meaning that the traditional lasso selection takes on average approximately $1.8$ times as long to compute as the shape-assisted lasso selection. 
 
 
 \section{Interaction Results}
 \label{sec:interaction_results}
 
-This section presents a set of figures that showcase the different interactions from Section \ref{sec:interactions}. The interactions are performed on the Technologiezentrum dataset since the JB\_Haus point cloud is used as an example throughout this thesis already. 
+This section presents a set of figures that showcase the different interactions from Section \ref{sec:interactions}. Examples of all interactions using the JB\_Haus dataset are presented already throughout this thesis. This section shows the results for the interactions on both the Technologiezentrum and the synthetic dataset. The synthetic dataset showcases the use of non-planar support shapes for the assisted interactions. 
+
+Figures \ref{fig:technologiezentrum_lasso}, \ref{fig:technologiezentrum_brush}, and \ref{fig:technologiezentrum_lod_increment} show examples of a shape-assisted lasso selection, volumetric-brush selection and level-of-detail increment using a support shape on the Technologiezentrum dataset. 
+
+Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} shows a shape-assisted lasso selection and volumetric-brush selection. The support shape is a cylinder. While the volumetric brush still only follows the surface of the cylinder, the lasso selects partly `through` the point set, more precisely, the lasso selection is performed on points on the back side of the cylinder as well. 
+
+%\begin{figure}
+%\centering
+%\subcaptionbox{ \label{fig:technologiezentrum_interactive_shape_detection1}}{%
+%  \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection1.png}%7
+%  }
+%\subcaptionbox{ \label{fig:technologiezentrum_interactive_shape_detection2}}{%
+%  \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection2.png}%
+%  }
+%\caption[Two examples of user-guided shape detection]
+%{This figure shows a rendering of the Technologiezentrum dataset. Based on the cursor position (indicated as the red cross hair) a different shape is selected. The %shape is rendered in red. (a) and (b) show different shapes for different parts of the point cloud. Both shapes are a part of a wall.}
+%\label{fig:technologiezentrum_interactive_shape_detection}
+%\end{figure}
 
 \begin{figure}[h]
 \centering
@@ -265,7 +258,7 @@ This section presents a set of figures that showcase the different interactions 
   \includegraphics[width=\textwidth]{Results/technologiezentrum_lod_increment2.png}%
   }
 \caption[Example of the local increment of level of detail]
-{This figure shows the lcaol increment of the level of detail. The level of detail is incremented along the support shape. (a) shows the original rendering model of the point cloud, (b) shows the point cloud with additional points. }
+{This figure shows a local the level-of-detail increment. The level of detail is incremented along the selected support shape (drawn in red). (a) shows the original rendering model of the point cloud, (b) shows the point cloud with additional points. }
 \label{fig:technologiezentrum_lod_increment}
 \end{figure}
 
@@ -279,8 +272,8 @@ This section presents a set of figures that showcase the different interactions 
   \includegraphics[width=\textwidth]{Results/synthetic_point_cloud_lasso2.png}%
   }
 \caption[Example of an improved lasso selection on a cylinder]
-{This figure shows an improved lasso selection performed using a cylinder shape as support. (a) shows the lasso that is drawn on screen, (b) shows the selection result from a different angle. Points in the back of the cylinder are selected, as they are approximated by the cylinder as well. }
-\label{fig:syntheticScene_lasso}
+{This figure shows an improved lasso selection performed using a cylinder shape as support. (a) shows the lasso that is drawn on the screen, (b) shows the selection result from a different angle. Points in the back of the cylinder are selected, as they are approximated by the cylinder as well. }
+\label{fig:synthetic_scene_lasso}
 \end{figure}
 
 
@@ -294,5 +287,5 @@ This section presents a set of figures that showcase the different interactions 
   }
 \caption[Example of an improved volumetric brush selection on a cylinder]
 {This figure shows the volumetric brush selection on a selected cylinder shape. The brush sticks to the side of the cylinder that is facing the camera.}
-\label{fig:syntheticScene_brush}
+\label{fig:synthetic_scene_brush}
 \end{figure}
