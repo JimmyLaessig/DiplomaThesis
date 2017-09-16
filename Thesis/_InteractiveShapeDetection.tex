@@ -64,7 +64,7 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 
 
 \newcommand{\authorname}{Bernhard Rainer} % The author name without titles.
-\newcommand{\thesistitle}{Interactive Shape Detection in Out-of-Core Point-Clouds for Assisted User Interactions} % The title of the thesis. The English version should be used, if it exists.
+\newcommand{\thesistitle}{Interactive Shape Detection in Out-of-Core Point Clouds for Assisted User Interactions} % The title of the thesis. The English version should be used, if it exists.
 
 % Set PDF document properties
 \hypersetup{
@@ -105,9 +105,9 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 \setsecondadvisor{Pretitle}{Forename Surname}{Posttitle}{male} % Comment to remove.
 
 % Required data.
-\setaddress{Heigerleinstraße 53 8, 1170 Wien}
+\setaddress{Heigerleinstraße 53/8, 1170 Wien}
 \setregnumber{0828592}
-\setdate{23}{08}{2017} % Set date with 3 arguments: {day}{month}{year}.
+\setdate{14}{09}{2017} % Set date with 3 arguments: {day}{month}{year}.
 \settitle{\thesistitle}{\thesistitle} % Sets English and German version of the title (both can be English or German).
 %\setsubtitle{Optional Subtitle of the Thesis}{Optionaler Untertitel der Arbeit} % Sets English and German version of the subtitle (both can be English or German).
 
@@ -153,7 +153,6 @@ mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit
 This thesis would not have been possible without the help of a handful of engaged people. 
 My first and foremost gratitude goes to the VRVis Zentrum für Virtual Reality und Visualisierung for providing me with the opportunity to do an internship and in consequence conduct this thesis. Within the VRVis, I would like to thank the Semantic Modeling and Acquisition (SMAQ) group for integrating me into their team, both on a professional level and amicably. A special thank you goes out to my Aardvark and F\# Gurus Harald Steinlechner, Georg Haaser, and Attila Szabo, whose help and expertise eased the execution of this thesis enormously. 
 I would also like to thank Stefan Maierhofer, leader of the SMAQ group, and my project manager Michael Schwärzler for their ideas, continuous support, and proof-reading this thesis. 
-\\
 A big thank you goes out to Michael Wimmer from the Technische Universität Wien for his supervision on not only this thesis but all preceding courses and practica. 
 
 Thanks to Lisa Kellner, who accompanied me through this thesis on a daily basis as she sat next to me and continuously provided me with feedback on my work. 
@@ -172,13 +171,13 @@ This work was enabled by the Competence Centre VRVis. VRVis is funded by BMVIT, 
 
 \begin{abstract}
 
-This thesis presents a semi-automated method of shape detection for out-of-core point clouds. Rather than performing shape detection on the entire point cloud at once, a user-controlled interaction determines the region that is to be segmented next. By keeping the size of the region and the number of points small, the algorithm produces meaningful results within a fraction of a second. Thus, the user is presented immediately with feedback on the local geometry. 
-\\
+This thesis presents a semi-automated method for shape detection in out-of-core point clouds. Rather than performing shape detection on the entire point cloud at once, a user-controlled interaction determines the region that is to be segmented next. By keeping the size of the region and the number of points small, the algorithm produces meaningful results within a fraction of a second. Thus, the user is presented immediately with feedback on the local geometry. 
+
 As modern point clouds can contain billions of points and the memory capacity of consumer PCs is usually insufficient to hold all points in memory at the same time, a level-of-detail data structure is used to store the point cloud on the hard disc, and data is loaded into memory only on use. This data structure partitions the point cloud into small regions, each containing around 5000 points, that are used for rendering and shape detection.
-\\
+
 Interacting with point clouds is a particularly demanding task. A precise selection of a region of interest, using the two-dimensional lasso interaction, often needs multiple view changes and subsequent improvements. This thesis proposes improvements to the lasso interaction, by performing selection only on the set of points that follow the curvature of a detected shape. Thus, the selection of undesired points in the fore- and background is reduced.
 Point picking is improved as well by the use of a detected shape, such that only points that follow the curvature are pick-able. 
-\\
+
 The result of this thesis is an application that allows the user to view point clouds with millions of points. It also provides a novel interaction technique for quick local shape detection as well as shape-assisted interactions that utilize this local semantic information to improve the user's workflow. 
 
 \end{abstract}

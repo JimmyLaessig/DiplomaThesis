@@ -1,9 +1,9 @@
 \section {Out-of-core Point-Clouds}
 \label{sec:related_work_point_clouds}
 
-As the size of modern point clouds often exceeds the available memory, special data structures, and rendering techniques are needed, that can handle such amounts of data. 
+As the size of modern point clouds often exceeds the available memory, specialized data structures, and rendering techniques are needed, that can handle such amounts of data. 
 
-The QSplat system \cite{rusinkiewicz2000qsplat} was one of the earliest systems that were capable of handling datasets with well over hundred million points. It uses a hierarchy of bounding spheres that makes it easy to perform visibility culling and level-of-detail control. Each node only contains information on the bounding sphere, not the points itself. Leaf nodes represent a single point sample. Hence, the bounding sphere is the point itself. A node is only rendered if it is a leaf or the decision is made that the benefit of traversing to the children is too low; otherwise, the children are traversed. If a node is rendered, a spherical splat is drawn as the node's bounding sphere. 
+The QSplat system \cite{rusinkiewicz2000qsplat} was one of the earliest systems that were capable of handling datasets with well over hundred million points. It uses a hierarchy of bounding spheres that makes it easy to perform visibility culling and level-of-detail control. Each node only contains information on the bounding sphere, not the points itself. Leaf nodes represent a single point sample. Hence, the bounding sphere is the point itself. A node is rendered if it is a leaf or the benefit of traversing to the children is too low; otherwise, the children are traversed. If a node is rendered, a spherical splat is drawn as the node's bounding sphere. 
 
 \par
 
@@ -19,7 +19,7 @@ Wimmer and Scheiblauer \cite{wimmer2006instant} introduces nested octrees to cre
 
 \par
 
-Besides rendering and storing, modifications are a key task for out-of-core point cloud systems. Wand et al. \cite{wand2007interactive} describe an out-of-core octree that also stores a multi-resolution model of the point cloud. The basic idea is to store downsampled point clouds in the inner nodes where each inner node either contains randomly chosen or averaged points from its children. Hence, this octree stored additional points per level of detail. Points are inserted bottom-up, and the multi-resolution model is updated on the way up. Removing points works similarly. The point is deleted from the leaf first, and the ancestor nodes are updated afterward. 
+Besides rendering and storing, modifications are a key task for out-of-core point cloud systems. Wand et al. \cite{wand2007interactive} describe an out-of-core octree that also stores a multi-resolution model of the point cloud. The basic idea is to store downsampled point clouds in the inner nodes where each inner node either contains randomly chosen or averaged points from its children. Hence, this octree stores additional points per level of detail. Points are inserted bottom-up, and the multi-resolution model is updated on the way up. Removing points works similarly. The point is deleted from the leaf first, and the ancestor nodes are updated afterward. 
 
 \par
 
@@ -27,5 +27,5 @@ An improvement to nested octrees is the Modifiable Nested Octree (MNO) by Scheib
 
 \par
 
-Until now, the discussed approaches focused on storage and rendering of point clouds. \cite{wenzel2014out} propose an out-of-core octree system that is tailored towards quick data updates and memory management. Parallel to the octree that contains the point cloud, a cycle stack is used as a node history of in-core data. This history allows to keep track of node and prevents premature de-allocation of shared nodes and manages the available memory. 
+Until now, the discussed approaches focused on storage and rendering of point clouds. Wenzel et al. \cite{wenzel2014out} propose an out-of-core octree system that is tailored towards quick data updates and memory management. Parallel to the octree containing the point cloud, a cycle stack is used as a node history of in-memory data. This history allows to keep track of node, prevents premature de-allocation of shared nodes, and manages the available memory. 
 

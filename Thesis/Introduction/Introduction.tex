@@ -43,21 +43,14 @@ The main contribution of this diploma thesis is the implementation of a semi-aut
 
 \par
 
-Contribution dynamic epsilon for shape detection based on the regions density. 
-
-\par
-
-Shapes are detected in multiple levels of detail in the point cloud. A clustering algorithm finds shapes in different different regions and levels of detail, based on a similarity heuristic, and creates a larger connected cluster of shapes. This cluster is used to present geometric information on a larger scale to the user, rather than each shape separately. 
+The size of detected shapes is limited to the region in which it was detected. A clustering algorithm finds shapes from different different regions and levels of detail, based on a similarity heuristic, and creates a larger connected cluster of shapes. This cluster is used to present geometric information on a larger scale to the user, rather than each shape separately. 
 
 \par
 
 This thesis proposes several improvements to commonly known user interactions. \textit{Point picking} and \textit{region selection} are improved by consulting the local geometry of the point cloud to assist the user. By using a shape as support, the interaction dimensions are reduced to the parameter space of the shapes, allowing the user to exclude unwanted points from interactions easily. 
-
-\par
-
 Additionally, a novel interaction technique is introduced that allows the user to increment the level of detail locally along a shape. This helps the user to explore the structure of the point cloud in more detail. 
 
 
 \section{Structure of the Work}
 
-Chapter \ref{chap:related_work} covers the related work for this thesis, including point-cloud rendering and out-of-core representations, shape detection, and segmentation and advanced user interactions on point clouds. Chapter \ref{chap:octree} describes the octree used for the out-of-core representation of the point cloud, as well as some metrics that further describe the content of an octree node. Chapter \ref{chap:shapeDetection} describes the algorithms used to detect primitive shapes in a point cloud and proposes a technique to cluster similar shapes into one coherent shape cluster for user interactions. Chapter \ref{chap:systemDesign} discusses the application's features, including the user-controlled shape detection and assisted interactions that utilize the detected shapes as support shape. Chapter \ref{chap:implementation} focuses on implementation details in a functional context. Results of the application are presented in Chapter \ref{chap:results}. Chapter \ref{chap:conclusion} concludes this thesis with a reflection on the application and an outlook on future work. 
+Chapter \ref{chap:related_work} covers the related work for this thesis, including point-cloud rendering and out-of-core representations, shape detection, and segmentation and advanced user interactions on point clouds. Chapter \ref{chap:octree} describes the octree used for the out-of-core representation of the point cloud, as well as some metrics that further describe the content of an octree node. Chapter \ref{chap:shapeDetection} describes the algorithms used to detect primitive shapes in a point cloud and proposes a technique to cluster similar shapes into one coherent shape cluster for user interactions. Chapter \ref{chap:systemDesign} discusses the application's features, including the user-controlled shape detection and assisted interactions that utilize the detected shapes as support shape. Chapter \ref{chap:implementation} focuses on implementation details in a functional context. Results of the application are presented in Chapter \ref{chap:results} along with performance benchmarks of the presented interactions. Chapter \ref{chap:conclusion} concludes this thesis with a reflection on the application and an outlook on future work. 

@@ -19,13 +19,9 @@ All results were obtained on a PC with an AMD FX-9590 CPU, 16 GB RAM, and an AMD
 
 
 Section \ref{sec:shape_detection_performance} presents results for shape detection and shows benchmarks that verify the capability of the user-guided shape detection to be performed in interactive time on the test computer.
-
 Section \ref{sec:shape_detection_problems} discusses flaws of the shape-detection algorithm that occurred while implementing this thesis.
-
 Section \ref{sec:shape_detection_results} shows comparisons of the classic RANSAC shape detection and our user-guided implementation. 
-
 Section \ref{sec:interaction_performance} presents performance measures for picking and selection and compares the performances of the assisted version with the traditional techniques. 
-
 Section \ref{sec:interaction_results} concludes this chapter and provides a set of screenshots that show the workflow of the user-guided interactions on different data sets. 
 
 
@@ -58,7 +54,7 @@ Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of
             Synthetic           & 0 & 7  & 1.24 & 0.024 & 753.345 & 136.474 \\
         \end{tabular}
     \caption[Shape-detection performance measure for different datasets]
-        {Performance measures for the different datasets averaged over all nodes. The number of shapes and durations listed are minimum, maximum and average. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. }
+        {Performance measures for the different datasets averaged over all nodes. The number of shapes and durations listed are minimum, maximum, and average. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. }
     \label{table:schnabel_benchmarks}
 \end{table}
 
@@ -258,7 +254,7 @@ Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} show
   \includegraphics[width=\textwidth]{Results/technologiezentrum_lod_increment2.png}%
   }
 \caption[Example of the local increment of level of detail]
-{This figure shows a local the level-of-detail increment. The level of detail is incremented along the selected support shape (drawn in red). (a) shows the original rendering model of the point cloud, (b) shows the point cloud with additional points. }
+{This figure shows the use of the level-of-detail increment interaction. The level of detail is incremented along the selected support shape (drawn in red). (a) shows the original rendering model of the point cloud, (b) shows the point cloud with additional points. }
 \label{fig:technologiezentrum_lod_increment}
 \end{figure}
 

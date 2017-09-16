@@ -68,7 +68,7 @@ Shape detection is performed on single octree nodes from different levels of det
 
 \par
 
-Given a base shape selected by the user, the clustering algorithm aims to find matching primitive shapes and build a larger coherent cluster of primitive shapes over multiple levels of detail. The shape clustering algorithm works as follow. The octree is searched for primitive shapes that match the base shape. From this set of shapes, a complete graph is created, and a region growing algorithm reduces the number of shapes to those that create a coherent shape cluster. 
+Given a base shape selected by the user, the clustering algorithm aims to find matching primitive shapes and build a larger coherent cluster of primitive shapes over multiple levels of detail. Oesau et al. \cite{oesau2016planar} propose a graph-based clustering for shapes to detect coplanar shape. Our shape clustering algorithm works similar, but is not limited to planes. The octree is searched for primitive shapes that match the base shape. From this set of shapes, a complete graph is created, and a region growing algorithm reduces the number of shapes to those that create a coherent shape cluster. 
 
 
 \subsection{Building a set of matching primitive shapes}

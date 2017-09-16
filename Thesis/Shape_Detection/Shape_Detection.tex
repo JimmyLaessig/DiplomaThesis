@@ -83,9 +83,7 @@ From all points that fulfill the previous two conditions, only the subset of poi
     \label{table:schnabel_performance}
 \end{table}
 
-Table \ref{table:schnabel_performance} describes the statistical results for different models. $|P|$ is the number of points, $\epsilon$ the distance threshold, $\alpha$ the maximum normals deviation, $\tau$ is the minimum number of support points, $|\Psi|$ the number of shapes found, $|R|$ the number of RANSAC iterations. It can be seen that for small a small number of points and weaker constraints the algorithm returns plausible results within a fraction of a second. We utilize this feature the detect shapes in our application for small regions at a time to give immediate feedback to the user. 
-
-\todo{Benchmark on real datasets}
+Table \ref{table:schnabel_performance} describes the statistical results for different models. $|P|$ is the number of points, $\epsilon$ the distance threshold, $\alpha$ the maximum normals deviation, $\tau$ is the minimum number of support points, $|\Psi|$ the number of shapes found, $|R|$ the number of RANSAC iterations. It can be seen that for small a small number of points and weaker constraints the algorithm returns plausible results within a fraction of a second. We utilize this feature the detect shapes in our application for small regions at a time to give immediate feedback to the user. Section \ref{sec:shape_detection_performance} presents benchmarks of the shape detection algorithm and verifies the capability to be executed within the desired time. 
 
 
 \section{Refitting}

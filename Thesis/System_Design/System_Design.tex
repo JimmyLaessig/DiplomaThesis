@@ -17,7 +17,7 @@ Section \ref{sec:shapePicking} describes a picking algorithm to select a primiti
 
 \par
 
-Section \ref{sec:interactions} provides detailed information on the additional user interactions that use a support shape as assistance. \textit{point picking, region selection}, and textit{local level-of-detail increment} are all interactions that benefit from the use of a support shape. 
+Section \ref{sec:interactions} provides detailed information on the additional user interactions that use a support shape as assistance. \textit{point picking, region selection}, and \textit{local level-of-detail increment} are interactions that benefit from the use of a support shape. 
 
 
 \section{Term Definitions}
@@ -60,7 +60,7 @@ The selection of a suitable candidate node depends heavily on the camera positio
 
 This thesis presents several interactions that are supported by using detected shapes to ease interactions with point clouds. The use of a support shape raises the need for an initial interaction to pick a primitive shape. A raycast is performed on the culled octree using the pick ray to create an initial filtering of octree nodes. From this set of nodes, only those shapes are collected that intersect the pick ray. The picking heuristic prefers primitive shapes of higher level of detail that are closer to the camera. All primitive shapes are collected from the candidate nodes and sorted using a custom key. Primitive shapes that intersect the pick ray come with information on the nearest intersection point and the level of detail. For each intersection point, the $depth$ in range of $[0,1]$, where $0$ is at the near plane, and $1$ is at the far plane, is calculated. For shapes that have more than one intersection points, the intersection point closest to the camera is chosen. The sort key is composed as follows: 
 
-$$key = level + 1 - depth$$.
+$$key = level + 1 - depth.$$
 
 The primitive shape with the highest key is chosen as support shape. The composition of the key ensures that a shape with the highest level of detail that is closest to the camera is picked. 
 
@@ -272,7 +272,7 @@ By adding smaller nodes of higher level-of-detail, the overall detail in the sce
 
 \par
     
-\textit{Shape-assisted local level-of-detail increment} utilizes a selected shape cluster to amplify detail only on structures of interest. The user selects a primitive shape as support shape. Instead of performing a raycast, the nodes on the render horizon that intersect the support shape are collected. From these nodes, only those points that are approximated by the support shape are added to the scene. 
+\textit{Shape-assisted local level-of-detail increment} utilizes a selected shape cluster to amplify detail only on structures of interest. The user selects a primitive shape as support shape. Instead of performing a raycast, the nodes of the border set that intersect the support shape are collected. From these nodes, only those points that are approximated by the support shape are added to the scene. 
     
     \begin{figure}
         \centering
