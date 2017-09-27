@@ -1,10 +1,11 @@
 \chapter{Out-of-core Octree}
 \label{chap:octree}
 
+The term \textit{out of core} is used to describe the management of datasets whose size exceeds the available system memory. In this thesis, an out-of-core data structure is needed to handle large-scale point clouds efficiently. Section \ref{sec:octree_overview} gives an overview in the data structure that is used in this thesis, Section \ref{sec:octree_ooc} discusses the out-of-core organization of the octree. Section \ref{sec:octree_post} gives insight on the post-processing of the point cloud once the octree is created. Section \ref{sec:octree_culling} describes the task of creating a smaller representation of the octree that can be rendered efficiently. Section \ref{sec:octree_memory} concludes this chapter with a brief discussion about the memory consumption of this solution. 
+
 
 \section{Overview}
-
-The term \textit{out of core} is used to describe the management of datasets whose size exceed the available system memory. In this thesis, an out-of-core data structure is needed to handle large-scale point clouds efficiently. 
+\label{sec:octree_overview}
 
 An octree is a hierarchical data structure in which each node represents a spatial region defined by a three-dimensional bounding box. If the decision is made to split a node, eight children are created, each representing an octant of the parent's bounding box. Due to the spatial subdivision properties, an octree is a popular data structure for storing point clouds. The spatial subdivision is a characteristic that is shared amongst almost all octree implementations. A characteristic that varies in each application is the composition of the content of octree's nodes. Various approaches exist that store point clouds in different ways. 
 
@@ -18,12 +19,12 @@ The reason for not using the averaged subset is that the octree is tailored towa
 \par
 
 Numerous decision rules exist that determine whether a node is split or not. A node is partitioned if the point count exceeds a threshold $n$. In this thesis, a decision based on the number of points in a node is favored as it keeps the number of points per node consistent.
-Having a consistent number of points allows the variation in loading time and data size to be kept low. With nodes of consistent size, the runtime of procedures that are directly for different nodes is similar as well. Therefore, such methods can be used in a context where immediate feedback is useful, such as user interactions, since the execution time can be estimated. In this thesis, a split threshold of 5000 points in a node is chosen. 
+Having a consistent number of points allows the variation in loading time and data size to be kept low. With nodes of consistent size, the runtime of procedures that are directly affected by the number of points for different nodes is similar as well. Therefore, such methods can be used in a context where immediate feedback is useful, such as user interactions, since the execution time can be estimated. In this thesis, a split threshold of 5000 points in a node is chosen. 
 
 
 \section{Out-of-core Functionalities}
-
-This thesis utilizes an out-of-core octree that stores each node's information and content separately. A \textit{chunk} describes a coherent portion of data that is stored in the cache file. Each octree node is build so that the node's information and node's content is stored in separate chunks. If an octree node is loaded into memory, the content of the node (i.e., the point set) remains on the hard drive. Only on explicit access, the point-set data is loaded into memory. Child nodes are stored as chunks as well. This interleaved structure of chunks allows for the minimal memory consumption for nodes, whose content is not needed directly. For example, bounding box intersections can be calculated without the need of loading the point set into memory. Figure \ref{fig:out-of-core} shows the interleaved chunk structure of the out-of-core octree. Loading data into memory can only be done as long as free memory is available. Unused chunks of data are removed from memory after not being accessed for a distinct amount of time.
+\label{sec:octree_ooc}
+This thesis utilizes an out-of-core octree that stores each node's information and content separately. A \textit{chunk} describes a coherent portion of data that is stored in the cache file. Each octree node is built so that the node's information and node's content is stored in separate chunks. If an octree node is loaded into memory, the content of the node (i.e., the point set) remains on the hard drive. Only on explicit access, the point-set data is loaded into memory. Child nodes are stored as chunks as well. This interleaved structure of chunks allows for the minimal memory consumption for nodes, whose content is not needed directly. For example, bounding-box intersections can be calculated without the need of loading the point set into memory. Figure \ref{fig:out-of-core} shows the interleaved chunk structure of the out-of-core octree. Loading data into memory can only be done as long as free memory is available. Unused chunks of data are removed from memory after not being accessed for a distinct amount of time.
 
 \begin{figure}
     \centering
@@ -35,7 +36,7 @@ This thesis utilizes an out-of-core octree that stores each node's information a
 
 
 \section{Octree Postprocessing}
-
+\label{sec:octree_post}
 Point clouds often only contain information on position and color and lack distinct geometric features such as normal vectors. Normal vectors are significant for shape detection as they introduce information on the local curvature to the point cloud. After the octree build process is completed, additional properties are computed to enrich the dataset with more specific information. 
 
 
@@ -59,24 +60,30 @@ The centroid of a node provides an indicator of the distribution of points in th
 The density describes the average distance between a point and its nearest neighbor. The density increases with higher level-of-detail since more points are contained in a smaller region. To find the nearest neighbor, the node's rkd-tree is used again.
 
 
-\section{Octree Culling and Render Horizon}
-\label{sec:renderHorizon}
+\section{Octree Culling}
+\label{sec:octree_culling}
 
-As a point cloud contains more data than the GPU can render, only points from those nodes are drawn that contribute to the currently viewed scene. The result of the culling operation is a new octree that contains only nodes that are currently rendered. The culled octree uses the same cached point information as the original octree. Thus, memory consumption is kept minimal. 
+As a point cloud contains more data than the GPU can render in reasonable time, only points from those nodes are drawn that contribute to the currently viewed scene. The result of the culling operation is a new octree that contains only nodes that are currently rendered. The culled octree uses the same cached point information as the original octree. Thus, memory consumption is kept minimal. 
 
 \par
 
-A simple yet powerful culling heuristic is view-frustum culling. Nodes that are outside of the view frustum are discarded. By using view-frustum culling, whole branches of the octree are removed. The remaining branches are still too large to be rendered completely. A level-of-detail decision function determines whether or not a node should be rendered. Depending on the node's distance to the nearplane and its volume, a decision is made if the node should be rendered or not. 
+A simple yet powerful culling heuristic is view-frustum culling. Nodes that are outside of the view frustum are discarded. By using view-frustum culling, whole branches of the octree are removed. The remaining branches are still too large to be rendered completely. A level-of-detail decision function determines whether or not a node should be rendered. Depending on the node's volume and distance to the near plane, a decision is made if the node should be rendered or not. 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.5\textwidth]{Octree/renderHorizon.png}
-    \caption[Illustration of the render horizon of an octree.]
-        {This figure shows an exemplary cut through an octree depicted as a node-link diagram. The render horizon is showcased as a dashed line. Nodes that are rendered are colored in turquoise, nodes that are part of the border set are bordered in magenta.}
-    \label{fig:renderHorizon}
-\end{figure}
+\par
+
+The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. However, if for some reason an octree node should be excluded from the scene manually, a flag can be set to exclude the octree node and allow for it to be removed from the culled octree while keeping its children. The flagged octree node is replaced with an empty node without point information that adopts the node's children, thus keeping the hierarchy intact. 
 
 
-The \textit{render horizon} describes a cut that separates the octree into a rendered part and an unrendered part. Furthermore, this cut produces a set of octree nodes where each node is rendered, whereas some of its children are not. This set is called \textit{border set}. A shared property of these nodes is that at least one of the node's children contain a point set that is not rendered. From this \textit{border set}, a complementary set can be derived that contains only those nodes that are not rendered, but whose parent is. By rendering the complementary set, the render horizon can be increased manually without the need of manipulating the level-of-detail parameter. Figure \ref{fig:renderHorizon} showcases an exemplary cut through an octree, displayed as a dashed line. Rendered nodes are colored in turquoise. A dashed line originating from a node indicates that the node contains children who are not rendered. Nodes whose border is colored in magenta belong to the border set. 
-\\
-The result of this cut is an octree that only contains the nodes that are currently rendered. As the visible part of the octree is used for rendering and user interactions, this culling must be performed only once. 
+\section{Memory Consumption and Performance}
+\label{sec:octree_memory}
+The number of nodes from one level of detail to the next increases by the factor of $8$ (assuming that the octree is balanced and subdivided evenly). In reverse, when starting from the leaves, the number of nodes decreases by the factor of $\frac{1}{8}$. The upper bound of the relative size of the data stored in the entire octree is calculated from the geometric series: 
+
+
+$$s = 1 + \frac{1}{8} + \frac{1}{64} + \frac{1}{512} + ... = \sum_{i = 0}^{\infty}{\frac{1}{8^i}} = \frac{8}{7}$$
+
+
+To create the level-of-detail representation of the point cloud the size of the cache file and the number of stored points is increased by the factor of $\frac{8}{7}$. 
+
+\par
+
+All nodes from the culled octree are rendered, resulting in the multiple drawing of subsampled points from nodes with a lower level of detail. The previous calculations can be applied to estimate the overdraw when rendering the point cloud. The multiply drawn points account for $\sim$12\% of the entire point budget.

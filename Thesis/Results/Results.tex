@@ -21,7 +21,7 @@ All results were obtained on a PC with an AMD FX-9590 CPU, 16 GB RAM, and an AMD
 Section \ref{sec:shape_detection_performance} presents results for shape detection and shows benchmarks that verify the capability of the user-guided shape detection to be performed in interactive time on the test computer.
 Section \ref{sec:shape_detection_problems} discusses flaws of the shape-detection algorithm that occurred while implementing this thesis.
 Section \ref{sec:shape_detection_results} shows comparisons of the classic RANSAC shape detection and our user-guided implementation. 
-Section \ref{sec:interaction_performance} presents performance measures for picking and selection and compares the performances of the assisted version with the traditional techniques. 
+Section \ref{sec:interaction_performance} presents performance measures for picking and selection and compares the performance of the assisted version with the traditional techniques. 
 Section \ref{sec:interaction_results} concludes this chapter and provides a set of screenshots that show the workflow of the user-guided interactions on different data sets. 
 
 
@@ -76,7 +76,7 @@ Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of
 \end{figure}
 
 
-\section{Shape Detection Problems and Undesired Behavior}
+\section{Shape-Detection Problems and Undesired Behavior}
 \label{sec:shape_detection_problems}
 
 A problem with the shape-detection implementation by Schnabel et al. \cite{schnabel-2007-software} are reoccurring non-terminations for some octree nodes, causing the shape-detection coroutine to stall. To circumvent this problem, all shape detection tasks that are dispatched to the \verb|sequential computation applicator| are assigned a timeout value of one second, after which the computation is interrupted. 
@@ -101,12 +101,12 @@ Another recurring problem with the shape-detection algorithm is the plausibility
 Such implausible shapes can exist due to the density-controlled $\epsilon$ parameter that weakens the margin for octree nodes of larger volume. Even within a node, the density can vary strongly for different regions. A way to counter this behavior is to create a ranking of the different types of shapes, such that certain types of shapes are detected preferably before other types. A second approach is to check the validity of a detected shape afterward by comparing the dimensions of the detected shape to the extents of the region it was detected in. 
 
 
-\section{Shape Detection Results}
+\section{Shape-Detection Results}
 \label{sec:shape_detection_results}
 
 Figure \ref{fig:JB_haus_results} and \ref{fig:technologiezentrum_results} compares the results of the RANSAC shape detection on the entire dataset with our interactive approach. Our interactive method finds more shapes that can be grouped into one larger consecutive shape. However, the overall structure of the building is approximated similarly in both techniques as can be seen in (b) and (c) respectively. 
 
-The interactive shape detection on the synthetic point cloud produced undesired results. On coarse levels of detail, implausible shapes are detected that occluded the entire scene. Hence, a visual comparison of the classic shape detection with our approach did not yield any satisfying results. The results of the classic shape detection for the synthetic scene can be seen in Figure \ref{fig:synthetic_point_cloud_results}
+The interactive shape detection was unable to produce results on the synthetic point cloud. On coarse levels of detail, implausible shapes are detected that occluded the entire scene. Hence, a visual comparison of the classic shape detection with our approach did not yield any satisfying results. The results of the classic shape detection for the synthetic scene can be seen in Figure \ref{fig:synthetic_point_cloud_results}
 
 
 \begin{figure}
@@ -121,7 +121,7 @@ The interactive shape detection on the synthetic point cloud produced undesired 
   \includegraphics[width=0.7\textwidth]{Results/jb_haus_shapes_interactive.png}%
   }
 \caption[Figure (a) shows a rendering of the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection.]
-{Figure (a) shows a rendering of the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape detection method.  }
+{Figure (a) shows a rendering of the JB\_haus dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape-detection method.  }
 \label{fig:JB_haus_results}
 \end{figure}
 
@@ -138,7 +138,7 @@ The interactive shape detection on the synthetic point cloud produced undesired 
   \includegraphics[width=0.7\textwidth]{Results/technologiezentrum_shapes_interactive.png}%
   }
 \caption[Figure (a) shows a rendering of the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the result of the interactive shape detection.]
-{Figure (a) shows a rendering of the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape detection method.}
+{Figure (a) shows a rendering of the Technologiezentrum dataset, (b) shows the resulting shapes of the RANSAC shape detection, (c) shows the detected shapes using the interactive shape-detection method.}
 \label{fig:technologiezentrum_results}
 \end{figure}
 
@@ -160,7 +160,7 @@ The interactive shape detection on the synthetic point cloud produced undesired 
 \section{Interaction Performance}
 \label{sec:interaction_performance}
 
-The use of support shapes for assisted interaction improves the computation time. \textit{Shape-assisted point picking} is tested against traditional point picking. Point picking is performed only on points that are visible to the user. Hence, the size of the point cloud does not affect the picking performance. However, the level-of-detail culling does. The results in Table \ref{tab:picking_performance} are obtained by randomly picking points with and without support shape on all three datasets. Over all datasets, shape-assisted point picking performs better than traditional point picking. For shape-assisted point picking, the actual per-point processing time is higher due to the additional point-shape relation check. However, the assisted interaction performs significantly better due to the reason that traditional point picking must process a larger set of octree nodes (i.e., all nodes that intersect the pick ray), whereas shape-assisted point picking must only check nodes that intersect with the support shape. 
+The use of support shapes for assisted interaction improves the computation time. \textit{Shape-assisted point picking} is tested against traditional point picking. Point picking is performed only on points that are visible to the user. Hence, the size of the point cloud does not affect the picking performance. However, the level-of-detail culling does. The results in Table \ref{tab:picking_performance} are obtained by randomly picking points with and without support shape on all three datasets. Over all datasets, shape-assisted point picking performs better than traditional point picking. For shape-assisted point picking, the actual per-point processing time is higher due to the additional point-shape relation check. However, the assisted interaction performs significantly better due to the reason that traditional point picking must process a larger set of octree nodes (i.e., all nodes that intersect the pick ray), whereas shape-assisted point picking only needs to check nodes that intersect the support shape. 
 
 \begin{table}[b]
 \centering
@@ -202,7 +202,7 @@ This section presents a set of figures that showcase the different interactions 
 
 Figures \ref{fig:technologiezentrum_lasso}, \ref{fig:technologiezentrum_brush}, and \ref{fig:technologiezentrum_lod_increment} show examples of a shape-assisted lasso selection, volumetric-brush selection and level-of-detail increment using a support shape on the Technologiezentrum dataset. 
 
-Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} shows a shape-assisted lasso selection and volumetric-brush selection. The support shape is a cylinder. While the volumetric brush still only follows the surface of the cylinder, the lasso selects partly `through` the point set, more precisely, the lasso selection is performed on points on the back side of the cylinder as well. 
+Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} show a shape-assisted lasso selection and volumetric-brush selection. The support shape is a cylinder. While the volumetric brush still only follows the surface of the cylinder, the lasso selects partly 'through' the point set, more precisely, the lasso selection is performed on points on the back side of the cylinder as well. 
 
 %\begin{figure}
 %\centering
@@ -226,7 +226,7 @@ Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} show
   \includegraphics[width=0.9\textwidth]{Results/technologiezentrum_lasso2.png}%
   }
 \caption[Example of an improved lasso selection]
-{A lasso selection is performed on the selected support shape in (a). Only points are selected that lie on the support shape as shown in (b). Point in front and back of the support shape are not selected. }
+{A lasso selection is performed on the selected support shape in (a). Only points are selected that lie on the support shape as shown in (b). Points in front and back of the support shape are not selected. }
 \label{fig:technologiezentrum_lasso}
 \end{figure}
 
@@ -240,7 +240,7 @@ Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} show
   \includegraphics[width=\textwidth]{Results/technologiezentrum_brush2.png}%
   }
 \caption[Example of an improved volumetric brush selection]
-{A volumetric brush selection is performed on the selected support shape in (a). Point are only selected if they belong to the support shape and intersect the brush. The result of the selection can be seen in (b).}
+{A volumetric brush selection is performed on the selected support shape in (a). Points are only selected if they belong to the support shape and intersect the brush. The result of the selection can be seen in (b).}
 \label{fig:technologiezentrum_brush}
 \end{figure}
 

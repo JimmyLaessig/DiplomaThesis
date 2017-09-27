@@ -4,14 +4,14 @@
 
 This chapter completes this thesis by presenting a conclusion on the work and proposing future work.
 
-\subsection*{Out-of-core Representation and Manipulation of Point Clouds}
+\subsection*{Multi-Resolution Point Cloud Storage}
 
-As the size of point clouds often exceeds the available system memory, a sophisticated out-of-core storage infrastructure is used to access chunks point-cloud data based on a level-of-detail decision. This out-of-core octree stores a multi-scale representation of the point cloud and is used for both rendering and interactions. The functional implementation of the octree paired with a computation pipeline allow for multi-threaded manipulation of the point-cloud data without stalling the rendering process or need of complex locking mechanisms. 
+This thesis presents an out-of-core octree data structure that stores the point-cloud data in a cache file on the hard disc. While the leaf nodes of the octree contain the actual point-cloud data, the intermediate nodes store subsamples from its child nodes, thus creating a multi-resolution representation of the point cloud. The octree is paired with a level-of-detail decision that decides which part of the point cloud and resolution is rendered. This approach results in higher memory usage. However, the low-resolution representations of the point cloud allow for fast rendering and coarse but fast processing. 
 
 
 \subsection*{User-Guided Shape Detection and Clustering}
 
-This thesis shows an alternative use of the shape detection algorithm by Schnabel et al. \cite{schnabel-2007-efficient} that lets the user control the regions that are segmented. By pointing to a region with the mouse, the system selects the most suitable octree node to be segmented. The octree's split decision ensures a consistent number of points per shape, so that the shape detection delivers results in interactive time. The shape detection is performed on the highest visible level of detail. Hence, this approach creates a multi-scale representation of the shapes by performing shape detection on nodes with different level of detail. To account for different point distributions in octree nodes, a dynamic $\epsilon$ threshold, based on the node's point density, is proposed for the shape detection. 
+This thesis shows an alternative use of the shape-detection algorithm by Schnabel et al. \cite{schnabel-2007-efficient} that lets the user control the regions that are segmented. By pointing to a region with the mouse, the system selects the most suitable octree node to be segmented. The octree's split decision ensures a consistent number of points per shape, so that the shape detection delivers results in interactive time. The shape detection is performed on the highest visible level of detail. Hence, this approach creates a multi-scale representation of the shapes by performing shape detection on nodes with different level of detail. To account for different point distributions in octree nodes, a dynamic $\epsilon$ threshold, based on the node's point density, is proposed for the shape detection. 
 
 \par
 
@@ -25,7 +25,7 @@ Several improvements to well-known two-dimensional interaction techniques are di
 
 \subsection*{Novel Interaction to Magnify Local Details}
 
-The final task of this thesis was to design a novel interaction technique called \textit{shape-assisted local level-of-detail increment}. The level-of-detail rendering of the point cloud displays only a subset of points that can be rendered by the graphics card in real time. Thus, details may get culled and are not rendered. The interaction technique collects points from nodes that are not rendered due to their level-of-detail. These additional points follow the curvature of the support shape. Along the support shape, extra points are rendered that would otherwise be culled, therefore, allowing the user to get a more detailed look at structures. 
+The final task of this thesis was to design a novel interaction technique called \textit{shape-assisted local level-of-detail increment}. The level-of-detail rendering of the point cloud displays only a subset of points that can be rendered by the graphics card in real time. Thus, details may get culled and are not rendered. The interaction technique collects points from nodes that are not rendered due to their level-of-detail. These additional points are approximated by the support shape. Along the support shape, extra points are rendered that would otherwise be culled, therefore, allowing the user to get a more detailed look at structures. 
 
 
 \section{Future Work}
@@ -42,4 +42,8 @@ Shape detection is performed using an external library by Schnabel et al. \cite{
 
 \par
 
-In the current application, edges between nodes with different levels of detail are visible. Regions with sparse points contain visible gaps. Adaptive point size \cite{scheiblauer-thesis} can be used to reduce the visual artifacts that come with this type of level-of-detail rendering. The individual point size for each octree node is controlled by the number of points and weighted level of detail. Points in octree nodes with less points but larger extent have a larger size. 
+In the current application, edges between nodes with different levels of detail are visible. Regions with sparse points contain visible gaps. Adaptive point sizes \cite{scheiblauer-thesis} could be used to reduce the visual artifacts that come with this type of level-of-detail rendering. The individual point size for each octree node is controlled by the number of points and the weighted level of detail. Points in octree nodes with fewer points but larger extent have a larger size. 
+
+\par 
+
+The current point-cloud rendering system draws points multiple times. The overdraw of redundant points accounts for $\sim$12\% of the entire point budget. Future work on this domain will aim at the reduction of this overdraw. An intermediate node needs to be drawn only if the level-of-detail decision culls one of its children. If this is the case, the parent node contains non-duplicate point information that is not displayed by one of its children.

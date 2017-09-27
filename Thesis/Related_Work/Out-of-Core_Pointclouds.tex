@@ -1,7 +1,7 @@
 \section {Out-of-core Point-Clouds}
 \label{sec:related_work_point_clouds}
 
-As the size of modern point clouds often exceeds the available memory, specialized data structures, and rendering techniques are needed, that can handle such amounts of data. 
+As the size of modern point clouds often exceeds the available memory, specialized data structures and rendering techniques are needed that can handle such amounts of data. 
 
 The QSplat system \cite{rusinkiewicz2000qsplat} was one of the earliest systems that were capable of handling datasets with well over hundred million points. It uses a hierarchy of bounding spheres that makes it easy to perform visibility culling and level-of-detail control. Each node only contains information on the bounding sphere, not the points itself. Leaf nodes represent a single point sample. Hence, the bounding sphere is the point itself. A node is rendered if it is a leaf or the benefit of traversing to the children is too low; otherwise, the children are traversed. If a node is rendered, a spherical splat is drawn as the node's bounding sphere. 
 
@@ -11,11 +11,11 @@ Gobbetti and Marton \cite{gobbetti2004layered} propose a multi-resolution approa
 
 \par
 
-Dachsbauer et al. \cite{dachsbacher2003sequential} introduced Sequential Point Trees (SPT), a data structure that allows adaptive rendering of point clouds completely on the graphics card. A hierarchical point tree is not suited for fast vertex array-based sequential processing by the GPU. Therefore, the point tree's nodes are rearranged into a list, sorted by depth. Rendering then only needs to draw the first $p$ point, where $p$ is controlled by a level-of-detail decision. While their technique allows for adaptive rendering purely on the GPU, it only allows for a single level of detail at a time and can only contain a limited number of points. 
+Dachsbauer et al. \cite{dachsbacher2003sequential} introduced Sequential Point Trees (SPT), a data structure that allows adaptive rendering of point clouds completely on the graphics card. A hierarchical point tree is not suited for fast vertex array-based sequential processing by the GPU. Therefore, the point tree's nodes are rearranged into a list, sorted by depth. Rendering then only needs to draw the first $p$ points, where $p$ is controlled by a level-of-detail decision. While their technique allows for adaptive rendering purely on the GPU, it only allows for a single level of detail at a time and can only contain a limited number of points. 
 
 \par
 
-Wimmer and Scheiblauer \cite{wimmer2006instant} introduces nested octrees to create a multi-resolution model similar to LPCs. A nested octree consists of an outer octree that is used for visibility culling and a memory-optimized SPT as inner octree for efficient point rendering. Each node contains a subsample of points from the point cloud. The union of the points from level 0 to a level $k$ creates the level-of-detail representation of the point cloud for level $k$. 
+Wimmer and Scheiblauer \cite{wimmer2006instant} introduce nested octrees to create a multi-resolution model similar to LPCs. A nested octree consists of an outer octree that is used for visibility culling and a memory-optimized SPT as inner octree for efficient point rendering. Each node contains a subsample of points from the point cloud. The union of the points from level 0 to a level $k$ creates the level-of-detail representation of the point cloud for level $k$. 
 
 \par
 
@@ -23,9 +23,25 @@ Besides rendering and storing, modifications are a key task for out-of-core poin
 
 \par
 
-An improvement to nested octrees is the Modifiable Nested Octree (MNO) by Scheiblauer and Wimmer \cite{scheiblauer2011out}. The MNO enhances the nested octree by improving the performance of insertion and deletion operations. A grid replaces the SPTs from the inner nodes. When inserting a new point, an empty grid cell that contains the point is searched. When removing a point from the hierarchy, holes can occur. Therefore, points from a leaf node that intersects the grid cell of the removed point are pulled up. MNO is paired with an out-of-core point-cloud editing system. Since selecting points in an out-of-core setting is not trivial, the authors propose a structure, the so-called Selection Octree to stores the selected points separately. This system allows for interactive selection and modification of arbitrary parts of a point clouds using a so-called selection octree. This structure is a tool that allows to interactively change the visualization model without actually having to modify the original model permanently. 
+An improvement to nested octrees is the Modifiable Nested Octree (MNO) by Scheiblauer and Wimmer \cite{scheiblauer2011out}. The MNO enhances the nested octree by improving the performance of insertion and deletion operations. A grid replaces the SPTs from the inner nodes. When inserting a new point, an empty grid cell that contains the point is searched. When removing a point from the hierarchy, holes can occur. Therefore, points from a leaf node that intersects the grid cell of the removed point are pulled up. MNO is paired with an out-of-core point-cloud editing system. Since selecting points in an out-of-core setting is not trivial, the authors propose a structure, the so-called Selection Octree to store the selected points separately. This structure is a tool that allows to interactively change the visualization model without actually having to modify the original model permanently. 
 
 \par
 
-Until now, the discussed approaches focused on storage and rendering of point clouds. Wenzel et al. \cite{wenzel2014out} propose an out-of-core octree system that is tailored towards quick data updates and memory management. Parallel to the octree containing the point cloud, a cycle stack is used as a node history of in-memory data. This history allows to keep track of node, prevents premature de-allocation of shared nodes, and manages the available memory. 
+Until now, the discussed approaches focused on storage and rendering of point clouds. Wenzel et al. \cite{wenzel2014out} propose an out-of-core octree system that is tailored towards quick data updates and memory management. Parallel to the octree containing the point cloud, a cycle stack is used as a node history of in-memory data. This history allows to keep track of currently used nodes, prevents premature de-allocation of shared nodes, and manages the available memory. 
 
+
+\section{Point-Based Rendering}
+\label{sec:related_work_point_rendering}
+Point clouds are discrete samplings of continuous surfaces and usually only provide position and color information. The lack of connectivity information disallows for polygon-based rasterization as used for triangle meshes. Pfister et al. \cite{pfister2000surfels} propose surface elements (surfels) to render complex geometric objects without connectivity information. A surfel is a point sampled from the surface of a geometric object and is rendered as an oriented disc. 
+
+\par
+
+Surface splatting by Zwicker et al. \cite{zwicker2001surface} is a technique for high-quality rendering of points with irregular spacing. An elliptical weighted filter is applied on a framebuffer that contains the points projected into screen space. Points closer to the center have a higher contribution to the pixel's color. The with irregular spacing. Points with a depth difference above a certain threshold are excluded from the filtering so that only points that belong to the same surface contribute to the splat.  This approach was developed in a software renderer. Bosch et al. \cite{botsch2005high} improved upon the original surface splatting algorithm by describing a GPU-driven approach to increase the performance. Their method consists of multiple render passes. First, a visibility pass determines which points are visible, then the attribute pass accumulates normal, and color attributes into a framebuffer, and finally, a normalization and shading pass normalizes the attributes and performs shading. 
+
+\par
+
+Most point-cloud datasets lack normal information which is a requirement to drawing aligned surfels for surface splatting. Instead, Scheiblauer \cite{scheiblauer2011consolidated} propose the usage of screen-aligned circles. To allow for higher-quality surface splatting, Preiner et al. \cite{preiner2012auto} describe a technique to calculate missing normals and radii in screen space during rendering. 
+
+\par
+
+More recently, Schütz and Wimmer \cite{schutz2015high} propose a nearest-neighbor-like interpolation technique to improve the visual quality of point-cloud renderings without the need of multiple render passes. Instead of an aligned disk, a screen-aligned quad is drawn per point, and the depth of each fragment is displaced to form the surface of a sphere, cone or paraboloid. The resulting images show strong similarities to a Voronoi diagram. Due to its simplicity and performance, this technique is used in this thesis as well to render the point cloud. 

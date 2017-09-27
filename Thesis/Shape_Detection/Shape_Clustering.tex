@@ -1,7 +1,7 @@
 \section{Shape Matching}
 \label{sec:shapeMatching}
 
-This section presents a set of matching functions to determine if two shapes originate from the same geometry within the RANSAC tolerance. Only shapes of the same type can be matching. Hence, it is not necessary to define functions to match for example a plane shape with a cone shape since the result will always be false. 
+This section presents a set of matching functions to determine if two shapes originate from the same geometry within the RANSAC tolerance. Only shapes of the same type can be matching. Hence, it is not necessary to define functions to match for example a plane shape with a cone shape since the result will always be false. Shape matching is a key part of the clustering process in Section \ref{sec:shapeClustering}.
 
 
 \subsection{Elementary Matching Functions}
@@ -64,22 +64,22 @@ The matching result heavily depends on the chosen threshold values. Table \ref{t
 \label{sec:shapeClustering}
 
 
-Shape detection is performed on single octree nodes from different levels of detail. Thus, the size of the detected shapes is limiting to the extent of the octree node. While on a low level of detail, a wall may be contained by a single octree node, on a higher level, a node will only contain parts of the wall, and multiple nodes contain primitive shapes that originate from the same wall. 
+Shape detection is performed on single octree nodes from different levels of detail. Thus, the size of the detected shapes is limited to the extent of the octree node. While on a low level of detail, a wall may be contained by a single octree node, on a higher level, a node will only contain parts of the wall, and multiple nodes contain primitive shapes that originate from the same wall. 
 
 \par
 
-Given a base shape selected by the user, the clustering algorithm aims to find matching primitive shapes and build a larger coherent cluster of primitive shapes over multiple levels of detail. Oesau et al. \cite{oesau2016planar} propose a graph-based clustering for shapes to detect coplanar shape. Our shape clustering algorithm works similar, but is not limited to planes. The octree is searched for primitive shapes that match the base shape. From this set of shapes, a complete graph is created, and a region growing algorithm reduces the number of shapes to those that create a coherent shape cluster. 
+Given a base shape selected by the user, the clustering algorithm aims to find matching primitive shapes and build a larger coherent cluster of primitive shapes over multiple levels of detail. Oesau et al. \cite{oesau2016planar} propose a graph-based clustering for shapes to detect coplanar shapes. Our shape-clustering algorithm works similarly, but is not limited to planes. The octree is searched for primitive shapes that match the base shape. From this set of shapes, a complete graph is created, and a region-growing algorithm reduces the number of shapes to those that create a coherent shape cluster. 
 
 
 \subsection{Building a set of matching primitive shapes}
 \label{sec:matchingSetBuilding}
 
-The cluster is constructed from primitive shapes that are currently visible. Therefore, rather than searching in the original octree, the octree culled at the render horizon is queried. Matching shapes are found by traversing the octree and return those shapes that match the base shape. The base shape, selected by the user, has a particular level of detail. For the shape cluster to mimic a structure of a similar level of detail, only shapes from nodes are used whose level of detail does not deviate more than a user-specific threshold $l$. While a threshold $l = 0$ only allows for shapes of the same level, $l = 2$ allows for shape from two levels above and below the base shape's level of detail to be considered. Using a threshold value of 0 creates small clusters as larger overlapping shapes cannot form bridges between smaller shapes. While testing, a threshold value of $l = 2$ creates large-enough clusters include meaningful parts of a structure, while still having little to know unwanted shapes in the cluster. Shapes with the largest extend from the lowest level of detail hardly get clustered as they usually differ significantly from the smaller shapes. 
+The cluster is constructed from primitive shapes that are currently visible. Therefore, rather than searching in the original octree, the octree culled at the render horizon is queried. Matching shapes are found by traversing the octree and returning those shapes that match the base shape. The base shape, selected by the user, has a particular level of detail. For the shape cluster to mimic a structure of a similar level of detail, only shapes from nodes are used whose level of detail does not deviate more than a user-specific threshold $l$. Let $l_0$ be the level of detail of the base shape, only shapes are considered whose level of detail lie in the range of $[l_0 - l ; l_0 + l]$. Hence, a threshold $l = 0$ only allows for shapes of the same level, $l = 2$ allows for shape from two levels above and below the base shape's level of detail to be considered. Using a threshold value of 0 creates small clusters, as larger overlapping shapes cannot form bridges between smaller shapes. While testing, the threshold $l = 2$ creates large enough clusters include meaningful parts of a structure, while still having little to no unwanted shapes in the cluster. Shapes with the largest extent from the lowest level of detail hardly get clustered as they usually differ significantly from the smaller shapes. 
 
 \par
 
 This set of shapes already creates a cluster where each primitive shape can be seen as a part of a larger shape. However, the distances between the shapes are not yet taken into account. Thus, gaps between the shapes may still exist. Figure \ref{fig:cuboids} shows the case of two cuboids, whose front face share a plane. By only using the matching functions to create a cluster, both front faces are packed into the cluster, even though there is a visible gap between them.
-For sphere and torus shapes, this step is sufficient to create a coherent cluster, since both shapes are finite. For infinite shapes, an additional step is performed using a graph-based region growing is needed. 
+For sphere and torus shapes, this step is sufficient to create a coherent cluster, since both shapes are finite. For infinite shapes, an additional step is performed using a graph-based region growing algorithm.
 
 \begin{figure}
     \centering

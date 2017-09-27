@@ -9,7 +9,7 @@ The lasso interaction is a common tool to select regions in two-dimensional scre
 
 \par
 
-Yu et al. \cite{yu2012efficient} present two new methods of interaction using only two-dimensional input. The result are two techniques that turn a two-dimensional lasso into a three-dimensional volume that is fitted to the spatial structure of the point cloud. Similar to sketch-based modeling \cite{igarashi2007teddy}, TeddySelection inflates a user-drawn lasso using a heuristic that takes the local point density into account and fits it to the indented region. CloudLasso uses the Marching Cubes algorithm \cite{lorensen1987marching} to identify and select regions within the lasso where the density is beyond a threshold. Both techniques only use two degrees of freedom, thus can be used in a traditional mouse-based interaction, as well as in direct-touch environments. 
+Yu et al. \cite{yu2012efficient} present two new methods of interaction using only two-dimensional input. The results are two techniques that turn a two-dimensional lasso into a three-dimensional volume that is fitted to the spatial structure of the point cloud. Similar to sketch-based modeling \cite{igarashi2007teddy}, TeddySelection inflates a user-drawn lasso using a heuristic that takes the local point density into account and fits it to the indented region. CloudLasso uses the Marching Cubes algorithm \cite{lorensen1987marching} to identify and select regions within the lasso where the density is beyond a threshold. Both techniques only use two degrees of freedom, thus can be used in a traditional mouse-based interaction, as well as in direct-touch environments. 
 
 \begin{figure}[ht]
     \centering
@@ -23,7 +23,7 @@ Figure \ref{fig:teddyCloudSelection} compares the results of a simple lasso sele
 
 \par
 
-An example of a three-dimensional interaction technique is the Volumetric Brush by Weyrich et al. \cite{weyrich2004post}. The brush follows the local curvature by retrieving the current depth value for the cursor's position from the zBuffer. The reconstructed world space position is then used to as the center of a volume, usually a sphere, to select points. Scheiblauer and Wimmer \cite{scheiblauer2011out} utilize the volumetric brush for selections in point clouds. 
+An example of a three-dimensional interaction technique is the Volumetric Brush by Weyrich et al. \cite{weyrich2004post}. The brush follows the local curvature by retrieving the current depth value for the cursor's position from the z-Buffer. The reconstructed world-space position is then used to as the center of a volume, usually a sphere, to select points. Scheiblauer and Wimmer \cite{scheiblauer2011out} utilize the volumetric brush for selections in point clouds. 
 
 \par
 
@@ -32,7 +32,7 @@ Picking is a special case of selection where only a single element is selected. 
 \par
 
 Zhu et al. \cite{zhu2008algorithm} present a picking technique for 3-dimensional objects based on view space. The authors propose the use of a bounding-box tree. This hierarchical structure makes it easy to perform view culling and prematurely discard objects that do not intersect the pick ray. The bounding boxes are transformed into view space, where a first intersection is calculated. If a box intersects, intersections with the actual object are calculated. 
-Zhang et al. \cite{zhang20093d} propose two GPU-driven primitive picking algorithms. The first method renders the primitives along with a unique id into a render target texture and retrieves the pick information by downloading the texture. The second approach performs the pick ray intersections in screen space by transforming each primitive using a geometry shader that emits the intersection information. The CPU retrieves this information using transform feedback.
+Zhang et al. \cite{zhang20093d} propose two GPU-driven primitive-picking algorithms. The first method renders the primitives along with a unique id into a render target texture and retrieves the pick information by downloading the texture. The second approach performs the pick ray intersections in screen space by transforming each primitive using a geometry shader that emits the intersection information. The CPU retrieves this information using transform feedback.
 
 \par
 

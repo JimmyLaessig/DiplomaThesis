@@ -2,7 +2,7 @@
 \label{chap:shapeDetection}
 
 This chapter gives an overview of the shape detection and processing pipeline and presents a clustering algorithm to create a larger-scale representation of a geometric shape from small individual shapes. 
-Shape detection is an automated approach to detect geometric primitives in point clouds. Results are usually computed offline, as the computation takes an extensive amount of time. This thesis utilizes an automated shape detection algorithm by Schnabel et al. \cite{schnabel-2007-efficient} that is capable of detecting different types of primitive shapes. It is designed to find shapes in point clouds that consist of several million points within minutes. However, when looking at the performance for smaller samples, results can be achieved at interactive time rates. 
+Shape detection is an automated approach to detect geometric primitives in point clouds. Results are usually computed offline, as the computation takes an extensive amount of time. This thesis utilizes an automated shape-detection algorithm by Schnabel et al. \cite{schnabel-2007-efficient} that is capable of detecting different types of primitive shapes. It is designed to find shapes in point clouds that consist of several million points within minutes. However, when looking at the performance for smaller samples, results can be achieved at interactive time rates. 
 
 \par
 
@@ -17,7 +17,7 @@ Section \ref{sec:schnabel} describes the algorithm for shape detection in point 
 
 The goal of this thesis is to perform shape detection semi-automatically. Rather than performing shape detection on the complete point cloud, the procedure is executed only on a small subset of points, namely the content of a single octree node, at a time. Performing shape detection on single nodes of the point cloud results in shapes whose size is limited to the extents of the octree node. However, we assume that shapes are presumably a part of a larger structure. 
 
-The start point for the clustering process is a single user-selected shape, called base shape. From this base shape, the algorithm creates a coherent shape cluster that represents the local geometry on a larger scale. Section \ref{sec:shapeMatching} proposes a set of heuristics to determine if two primitive shapes can be combined, thus creating a larger coherent shape. 
+The starting point for the clustering process is a single user-selected shape, called base shape. From this base shape, the algorithm creates a coherent shape cluster that represents the local geometry on a larger scale by searching for neighboring shapes of similar form in the octree. Section \ref{sec:shapeMatching} proposes a set of heuristics to determine if two primitive shapes can be combined, thus creating a larger coherent shape. 
 Section \ref{sec:shapeClustering} describes the clustering procedure in detail. The resulting homogeneous shape cluster can later be used for user interactions and rendering. 
 
 
@@ -30,16 +30,13 @@ Schnabel et al. \cite{schnabel-2007-efficient} propose an automated way to detec
 
 \par
 
-\textbf{RAN}dom \textbf{SA}mpling \textbf{C}onsensus (RANSAC) was first discussed by Fischler and Bolles \cite{fischler1981random} as a paradigm for model fitting for image analysis and automated cartography. However, this approach can be generalized for points of an origin other than images. The shape detection works as follows: A minimal set is drawn randomly from the point data, and a primitive shape is constructed from it. This shape is called candidate shape. Section \ref{sec:minimal_sets} describes the properties of a minimal set to build a primitive shape. The candidate shape is then tested against all remaining points to determine how many of them are well approximated by this shape. This evaluation is described in Section \ref{sec:scorefun}. After a given number of trials, the candidate shape that approximates the most points is chosen, and next RANSAC iteration is repeated with the remaining points. 
-
-Section \ref{sec:performance} gives an insight of the performance of the shape detection. 
+\textbf{RAN}dom \textbf{SA}mpling \textbf{C}onsensus (RANSAC) was first discussed by Fischler and Bolles \cite{fischler1981random} as a paradigm for model fitting for image analysis and automated cartography. However, this approach can be generalized for points of an origin other than images. The shape detection works as follows: A minimal set is drawn randomly from the point data (e.g., three points whose normal vectors point in the same direction in case of a minimal set for a plane), and a primitive shape is constructed from it. This shape is called candidate shape. Section \ref{sec:minimal_sets} describes the properties minimal sets to build different primitive shapes. The candidate shape is then tested against all remaining points to determine how many of them are well approximated by this shape. This evaluation is described in Section \ref{sec:scorefun}. After a given number of trials, the candidate shape that approximates the most points is chosen, and the next RANSAC iteration is executed with the remaining points. Section \ref{sec:performance} gives an insight of the performance of the shape detection. 
 
 
 \subsection{Minimal sets}
 \label{sec:minimal_sets}
 
-A minimal set is a set of points that are chosen randomly from the point cloud. The points are treated as possible points on the surface of a primitive shape. The primitive shape is considered a candidate shape if a set of rules applies. The rules for each type of primitive shape are as follows: 
-
+A minimal set is the smallest set of points that describes a particular shape explicitly. The points are treated as possible points on the surface of a primitive shape. The primitive shape is considered a candidate shape if a set of rules applies. The RANSAC iteration randomly selects a set of points and creates a minimal set for a particular shape from it if one of the following rules can be applied:
 \begin{itemize}
     \item \textbf{Plane}: The minimal set of a plane consists of three points $p_0, p_1, p_2$ whose normals do not deviate from the plane's normal more than the angle $\alpha$. 
     
@@ -63,14 +60,18 @@ If a minimal set does not qualify for a candidate shape, the set is discarded. I
 \subsection{Score function}
 \label{sec:scorefun}
 
-The score function calculates the support of the candidate shape. The support is determined by the number of points that are approximated by this shape, i.e., the points roughly follow the curvature of the shape. All remaining points in the point cloud are tested against the candidate shape. Again, for each point to be a support point, the following two rules must apply: 
+The score function calculates the support of the candidate shape. The support is determined by the number of points that are approximated by this shape. All remaining points in the point cloud are tested against the candidate shape. Again, for each point to be a support point, the following two rules must apply: 
 
 \begin{itemize}
     \item The distance between the point and the shape must be smaller than $\epsilon$.
-    \item The normal of the point must not deviate from the normal of the shape more than a given angle $\alpha$.
+    \item The normal of the point must not deviate from the normal of the shape at the closest position more than a given angle $\alpha$.
 \end{itemize}
 
-From all points that fulfill the previous two conditions, only the subset of points is considered that creates the largest connected component embedded in the shape's surface. The candidate shape is valid if the number of support points exceeds a threshold $n$. 
+While the first rule ensures that only points are considered that are in close proximity to the shape, it is not sufficient to decide if this point is indeed approximated by this shape. The point's normal describes the orientation of the structure determined by the point's local neighborhood. Only if the normal vector fits the normal vector of the shape as well, the point is considered. 
+
+\par
+
+All points that fulfill the previous two conditions are projected into bitmap in parameter domain of the shape. From this bitmap, the largest connected component is used as the final set of support points. The candidate shape is valid if the number of support points exceeds a threshold $n$. 
 
 
 \subsection{Performance}
@@ -79,17 +80,18 @@ From all points that fulfill the previous two conditions, only the subset of poi
 \begin{table}
     \centering
     \includegraphics[width=0.7\textwidth]{Shape_Detection/schnabel-performance.png}
-    \caption[Original statistics of the shape detection algorithm by Schabel et al.]{The original statistics by Schnabel et al. \cite{schnabel-2007-efficient} on processed models. $\epsilon$ is chosen as a constant fraction of the bounding box width. Results have been averaged over 5 runs and rounded.}
+    \caption[Original statistics of the shape detection algorithm by Schabel et al.]{The original statistics  from 2007 by Schnabel et al. \cite{schnabel-2007-efficient} on processed models. $\epsilon$ is chosen as a constant fraction of the bounding box width. Results have been averaged over 5 runs and rounded.}
     \label{table:schnabel_performance}
 \end{table}
 
-Table \ref{table:schnabel_performance} describes the statistical results for different models. $|P|$ is the number of points, $\epsilon$ the distance threshold, $\alpha$ the maximum normals deviation, $\tau$ is the minimum number of support points, $|\Psi|$ the number of shapes found, $|R|$ the number of RANSAC iterations. It can be seen that for small a small number of points and weaker constraints the algorithm returns plausible results within a fraction of a second. We utilize this feature the detect shapes in our application for small regions at a time to give immediate feedback to the user. Section \ref{sec:shape_detection_performance} presents benchmarks of the shape detection algorithm and verifies the capability to be executed within the desired time. 
+Table \ref{table:schnabel_performance} describes the statistical results for different models. $|P|$ is the number of points, $\epsilon$ the distance threshold, $\alpha$ the maximum normals deviation, $\tau$ is the minimum number of support points, $|\Psi|$ the number of shapes found, $|R|$ the number of RANSAC iterations. 
+It can be seen that for a small number of points and weaker constraints, the algorithm returns plausible results within a fraction of a second, even though the results are ten years old. We utilize this feature the detect shapes in our application for small regions at a time to provide to the user with even faster feedback using modern-day hardware. Section \ref{sec:shape_detection_performance} presents benchmarks of the shape-detection algorithm and verifies the capability to be executed within the desired time. 
 
 
 \section{Refitting}
 \label{sec:Refitting}
 
-The result of the shape detection algorithm is a set of primitive shapes with their corresponding support points. Planes, cylinder, and cones are returned as infinite shapes. For rendering and interaction, it is necessary to create a finite representation for each shape. The set of support points is used to refit the shape and create a finite representation. Spheres and Tori are finite by definition. Hence, they do not require refitting. 
+The result of the shape-detection algorithm is a set of primitive shapes with their corresponding support points. Planes, cylinder, and cones are returned as infinite shapes in the original algorithm \cite{schnabel-2007-efficient}. For rendering and interaction, it is necessary to create a finite representation for each shape. Calculating the intersections between primitive shapes to obtain boundaries is not helpful, because those intersections alone do not describe the exact boundary of the represented surface. Moreover, popular reconstruction techniques \cite{jenke2008surface, schnabel-2009-completion} rely on the use of neighboring primitive shapes and thus, only work if all shapes have been detected beforehand. Since our approach produces a continuous stream of new primitive shapes and accurate reconstruction is not a goal of this technique, the refitting process only uses the set of support points to refit the shape and create a finite representation. Spheres and Tori are finite by definition. Hence, they do not require refitting. 
 
 
 \subsection{Refitting planes}
@@ -115,4 +117,4 @@ This section briefly discusses the issue of selecting optimal parameters for the
 
 The $\alpha$ parameter is used to determine the deviation between two directions. As the normals are the same at different levels of detail, this parameter is static. We use an $\alpha$ value of $0.95$. 
 
-The minimum number of support points $n$ per shape is set to $250$. While performing tests for this thesis, a higher number led increased the number of undetected shapes significantly. Weaker constraints resulted in the detection of falsely-detected shapes. 
+The minimum number of support points $n$ per shape is set to $250$. While performing tests for this thesis, a higher number increased the number of undetected shapes significantly. Weaker constraints resulted in the detection of falsely detected shapes. 

@@ -21,12 +21,12 @@ A way of introducing semantic information into unstructured point-cloud data is 
 
 \par
 
-This thesis proposes a user-controlled technique for shape detection in small local regions of point clouds. This approach can to deliver semantic information on the local geometry in interactive time. This information is used to improve ordinary two-dimensional interaction metaphors by limiting the set of points available for interaction to those that belong to the selected shape (i.e. closely follow the curvature of the shape). 
+This thesis proposes a user-controlled technique for shape detection in small local regions of point clouds. This approach helps to deliver semantic information on the local geometry in interactive time. This information is used to improve ordinary two-dimensional interaction metaphors by limiting the set of points available for interaction to those that are approximated by the selected shape (i.e. closely follow the curvature of the shape). 
 
 
 \section{Problem Definition}
 
-Modern point clouds can contain millions of points with it's size often exceeding several gigabytes. Usually, consumer PCs do not have the memory capacity to hold the entire point cloud in system memory or video memory. Efficient out-of-core solutions for point clouds are discussed in numerous publications, Scheibelbauer \cite{scheiblauer-thesis}, Elseberg et al. \cite{elseberg2013one} or the Point Cloud Library \cite{rusu20113d}, to only name a few. However, a custom solution is needed that stores point clouds enriched with semantic information.
+Modern point clouds can contain millions of points with sizes often exceeding several gigabytes. Usually, consumer PCs do not have the memory capacity to hold the entire point cloud in system memory or video memory. Efficient out-of-core solutions for point clouds are discussed in numerous publications, Scheibelbauer \cite{scheiblauer-thesis}, Elseberg et al. \cite{elseberg2013one} or the Point Cloud Library \cite{rusu20113d}, to only name a few. However, a custom solution is needed that stores point clouds enriched with semantic information.
 
 \par
 
@@ -34,16 +34,16 @@ In scans of urban environments, many structures can be represented in a more mem
 
 \par
 
-Common two-dimensional interaction metaphors (e.g. mouse) are useful tools when selecting or picking regions from a two-dimensional context. When porting these techniques to 3D, the third dimension (i.e. depth) must be guessed or controlled separately. A region of interest usually is a set of points that are spatial neighboring and create a structural element in the point cloud. Ideally, the selection of such a region is performed by defining a minimal enclosing volume that contains all points. Achieving this selection by using 2D-interaction metaphors only is challenging, as the techniques do not know the desired depth boundaries of the selection region. Therefore, interactions across multiple views are needed to achieve this selection. Methods that use 3D information, such as the volumetric brush presented by Weyrich et al. \cite{weyrich2004post}, can ease selection tasks. By consulting the depth buffer each frame, the brush follows the curvature of the furthermost geometry. However, by reading pixels from the GPU, the rendering process is stalled. This technique reacts to occlusion such that the brush follows the geometry depicted in the depth buffer, rather then the desired structure. Thus, view changes are still required.
+Common two-dimensional interaction metaphors (e.g. mouse) are useful tools when selecting or picking regions from a two-dimensional context. When porting these techniques to 3D, the third dimension (i.e. depth) must be guessed or controlled separately. A region of interest is usually a set of points that are spatially neighboring and create a structural element in the point cloud. Ideally, the selection of such a region is performed by defining a minimal enclosing volume that contains all points. Achieving this selection by using 2D-interaction metaphors only is challenging, as the techniques do not know the desired depth boundaries of the selection region. Therefore, interactions across multiple views are needed to achieve this selection. Methods that use 3D information, such as the volumetric brush presented by Weyrich et al. \cite{weyrich2004post}, can ease selection tasks. By consulting the depth buffer each frame, the brush follows the curvature of the furthermost geometry. However, by reading pixels from the GPU, the rendering process is stalled. This technique reacts to occlusions such that the brush follows the geometry depicted in the depth buffer, rather then the desired structure. Thus, view changes are still required.
 
 
 \section{Contributions}
 
-The main contribution of this diploma thesis is the implementation of a semi-automated procedure to detect shapes in multiple levels of detail in point clouds. Instead of performing shape detection on the entire point cloud at once, our approach lets the user control the region in which shapes should be detected. By reducing those regions to a suitable size, a well-known shape detection algorithm can return meaningful results in interactive time, such that the user is presented with immediate feedback on the local geometry of the selected region. 
+The main contribution of this diploma thesis is the implementation of a semi-automated procedure to detect shapes in multiple levels of detail in point clouds. Instead of performing shape detection on the entire point cloud at once, our approach lets the user control the region in which shapes should be detected. By reducing those regions to a suitable size, a well-known shape-detection algorithm can return meaningful results in interactive time, such that the user is presented with immediate feedback on the local geometry of the selected region. 
 
 \par
 
-The size of detected shapes is limited to the region in which it was detected. A clustering algorithm finds shapes from different different regions and levels of detail, based on a similarity heuristic, and creates a larger connected cluster of shapes. This cluster is used to present geometric information on a larger scale to the user, rather than each shape separately. 
+The size of detected shapes is limited to the region in which it was detected. A clustering algorithm finds shapes from different regions and levels of detail, based on a similarity heuristic, and creates a larger connected cluster of shapes. This cluster is used to present geometric information on a larger scale to the user, rather than each shape separately. 
 
 \par
 

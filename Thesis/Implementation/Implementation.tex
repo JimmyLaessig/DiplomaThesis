@@ -223,7 +223,6 @@ Figure \ref{fig:octreeFuns} shows the described functions and their effects on a
 \subsubsection{Replacing nodes}
 
 As mutations introduce side effects that can lead to bugs, instead of changing information within an octree node, a new node is created containing the new data. The old node might still be in use in a different thread. Thus, race conditions are possible when mutating values. When information changes in an octree node, a new \verb|thunk| is created that stores the new content onto the disc; the old \verb|thunk| is discarded when it is not used anymore. The newly created node has a distinct position that is determined by the path in the octree. The octree is traversed recursively to find the location of the node. 
-\\
 When resolving the recursion, the content of all ancestor nodes changes as well, since one of the children is a new node. Therefore, for each ancestor, a new node is created too, containing the new content. Since the root changes as well, as the replaced node is a successor of it, a new octree is constructed each time a node is replaced. This octree, however, contains mostly the data of the old octree, except the replaced node. 
 
 \begin{figure}[h]
@@ -286,21 +285,24 @@ The user-controlled threshold $t$ is divided by the largest window dimension tha
 
 \subsection{Diff}
 
-As discussed in Section \ref{sec:renderHorizon}, the render horizon is the set of nodes that are still rendered, and at least one of the children is not. The \textit{shape-assisted local level-of-detail increment} interaction, described in Section \ref{sec:lod_increment}, uses the render horizon to collect a set of nodes that are beyond the horizon to draw additional points on the screen. This set of nodes is obtained by the octree's \verb|diff| function. 
-\\
-Let $t1, t2$ be two octrees where $t2$ is a sub tree of $t1$. The function \verb|diff| $t1 t2$ returns all nodes from $t1$ whose parents exist in $t1$ and $t2$, but the node itself only exists in $t1$.
-\\
-The \verb|diff| function takes nodes that are in the first octree and not in the second octree. In the case of the \textit{shape-assisted local level-of-detail increment}, interaction $t1$ is the complete octree, $t2$ is the culled octree that only contains nodes that are rendered. 
-\\
-Additionally, not only the children are collected, but depending on a depth value, the children's successors are collected as well. 
+Let $t1, t2$ be two octrees where $t2$ is a sub tree of $t1$ and $v$ a non-negative integer. The function \verb|diff| $t1 t2$ $v$ returns all nodes from $t1$ whose parents exist in $t1$ and $t2$, but the node itself only exists in $t1$. $v$ limits the maximum level-of-detail difference. Hence $v = 1$ only allows for the direct children only, $v = 2$ allows for the children and their children as well. 
+
+\par
+
+The \verb|diff| function takes nodes that are in the first octree and not in the second octree. It comes in two varieties. The first implementation returns only those nodes with the maximum level-of-detail difference. The second implementation returns all intermediate nodes as well. 
+The construction of the candidates set for the shape-assisted local level-of-detail increment in Section \ref{sec:lod_increment} is implemented using the \verb|diff| function, where $t1$ is the entire octree, $t2$ is the culled octree that only contains nodes that are rendered and $v$ is the level-of-detail increment parameter.  
 
 
 \section{Sequential Computation Applicator}
 
 The octree receives changes on a regular basis from multiple sources in this application. The shape detection coroutine continuously inserts detected primitive shapes into the octree, resulting in a new octree every time. User interactions change the point set by selecting regions of interest. To synchronize the octree access, locking mechanics can be used. However, such mechanics can get confusing easily, especially when the application grows. 
-\\
+
+\par
+
 All changes to the octree depend on the state of the octree that, in the meantime, may be altered by an operation from a different thread. Furthermore, since a new octree is created every time, the result of an operation may be overwritten by a second operation that starts while the first operation has not yet finished. All subsequent operations depend on the result of the previous operation. Thus, a structure is needed that handles such dependent operations. 
-\\
+
+\par
+
 The \textit{sequential computation applicator} is a structure that provides a synchronized way of processing sequential operations. The applicator's functionality is synchronized such that multiple threads can dispatch operations on the octree. The \textit{sequential computation applicator} is a wrapper around a \verb|ModRef<'T>| that invokes changes on this value regularly. 
 In this case, the type of the applicator wraps around a \verb|ModRef<Octree>|. 
 
@@ -357,7 +359,7 @@ The technique is realized as an parallel implementation of F\#s \verb|map| funct
 \section{Point-Cloud Rendering}
 \label{sec:rendering}
 
-The culling heuristic described in Section \ref{sec:renderHorizon} reduces the octree to set of nodes that can be processed by the GPU and can be drawn in real time. The point data may still be located on the hard drive and must be loaded into memory. 
+The culling heuristic described in Section \ref{sec:octree_culling} reduces the octree to set of nodes that can be processed by the GPU and can be drawn in real time. The point data may still be located on the hard drive and must be loaded into memory. 
 
 \par
 
@@ -369,7 +371,7 @@ Mathematically, a point has no extent. Therefore it cannot be depicted directly.
 
 \par
 
-Popping effects occur when the view changes and overlapping impostors change their order. Similar to the approach by Schütz and Wimmer \cite{SCHUETZ-2015-HQP} each splat is given a depth displacement that mimics a sphere's curvature. The splat is extruded towards the camera with a depth value dependent on the distance to the splat's center. This displacement causes the impostors to intersect naturally, thus reducing depth-related popping effects. Figure \ref{fig:point_sprites} shows a direct comparison of using spheres and circular splats. 
+Popping effects occur when the view changes and overlapping impostors change their order. Similar to the approach by Schütz and Wimmer \cite{SCHUETZ-2015-HQP}, each splat is given a depth displacement that mimics a sphere's curvature. The splat is extruded towards the camera with a depth value dependent on the distance to the splat's center. This displacement causes the impostors to intersect naturally, thus reducing depth-related popping effects. Figure \ref{fig:point_sprites} shows a direct comparison of using spheres and circular splats. 
 
 
 \begin{figure}

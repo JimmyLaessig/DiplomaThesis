@@ -175,8 +175,8 @@ This thesis presents a semi-automated method for shape detection in out-of-core 
 
 As modern point clouds can contain billions of points and the memory capacity of consumer PCs is usually insufficient to hold all points in memory at the same time, a level-of-detail data structure is used to store the point cloud on the hard disc, and data is loaded into memory only on use. This data structure partitions the point cloud into small regions, each containing around 5000 points, that are used for rendering and shape detection.
 
-Interacting with point clouds is a particularly demanding task. A precise selection of a region of interest, using the two-dimensional lasso interaction, often needs multiple view changes and subsequent improvements. This thesis proposes improvements to the lasso interaction, by performing selection only on the set of points that follow the curvature of a detected shape. Thus, the selection of undesired points in the fore- and background is reduced.
-Point picking is improved as well by the use of a detected shape, such that only points that follow the curvature are pick-able. 
+Interacting with point clouds is a particularly demanding task. A precise selection of a region of interest, using the two-dimensional lasso interaction, often needs multiple view changes and subsequent improvements. This thesis proposes improvements to the lasso interaction, by performing selection only on the set of points that are approximated by a detected shape. Thus, the selection of undesired points in the fore- and background is reduced.
+Point picking is improved as well by the use of a detected shape, such that only points that are approximated by this shape are pick-able. 
 
 The result of this thesis is an application that allows the user to view point clouds with millions of points. It also provides a novel interaction technique for quick local shape detection as well as shape-assisted interactions that utilize this local semantic information to improve the user's workflow. 
 
