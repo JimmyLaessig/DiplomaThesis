@@ -38,7 +38,7 @@ The tests are performed without user interaction. Instead, all octree nodes are 
 
 Figure \ref{fig:shapes_total_vs_lod} shows the total number of shapes per level of detail. All three datasets share an increase in the number of shapes in the third quarter before a rapid decline in the highest level of detail. 
 Figure \ref{fig:shapes_averaged_vs_lod} shows the number of shapes divided by the number of nodes per level of detail. Both figures emphasize that the majority of shapes is not found in the highest level of detail. The reason for this is that many leaf nodes only contain a handful of points or only contain a single structure. 
-Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of detail. Shape detection for smaller, denser nodes takes less time than for larger nodes with lower level of detail because in larger nodes, usually more shapes are found. 
+Figure \ref{fig:time_vs_lod} shows the averaged calculation time per the level of detail. Shape detection for smaller, denser nodes takes less time than for larger nodes with lower level of detail because in larger nodes, usually more shapes are found. 
 
 \begin{table}[h]
     \centering
@@ -71,7 +71,7 @@ Figure \ref{fig:time_vs_lod} shows the calculation time compared to the level of
   \includegraphics[width=0.8\textwidth]{Results/time_vs_lod.png}%
   } 
 \caption[Performance graphs of the interactive shape detection.]
-{This set of figures shows different performance measures for the interactive shape detection. All values are averaged over all nodes that share the same level of detail. (a) shows a plot of the total number of shapes vs. the level of detail of the node, (b) shows a plot of the average number of shapes per node vs. the level of detail of the node, and (c) shows a plot of the number of shapes vs. the computation time.}
+{This set of figures shows different performance measures for the interactive shape detection. All values are averaged over all nodes that share the same level of detail. (a) shows a plot of the total number of shapes vs. the level of detail of the node, (b) shows a plot of the average number of shapes per node vs. the level of detail of the node, and (c) describes the average time for shape detection for each specific level of detail. }
 \label{fig:shape_detection_graphs}
 \end{figure}
 

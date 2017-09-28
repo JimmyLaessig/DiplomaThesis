@@ -14,7 +14,7 @@ Instant Points \cite{wimmer2006instant} keeps a small subset of points in the or
 Wand et al. \cite{wand2007interactive} distribute the entire point set among the node's children. The original node keeps an averaged subset of points. Thus, a multi-resolution representation of the point cloud is created at the cost of a larger memory footprint. 
 
 This thesis uses an octree with a structure similar to that of Wand et al. If a node is partitioned, the point set is divided amongst its child nodes. A random subset of the original points is kept in the original node. Thus an efficient level-of-detail representation of the point cloud is created. 
-The reason for not using the averaged subset is that the octree is tailored towards shape detection. This processing step is intended to be performed on original data. Moreover, for shape detection, each node is viewed as self-contained, such that no points from predecessor nodes are needed to represent the point cloud for this region and resolution entirely. 
+The reason for not using the averaged subset is that the octree is tailored towards shape detection. This processing step is intended to be performed on original data. Moreover, for shape detection, each node is viewed as self-contained, such that no points from predecessor nodes are needed to represent the point cloud for this region and resolution entirely. This self-containment property is the reason why Wand et al.'s approach combined with the proposed subsampling technique is favoring above an Instant-Points-like system. 
 
 \par
 

@@ -2,9 +2,9 @@
 \label{chap:conclusion}
 
 
-This chapter completes this thesis by presenting a conclusion on the work and proposing future work.
+This chapter completes this thesis by summarizing the contributions of the work and proposing future work.
 
-\subsection*{Multi-Resolution Point Cloud Storage}
+\subsection*{Multi-Resolution Point Cloud Representation}
 
 This thesis presents an out-of-core octree data structure that stores the point-cloud data in a cache file on the hard disc. While the leaf nodes of the octree contain the actual point-cloud data, the intermediate nodes store subsamples from its child nodes, thus creating a multi-resolution representation of the point cloud. The octree is paired with a level-of-detail decision that decides which part of the point cloud and resolution is rendered. This approach results in higher memory usage. However, the low-resolution representations of the point cloud allow for fast rendering and coarse but fast processing. 
 
@@ -15,7 +15,7 @@ This thesis shows an alternative use of the shape-detection algorithm by Schnabe
 
 \par
 
-As the size of a single shape is limited to the extents of the octree node it was detected in, this thesis proposes a shape clustering algorithm that determines if two shapes are matching and creates a larger coherent shape from multiple matching primitive shapes of different levels of detail that is then used to assist user interactions. 
+As the size of a single shape is limited to the extent of the octree node it was detected in, this thesis proposes a shape clustering algorithm that determines if two shapes are matching and creates a larger coherent shape from multiple matching primitive shapes of different levels of detail that is then used to assist user interactions. 
 
 
 \subsection*{Improvement of Interaction Techniques}

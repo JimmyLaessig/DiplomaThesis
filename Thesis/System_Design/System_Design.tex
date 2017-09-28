@@ -33,6 +33,7 @@ Each interaction iteratively filters the octree's data such that coarse filterin
 The shape-detection algorithm is already described in Chapter \ref{chap:shapeDetection}. As the shape-detection computation usually takes several minutes, the approach in this thesis performs this computation on small chunks of roughly the same size of point-cloud data at a time. The octree already provides the point cloud as pieces of spatially neighboring data, such that each node describes an enclosed subset of the point cloud at a specific level of detail. Using chunks of the same size allows the user to expect results in about the same time for each node. This response time should ideally be a fraction of a second, at best less than $250$ milliseconds. 
 
 The \textit{user-guided shape detection} is updated in the background continuously, relying only on the user's current mouse position and view. Thus, only nodes are considered that intersect the pick ray. To be selected as candidate node from the octree, a node must fulfill the following constraints: 
+
 \begin{enumerate}
     \item The node must currently be rendered and visible to the user. 
     \item The node must intersect the pick ray.

@@ -1,7 +1,8 @@
 \section{Shape Matching}
 \label{sec:shapeMatching}
 
-This section presents a set of matching functions to determine if two shapes originate from the same geometry within the RANSAC tolerance. Only shapes of the same type can be matching. Hence, it is not necessary to define functions to match for example a plane shape with a cone shape since the result will always be false. Shape matching is a key part of the clustering process in Section \ref{sec:shapeClustering}.
+This section presents a set of matching functions to determine if two shapes originate from the same geometry within the RANSAC tolerance. Only shapes of the same type can be matching. Hence, it is not necessary to define functions to match for example a plane shape with a cone shape since the result will always be false. 
+Shape matching is performed on two primitive shapes that are detected by Schnabel et al.'s algorithm. It is a key part of the clustering process in Section \ref{sec:shapeClustering}. 
 
 
 \subsection{Elementary Matching Functions}
@@ -64,11 +65,11 @@ The matching result heavily depends on the chosen threshold values. Table \ref{t
 \label{sec:shapeClustering}
 
 
-Shape detection is performed on single octree nodes from different levels of detail. Thus, the size of the detected shapes is limited to the extent of the octree node. While on a low level of detail, a wall may be contained by a single octree node, on a higher level, a node will only contain parts of the wall, and multiple nodes contain primitive shapes that originate from the same wall. 
+Shape detection is performed on individual octree nodes from different levels of detail. Thus, the size of the detected shapes is limited to the extent of the octree node. While on a low level of detail, a wall may be contained by a single octree node, on a higher level, a node will only contain parts of the wall, and multiple nodes contain primitive shapes that originate from the same wall. 
 
 \par
 
-Given a base shape selected by the user, the clustering algorithm aims to find matching primitive shapes and build a larger coherent cluster of primitive shapes over multiple levels of detail. Oesau et al. \cite{oesau2016planar} propose a graph-based clustering for shapes to detect coplanar shapes. Our shape-clustering algorithm works similarly, but is not limited to planes. The octree is searched for primitive shapes that match the base shape. From this set of shapes, a complete graph is created, and a region-growing algorithm reduces the number of shapes to those that create a coherent shape cluster. 
+Given a base shape selected by the user, the clustering algorithm aims to find matching primitive shapes and build a larger coherent cluster of primitive shapes over multiple levels of detail. Oesau et al. \cite{oesau2016planar} propose a graph-based clustering for shapes to detect coplanar shapes. Our shape-clustering algorithm works similarly, but is not limited to planes. The octree is searched for primitive shapes that were detected previously and that match the base shape. From this set of shapes, a complete graph is created, and a region-growing algorithm reduces the number of shapes to those that create a coherent shape cluster. 
 
 
 \subsection{Building a set of matching primitive shapes}

@@ -24,7 +24,7 @@ Highcharts.chart('container1', {
     },
 	
     title: {
-        text: 'Total Number of Shapes vs. Level-of-Detail'
+        text: 'Total Number of Shapes vs. Level of Detail'
     },
 
 
@@ -36,8 +36,9 @@ Highcharts.chart('container1', {
 	
 	
     xAxis: {
+		tickInterval: 2,
         title: {
-            text: 'Level-of-Detail'
+            text: 'Level of Detail'
         }
     },
     legend: {
@@ -100,7 +101,7 @@ Highcharts.chart('container2', {
     },
 	
     title: {
-        text: 'Averaged Number of Shapes vs. Level-of-Detail'
+        text: 'Averaged Number of Shapes vs. Level of Detail'
     },
 
 
@@ -112,9 +113,11 @@ Highcharts.chart('container2', {
 	
 	
     xAxis: {
+		tickInterval: 2,
         title: {
-            text: 'Level-of-Detail'
+            text: 'Level of Detail'
         }
+		
     },
     legend: {
         layout: 'vertical',
@@ -176,7 +179,7 @@ Highcharts.chart('container3', {
     },
 	
     title: {
-        text: 'Time vs. Level-of-Detail'
+        text: 'Time vs. Level of Detail'
     },
 
 
@@ -189,8 +192,9 @@ Highcharts.chart('container3', {
 	
     xAxis: {
         title: {
-            text: 'Level-of-Detail'
-        }
+            text: 'Level of Detail'
+        },
+		tickInterval: 2
     },
     legend: {
         layout: 'vertical',
