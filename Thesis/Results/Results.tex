@@ -71,7 +71,7 @@ Figure \ref{fig:time_vs_lod} shows the averaged calculation time per the level o
   \includegraphics[width=0.8\textwidth]{Results/time_vs_lod.png}%
   } 
 \caption[Performance graphs of the interactive shape detection.]
-{This set of figures shows different performance measures for the interactive shape detection. All values are averaged over all nodes that share the same level of detail. (a) shows a plot of the total number of shapes vs. the level of detail of the node, (b) shows a plot of the average number of shapes per node vs. the level of detail of the node, and (c) describes the average time for shape detection for each specific level of detail. }
+{This set of figures shows different performance measures for the interactive shape detection. All values are averaged over all nodes that share the same level of detail. (a) shows a plot of the total number of shapes vs. the level of detail of the node, (b) shows a plot of the average number of shapes per node vs. the level of detail of the node, and (c) describes the average computation time for the shape detection for each specific level of detail. }
 \label{fig:shape_detection_graphs}
 \end{figure}
 
@@ -204,18 +204,7 @@ Figures \ref{fig:technologiezentrum_lasso}, \ref{fig:technologiezentrum_brush}, 
 
 Figures \ref{fig:synthetic_scene_lasso} and \ref{fig:synthetic_scene_brush} show a shape-assisted lasso selection and volumetric-brush selection. The support shape is a cylinder. While the volumetric brush still only follows the surface of the cylinder, the lasso selects partly 'through' the point set, more precisely, the lasso selection is performed on points on the back side of the cylinder as well. 
 
-%\begin{figure}
-%\centering
-%\subcaptionbox{ \label{fig:technologiezentrum_interactive_shape_detection1}}{%
-%  \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection1.png}%7
-%  }
-%\subcaptionbox{ \label{fig:technologiezentrum_interactive_shape_detection2}}{%
-%  \includegraphics[width=\textwidth]{Results/technologiezentrum_interactive_shape_detection2.png}%
-%  }
-%\caption[Two examples of user-guided shape detection]
-%{This figure shows a rendering of the Technologiezentrum dataset. Based on the cursor position (indicated as the red cross hair) a different shape is selected. The %shape is rendered in red. (a) and (b) show different shapes for different parts of the point cloud. Both shapes are a part of a wall.}
-%\label{fig:technologiezentrum_interactive_shape_detection}
-%\end{figure}
+
 
 \begin{figure}[h]
 \centering

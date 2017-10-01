@@ -17,7 +17,7 @@ Section \ref{sec:schnabel} describes the algorithm for shape detection in point 
 
 The goal of this thesis is to perform shape detection semi-automatically. Rather than performing shape detection on the complete point cloud, the procedure is executed only on a small subset of points, namely the content of a single octree node, at a time. Performing shape detection on single nodes of the point cloud results in shapes whose size is limited to the extents of the octree node. However, we assume that shapes are presumably a part of a larger structure. 
 
-The starting point for the clustering process is a single user-selected shape, called base shape. From this base shape, the algorithm creates a coherent shape cluster that represents the local geometry on a larger scale by searching for neighboring shapes of similar form in the octree. Section \ref{sec:shapeMatching} proposes a set of heuristics to determine if two primitive shapes can be combined, thus creating a larger coherent shape. 
+The starting point for the clustering process is a single user-selected shape, called base shape. From this base shape, the algorithm creates a coherent shape cluster that represents the local geometry on a larger scale by searching for neighboring shapes of similar form from the rendered parts of the octree. Section \ref{sec:shapeMatching} proposes a set of heuristics to determine if two primitive shapes can be combined, thus creating a larger coherent shape. 
 Section \ref{sec:shapeClustering} describes the clustering procedure in detail. The resulting homogeneous shape cluster can later be used for user interactions and rendering. 
 
 
@@ -71,7 +71,7 @@ While the first rule ensures that only points are considered that are in close p
 
 \par
 
-All points that fulfill the previous two conditions are projected into bitmap in parameter domain of the shape. From this bitmap, the largest connected component is used as the final set of support points. The candidate shape is valid if the number of support points exceeds a threshold $n$. 
+All points that fulfill the previous two conditions are projected into a bitmap in parameter domain of the shape. From this bitmap, the largest connected component is used as the final set of support points. The candidate shape is valid if the number of support points exceeds a threshold $n$. 
 
 
 \subsection{Performance}

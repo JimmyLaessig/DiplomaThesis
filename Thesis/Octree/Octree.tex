@@ -14,7 +14,7 @@ Instant Points \cite{wimmer2006instant} keeps a small subset of points in the or
 Wand et al. \cite{wand2007interactive} distribute the entire point set among the node's children. The original node keeps an averaged subset of points. Thus, a multi-resolution representation of the point cloud is created at the cost of a larger memory footprint. 
 
 This thesis uses an octree with a structure similar to that of Wand et al. If a node is partitioned, the point set is divided amongst its child nodes. A random subset of the original points is kept in the original node. Thus an efficient level-of-detail representation of the point cloud is created. 
-The reason for not using the averaged subset is that the octree is tailored towards shape detection. This processing step is intended to be performed on original data. Moreover, for shape detection, each node is viewed as self-contained, such that no points from predecessor nodes are needed to represent the point cloud for this region and resolution entirely. This self-containment property is the reason why Wand et al.'s approach combined with the proposed subsampling technique is favoring above an Instant-Points-like system. 
+The reason for not using the averaged subset is that the octree is tailored towards shape detection. This processing step is intended to be performed on original data. Moreover, for shape detection, each node is viewed as self-contained, such that no points from predecessor nodes are needed to represent the point cloud for this region and resolution entirely. This self-containment property is the reason why Wand et al.'s approach combined with the proposed subsampling technique is favored above an Instant-Points-like system. 
 
 \par
 
@@ -71,7 +71,7 @@ A simple yet powerful culling heuristic is view-frustum culling. Nodes that are 
 
 \par
 
-The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. However, if for some reason an octree node should be excluded from the scene manually, a flag can be set to exclude the octree node and allow for it to be removed from the culled octree while keeping its children. The flagged octree node is replaced with an empty node without point information that adopts the node's children, thus keeping the hierarchy intact. 
+The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. However, if for some reason \todo{welche reasons? beispiel?} an octree node should be excluded from the scene manually, a flag can be set to exclude the octree node and allow for it to be removed from the culled octree while keeping its children. The flagged octree node is replaced with an empty node without point information that adopts the node's children, thus keeping the hierarchy intact. 
 
 
 \section{Memory Consumption and Performance}
@@ -87,3 +87,8 @@ To create the level-of-detail representation of the point cloud the size of the 
 \par
 
 All nodes from the culled octree are rendered, resulting in the multiple drawing of subsampled points from nodes with a lower level of detail. The previous calculations can be applied to estimate the overdraw when rendering the point cloud. The multiply drawn points account for $\sim$12\% of the entire point budget.
+
+%vielleicht erklären warum man die inneren nodes nicht weglassen kann...  bzw., wenn alle kinder gerendert werden, könnte man eine node doch einfach nicht rendern oder?
+
+
+\todo{asd}
