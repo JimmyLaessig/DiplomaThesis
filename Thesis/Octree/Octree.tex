@@ -71,11 +71,12 @@ A simple yet powerful culling heuristic is view-frustum culling. Nodes that are 
 
 \par
 
-The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. However, if for some reason \todo{welche reasons? beispiel?} an octree node should be excluded from the scene manually, a flag can be set to exclude the octree node and allow for it to be removed from the culled octree while keeping its children. The flagged octree node is replaced with an empty node without point information that adopts the node's children, thus keeping the hierarchy intact. 
+The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. If an single octree node should be excluded from the scene despite not being culled, the node is replaced with an empty node without any point information that adopts the excluded node's children, thus keeping the hierarchical structure intact. An intact hierarchy allows for processing tasks, such as interactions, to exploit the octree structure as well and exclude entire branches of the culled octree with little computational cost. 
 
 
 \section{Memory Consumption and Performance}
 \label{sec:octree_memory}
+
 The number of nodes from one level of detail to the next increases by the factor of $8$ (assuming that the octree is balanced and subdivided evenly). In reverse, when starting from the leaves, the number of nodes decreases by the factor of $\frac{1}{8}$. The upper bound of the relative size of the data stored in the entire octree is calculated from the geometric series: 
 
 
