@@ -18,7 +18,7 @@ Document=Results\Results.tex
 
 [Frame0_View0,0]
 TopLine=0
-Cursor=0
+Cursor=1338
 
 [Frame1]
 Flags=0
@@ -54,11 +54,11 @@ Document=Octree\Octree.tex
 
 [Frame2_View0,0]
 TopLine=9
-Cursor=3002
+Cursor=1678
 
 [SessionInfo]
 FrameCount=3
-ActiveFrame=2
+ActiveFrame=0
 
 [Bookmarks]
 intro.bib=229 231 
