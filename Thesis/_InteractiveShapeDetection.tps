@@ -11,8 +11,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1562
-NormalPos.bottom=692
+NormalPos.right=1588
+NormalPos.bottom=765
 Class=LaTeXView
 Document=Results\Results.tex
 
@@ -29,8 +29,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1562
-NormalPos.bottom=692
+NormalPos.right=1588
+NormalPos.bottom=765
 Class=LaTeXView
 Document=Shape_Detection\Shape_Detection.tex
 
@@ -47,14 +47,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1562
-NormalPos.bottom=692
+NormalPos.right=1588
+NormalPos.bottom=765
 Class=LaTeXView
 Document=Octree\Octree.tex
 
 [Frame2_View0,0]
 TopLine=9
-Cursor=3000
+Cursor=3002
 
 [SessionInfo]
 FrameCount=3
