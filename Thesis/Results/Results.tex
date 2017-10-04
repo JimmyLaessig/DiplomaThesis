@@ -54,7 +54,7 @@ Figure \ref{fig:time_vs_lod} shows the averaged calculation time per the level o
 \label{table:schnabel_benchmarks}
 \end{table}
 
-The results of the original shape detection on the whole point cloud at once are shown in Table \ref{tab:schnabel_benchmarks2}. The interactive approach processes the point cloud in chunks, resulting in the detected primitives being chunks of larger primitives as well. This explains the higher number of detected primitives using the interactive approach. While on small datasets, such as the JB\_Haus results are produced within seconds, larger datasets require significantly more computation time, in some of our tests up to $\sim$10 minutes. 
+The results of the original shape detection on the whole point cloud at once are shown in Table \ref{tab:schnabel_benchmarks2}. The interactive approach processes the point cloud in chunks, resulting in the detected primitives being chunks of larger primitives as well. This explains the higher number of detected primitives using the interactive approach. While on small datasets, such as the JB\_Haus results are produced within seconds, larger datasets require significantly more computation time, in some of our tests up to $\sim$9 minutes. 
 
 \begin{table}
 	\centering
@@ -69,7 +69,7 @@ The results of the original shape detection on the whole point cloud at once are
             Synthetic*         &   7 &  18 &  13 &   3.66 &   4.42 &   4.01 \\
             Synthetic          &  11 &  12 &	12 &   3.68 &  13.68 &   8.39 \\
 	\end{tabular}
-\caption[Original shape detection performance measures for different datasets]{This table presents performance measures of the original shape detection for the different datasets. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. The results are averaged over five runs. } 
+\caption[Original shape detection performance measures for different datasets]{This table presents performance measures of the original shape detection for the different datasets. The shape detection is executed on the entire point cloud at once. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. The results are averaged over five runs. } 
 \label{tab:schnabel_benchmarks2}
 \end{table}
 

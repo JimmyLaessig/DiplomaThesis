@@ -17,8 +17,8 @@ Class=LaTeXView
 Document=Results\Results.tex
 
 [Frame0_View0,0]
-TopLine=174
-Cursor=18083
+TopLine=64
+Cursor=6571
 
 [Frame1]
 Flags=0
@@ -53,7 +53,7 @@ Class=LaTeXView
 Document=Octree\Octree.tex
 
 [Frame2_View0,0]
-TopLine=76
+TopLine=90
 Cursor=8480
 
 [Frame3]
@@ -89,8 +89,8 @@ Class=LaTeXView
 Document=System_Design\System_Design.tex
 
 [Frame4_View0,0]
-TopLine=384
-Cursor=30101
+TopLine=387
+Cursor=30108
 
 [SessionInfo]
 FrameCount=5
