@@ -71,7 +71,7 @@ A simple yet powerful culling heuristic is view-frustum culling. Nodes that are 
 
 \par
 
-The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. If an single octree node should be excluded from the scene despite not being culled, the node is replaced with an empty node without any point information that adopts the excluded node's children, thus keeping the hierarchical structure intact. An intact hierarchy allows for processing tasks, such as interactions, to exploit the octree structure as well and exclude entire branches of the culled octree with little computational cost. 
+The heuristic culls hierarchically, meaning that if a parent is excluded, its children are as well. Thus, entire branches can be removed from the octree efficiently by only checking the parent node. If the octree is culled purely for rendering purposes, it is sufficient to collect the visible nodes in a set and use it for rendering. However, since interaction and processing tasks are performed on the viewed data, the hierarchical structure is kept intact. The intact hierarchy allows these tasks to exploit the octree structure and exclude entire branches of the culled octree with little computational cost. 
 
 
 \section{Memory Consumption and Performance}
@@ -87,9 +87,4 @@ To create the level-of-detail representation of the point cloud the size of the 
 
 \par
 
-All nodes from the culled octree are rendered, resulting in the multiple drawing of subsampled points from nodes with a lower level of detail. The previous calculations can be applied to estimate the overdraw when rendering the point cloud. The multiply drawn points account for $\sim$12\% of the entire point budget.
-
-%vielleicht erklären warum man die inneren nodes nicht weglassen kann...  bzw., wenn alle kinder gerendert werden, könnte man eine node doch einfach nicht rendern oder?
-
-
-\todo{asd}
+All nodes from the culled octree are rendered, resulting in the multiple drawing of subsampled points from nodes with a lower level of detail. The previous calculations can be applied to estimate the overdraw when rendering the point cloud. The multiply drawn points account for $\sim$12\% of the entire point budget. The overdraw could be reduced by not drawing nodes, whose children are already drawn. However, the current implementation lacks this improvement. 

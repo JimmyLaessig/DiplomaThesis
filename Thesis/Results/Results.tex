@@ -9,25 +9,13 @@ All results were obtained on a PC with an AMD FX-9590 CPU, 16 GB RAM, and an AMD
                         & \textbf{\#Points} & \textbf{\#Nodes}    & \textbf{max. Depth} \\
     \hline
   JB\_Haus.pts                  & 620.722           & 440   & 15 \\
-  Technologiezentrum\_Teil1.pts    & 11.762.924        & 8863  & 15 \\
+  Technologiezentrum\_Teil1.pts & 11.762.924        & 8863  & 15 \\
   Synthetic\_Primitives.pts     & 472.000           & 315   & 5 \\
 \end{tabular}
 \caption[Table of point-cloud datasets]
 {This table shows the different datasets used for testing. The first column describes the number of points, the second column describes the number of nodes in the octree, the third column describes the maximal depth (e.g., level of detail) in the octree. } 
 \label{tab:datasets}
 \end{table}
-
-
-% Schnabel results entire scene
-%primitiveScene.pts*	4160.60164 	11.4
-%primitiveScene.pts 	9239.27654 	11.6
-
-%JBs_Haus.pts* 		1860.82 	66
-%JBs_Haus.pts 		5585.15406 	63.8
- 
-%Technologiezentrum_Teil1.pts* 289386.84648 689
-%Technologiezentrum_Teil1.pts  535983.07474 778.1
-
 
 
 Section \ref{sec:shape_detection_performance} presents results for shape detection and shows benchmarks that verify the capability of the user-guided shape detection to be performed in interactive time on the test computer.
@@ -40,11 +28,7 @@ Section \ref{sec:interaction_results} concludes this chapter and provides a set 
 \section{Interactive Shape-Detection Performance}
 \label{sec:shape_detection_performance}
 
-The goal of \textit{user-guided shape detection} is to provide meaningful results within interactive time, such that detected shapes can be used to support interactions immediately. The capabilities of the implementation by Schnabel et al. \cite{schnabel-2007-software} are benchmarked on three different datasets in Table \ref{tab:datasets}. 
-
-\par
-
-The tests are performed without user interaction. Instead, all octree nodes are collected and fed into the shape-detection pipeline sequentially to retrieve results for each node of the point cloud independently. Therefore, shape detection is performed on the complete point cloud for each level of detail. Each octree node contains at most 5000 points. The results are averaged over five runs. Table \ref{table:schnabel_benchmarks} shows the results averaged over all nodes. It can be seen that detecting only planes is significantly faster than detecting all types of primitive shapes. Detecting all types of primitive shapes still, produces results within the desired time period. 
+The goal of \textit{user-guided shape detection} is to provide meaningful results within interactive time, such that detected shapes can be used to support interactions immediately. The capabilities of the implementation by Schnabel et al. \cite{schnabel-2007-software} are benchmarked on three different datasets in Table \ref{tab:datasets} using the interactive approach, as well as on the entire point cloud at a whole. The tests are performed without user interaction. Instead, all octree nodes are collected and fed into the shape-detection pipeline sequentially to retrieve results for each node of the point cloud independently. Therefore, shape detection is performed on the complete point cloud for each level of detail. Each octree node contains at most 5000 points. The results are averaged over five runs. Table \ref{table:schnabel_benchmarks} shows the results averaged over all nodes. It can be seen that detecting only planes is significantly faster than detecting all types of primitive shapes. Detecting all types of primitive shapes still, produces results within the desired time period. 
 
 \par
 
@@ -65,13 +49,31 @@ Figure \ref{fig:time_vs_lod} shows the averaged calculation time per the level o
             Synthetic*          & 0 & 7  & 1.89 & 0.026 & 440.064 &  29.779 \\
             Synthetic           & 0 & 7  & 1.24 & 0.024 & 753.345 & 136.474 \\
         \end{tabular}
-    \caption[Shape-detection performance measure for different datasets]
-        {Performance measures for the different datasets averaged over all nodes. The number of shapes and durations listed are minimum, maximum, and average. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. }
-    \label{table:schnabel_benchmarks}
+    \caption[Interactive shape detection performance measures for different datasets]
+        {This table presents performance measures of the interactive shape detection for the different datasets averaged over all nodes. The number of shapes and durations listed are minimum, maximum, and average. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. }
+\label{table:schnabel_benchmarks}
 \end{table}
 
+The results of the original shape detection on the whole point cloud at once are shown in Table \ref{tab:schnabel_benchmarks2}. The interactive approach processes the point cloud in chunks, resulting in the detected primitives being chunks of larger primitives as well. This explains the higher number of detected primitives using the interactive approach. While on small datasets, such as the JB\_Haus results are produced within seconds, larger datasets require significantly more computation time, in some of our tests up to $\sim$10 minutes. 
 
-\begin{figure}[p]
+\begin{table}
+	\centering
+	\begin{tabular}{ l || r | r | r || r | r | r}
+						&\multicolumn{3}{c||}{\textbf{\#Shapes}} & \multicolumn{3}{c}{\textbf{Time (s)}}\\
+						&\textbf{min} & \textbf{max} & \textbf{avg}  & \textbf{min} & \textbf{max} & \textbf{avg}  \\
+						\hline
+            JB\_Haus*          &  59 &  68 &	64 &   1.72 &   1.84 &   1.79 \\
+            JB\_Haus           &  61 &  72 &  66 &   5.45 &   5.76 &   5.60 \\
+            Technologiezentrum*& 664 & 699 & 689 & 265.00 & 296.70 & 285.84 \\
+            Technologiezentrum & 750 & 793 & 773 & 477.44 & 556.88 & 514.94	\\
+            Synthetic*         &   7 &  18 &  13 &   3.66 &   4.42 &   4.01 \\
+            Synthetic          &  11 &  12 &	12 &   3.68 &  13.68 &   8.39 \\
+	\end{tabular}
+\caption[Original shape detection performance measures for different datasets]{This table presents performance measures of the original shape detection for the different datasets. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. The results are averaged over five runs. } 
+\label{tab:schnabel_benchmarks2}
+\end{table}
+
+\begin{figure}
 \centering
 \subcaptionbox{ \label{fig:shapes_total_vs_lod}}{%
   \includegraphics[width=0.8\textwidth]{Results/shapes_total_vs_lod.png}%7
@@ -93,7 +95,7 @@ Figure \ref{fig:time_vs_lod} shows the averaged calculation time per the level o
 
 A problem with the shape-detection implementation by Schnabel et al. \cite{schnabel-2007-software} are reoccurring non-terminations for some octree nodes, causing the shape-detection coroutine to stall. To circumvent this problem, all shape detection tasks that are dispatched to the \verb|sequential computation applicator| are assigned a timeout value of one second, after which the computation is interrupted. 
 
-\begin{figure}
+\begin{figure}[b]
 \centering
 \subcaptionbox{ \label{fig:missfittedTorus1}}{%
   \includegraphics[width=0.425\textwidth]{Results/missfittedTorus1.png}%7
@@ -174,7 +176,7 @@ The interactive shape detection was unable to produce results on the synthetic p
 
 The use of support shapes for assisted interaction improves the computation time. \textit{Shape-assisted point picking} is tested against traditional point picking. Point picking is performed only on points that are visible to the user. Hence, the size of the point cloud does not affect the picking performance. However, the level-of-detail culling does. The results in Table \ref{tab:picking_performance} are obtained by randomly picking points with and without support shape on all three datasets. Over all datasets, shape-assisted point picking performs better than traditional point picking. For shape-assisted point picking, the actual per-point processing time is higher due to the additional point-shape relation check. However, the assisted interaction performs significantly better due to the reason that traditional point picking must process a larger set of octree nodes (i.e., all nodes that intersect the pick ray), whereas shape-assisted point picking only needs to check nodes that intersect the support shape. 
 
-\begin{table}[b]
+\begin{table}[t]
 \centering
 \begin{tabular}{ l|r| r | r }
                        &\multicolumn{3}{c}{\textbf{Time (ms)}}\\
