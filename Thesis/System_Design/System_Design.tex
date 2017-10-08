@@ -268,11 +268,14 @@ To further investigate the local structures of a point cloud, the currently rend
     
 \par
 
-Section \ref{sec:octree_culling} describes the culling heuristic to create an octree that only contains nodes that are rendered for the current frame. This heuristic uses view-frustum culling paired with a level-of-detail culling decision. A \textit{level-of-increment} parameter controls the number of additional levels of detail that are used to increase the resolution of the point cloud. 
+Section \ref{sec:octree_culling} describes the culling heuristic to create an octree that only contains nodes that are rendered for the current frame. This heuristic uses view-frustum culling paired with a level-of-detail culling decision. A \textit{level-of-increment} parameter $i$ controls the number of additional levels of detail that are used to increase the resolution of the point cloud. 
 
 \par
 
-This technique aims to increment the level of detail. Therefore the culled octree is not sufficient and more detailed point information must be fetched from the original octree. Each node of the culled octree is compared with it's counterpart in the original octree. All children of the counterpart node that were culled by the level-of-detail decision are collected. The nodes from this set are not contained in the culled octree. Hence, each node from this set contains more detailed information that can be used directly to increment the level of detail of the scene. This set is referred to as \textit{candidate set} and corresponds to a level-of-detail increment parameter of $1$ as it contains one additional generation of nodes. A value of $2$ results in adding the $2^{\text{nd}}$ generation while ignoring the nodes in-between. By adding smaller nodes of higher level of detail, the overall detail in the scene is amplified. However, by plainly adding additional nodes, noise and unwanted structures are amplified as well. 
+This technique aims to increment the level of detail. Therefore, the culled octree is not sufficient, and more detailed point information needs to be fetched from the original octree. Each node of the culled octree is compared with its counterpart in the original octree. All children of the counterpart node that were culled by the level-of-detail decision are collected. The nodes from this set are not contained in the culled octree. Hence, each node from this set contains more detailed information that can be used directly to increment the level of detail of the scene. This set corresponds to the candidate set for $i = 1$ as it contains one additional generation of nodes. The candidate set for a level-of-increment parameter $i > 1$ is obtained by taking each $i^{\text{th}}$ successor of the nodes from the set of, while ignoring the nodes with a 
+
+
+A value of $2$ results in adding the $2^{\text{nd}}$ generation while ignoring the nodes in-between. By adding smaller nodes of higher level of detail, the overall detail in the scene is amplified. However, by adding additional nodes without additional point filtering, noise and unwanted structures are amplified as well. 
 
 \par
     

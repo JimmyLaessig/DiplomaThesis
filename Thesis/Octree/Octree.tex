@@ -87,4 +87,4 @@ To create the level-of-detail representation of the point cloud the size of the 
 
 \par
 
-All nodes from the culled octree are rendered, resulting in the multiple drawing of subsampled points from nodes with a lower level of detail. The previous calculations can be applied to estimate the overdraw when rendering the point cloud. The multiply drawn points account for $\sim$12\% of the entire point budget. The overdraw could be reduced by not drawing nodes, whose children are already drawn. However, the current implementation lacks this improvement. 
+All nodes from the culled octree are rendered, resulting in the multiple drawing of subsampled points from nodes with a lower level of detail. The previous calculations can be applied to estimate the overdraw when rendering the point cloud. The multiply drawn points account for $\sim$12\% of the entire point budget. The overdraw could be reduced by not drawing nodes whose children are already drawn. However, the current implementation lacks this improvement. 

@@ -28,7 +28,10 @@ Section \ref{sec:interaction_results} concludes this chapter and provides a set 
 \section{Interactive Shape-Detection Performance}
 \label{sec:shape_detection_performance}
 
-The goal of \textit{user-guided shape detection} is to provide meaningful results within interactive time, such that detected shapes can be used to support interactions immediately. The capabilities of the implementation by Schnabel et al. \cite{schnabel-2007-software} are benchmarked on three different datasets in Table \ref{tab:datasets} using the interactive approach, as well as on the entire point cloud at a whole. The tests are performed without user interaction. Instead, all octree nodes are collected and fed into the shape-detection pipeline sequentially to retrieve results for each node of the point cloud independently. Therefore, shape detection is performed on the complete point cloud for each level of detail. Each octree node contains at most 5000 points. The results are averaged over five runs. Table \ref{table:schnabel_benchmarks} shows the results averaged over all nodes. It can be seen that detecting only planes is significantly faster than detecting all types of primitive shapes. Detecting all types of primitive shapes still, produces results within the desired time period. 
+The goal of \textit{user-guided shape detection} is to provide meaningful results within interactive time, such that detected shapes can be used to support interactions immediately. The capabilities of the implementation by Schnabel et al. \cite{schnabel-2007-software} are benchmarked on three different datasets in Table \ref{tab:datasets} using the interactive approach, as well as on the entire point cloud at a whole. The tests are performed without user interaction. Instead, all octree nodes are collected and fed into the shape-detection pipeline sequentially to retrieve results for each node of the point cloud independently. Therefore, shape detection is performed on the complete point cloud for each level of detail. Each octree node contains at most 5000 points. The results are averaged over five runs. Table \ref{tab:interactive_schnabel_performance} shows the per-node performance of the user-guided shape detection. Each node from the datasets is benchmarked five times and the results are averaged. It can be seen that detecting only planes is significantly faster than detecting all types of primitive shapes. Detecting all types of primitive shapes still, produces results within the desired time period. 
+
+
+%The total amount of shape detected using the interactive shape detection consequentially on all nodes of the dataset over all levels of detail is \#Nodes from Table \ref{tab:datasets} times avg. \#Shapes from Table \ref{tab:interactive_schnabel_performance}. For example, the average number of shapes detected (planes only) in the JB\_Haus dataset is $ 1.31 \cdot 440 = 576.4.$
 
 \par
 
@@ -38,23 +41,23 @@ Figure \ref{fig:time_vs_lod} shows the averaged calculation time per the level o
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{ l || r | r | r || r | r | r}
-            &\multicolumn{3}{c||}{\textbf{\#Shapes}} & \multicolumn{3}{c}{\textbf{Time (ms)}}\\
-            &\textbf{min} & \textbf{max} & \textbf{avg}  & \textbf{min} & \textbf{max} & \textbf{avg}  \\
+    \begin{tabular}{ l || r | r | r || r | r | r||r}
+            &\multicolumn{3}{c||}{\textbf{\#Shapes per Node}} & \multicolumn{3}{c||}{\textbf{Time per Node (ms) }} & \multicolumn{1}{c}{\textbf{\#Shapes}}\\
+            &\textbf{min} & \textbf{max} & \textbf{avg}  & \textbf{min} & \textbf{max} & \textbf{avg} & \textbf{total}  \\
             \hline
-            JB\_Haus*           & 0 & 6  & 1.31 & 0.026 & 578.664 &  22.396 \\
-            JB\_Haus            & 0 & 6  & 1.40 & 0.024 & 741.384 &  93.264 \\
-            Technologiezentrum* & 0 & 10 & 1.18 & 0.023 & 440.614 &  18.781 \\
-            Technologiezentrum  & 0 & 10 & 1.19 & 0.024 & 991.554 &  83.180 \\
-            Synthetic*          & 0 & 7  & 1.89 & 0.026 & 440.064 &  29.779 \\
-            Synthetic           & 0 & 7  & 1.24 & 0.024 & 753.345 & 136.474 \\
+            JB\_Haus*           & 0 & 6  & 1.31 & 0.026 & 578.664 &  22.396 &   576.40 \\
+            JB\_Haus            & 0 & 6  & 1.40 & 0.024 & 741.384 &  93.264 &   616.00 \\
+            Technologiezentrum* & 0 & 10 & 1.18 & 0.023 & 440.614 &  18.781 & 10458.34 \\
+            Technologiezentrum  & 0 & 10 & 1.19 & 0.024 & 991.554 &  83.180 & 10546.97 \\
+            Synthetic*          & 0 & 7  & 1.89 & 0.026 & 440.064 &  29.779 &   595.35 \\
+            Synthetic           & 0 & 7  & 1.24 & 0.024 & 753.345 & 136.474 &   390.60 \\
         \end{tabular}
     \caption[Interactive shape detection performance measures for different datasets]
-        {This table presents performance measures of the interactive shape detection for the different datasets averaged over all nodes. The number of shapes and durations listed are minimum, maximum, and average. Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. }
-\label{table:schnabel_benchmarks}
+        {This table presents per-node performance measures of the interactive shape detection. The number of shapes and durations listed are minimum, maximum, and average. The last column shows the number of shapes found in the entire dataset on all levels of detail (without clustering). Each dataset is benchmarked using plane detection only (items with *), as well as detecting all types of primitive shapes. The results are averaged over five runs.}
+\label{tab:interactive_schnabel_performance}
 \end{table}
 
-The results of the original shape detection on the whole point cloud at once are shown in Table \ref{tab:schnabel_benchmarks2}. The interactive approach processes the point cloud in chunks, resulting in the detected primitives being chunks of larger primitives as well. This explains the higher number of detected primitives using the interactive approach. While on small datasets, such as the JB\_Haus results are produced within seconds, larger datasets require significantly more computation time, in some of our tests up to $\sim$9 minutes. 
+The results of the original shape detection on the whole point cloud at once are shown in Table \ref{tab:schnabel_benchmarks2}. The interactive approach processes the point cloud in chunks, resulting in the detected primitives being chunks of larger primitives as well. This explains the higher number of detected primitives using the interactive approach. While on small datasets, such as the JB\_Haus, results are produced within seconds, larger datasets require significantly more computation time, in some of our tests up to $\sim$9 minutes. 
 
 \begin{table}
 	\centering
