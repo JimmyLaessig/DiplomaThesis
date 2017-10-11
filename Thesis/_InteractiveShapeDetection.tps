@@ -11,14 +11,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1588
-NormalPos.bottom=909
+NormalPos.right=868
+NormalPos.bottom=900
 Class=LaTeXView
 Document=System_Design\System_Design.tex
 
 [Frame0_View0,0]
-TopLine=379
-Cursor=28668
+TopLine=560
+Cursor=29208
 
 [Frame1]
 Flags=0
@@ -29,18 +29,18 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1588
-NormalPos.bottom=909
+NormalPos.right=868
+NormalPos.bottom=900
 Class=LaTeXView
 Document=Conclusion\Conclusion.tex
 
 [Frame1_View0,0]
 TopLine=0
-Cursor=1670
+Cursor=280
 
 [SessionInfo]
 FrameCount=2
-ActiveFrame=0
+ActiveFrame=1
 
 [Bookmarks]
 intro.bib=229 231 
