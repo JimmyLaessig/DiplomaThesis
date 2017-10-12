@@ -268,16 +268,16 @@ To further investigate the local structures of a point cloud, the currently rend
     
 \par
 
-Section \ref{sec:octree_culling} describes the culling heuristic to create an octree that only contains nodes that are rendered for the current frame. This heuristic uses view-frustum culling paired with a level-of-detail culling decision. A \textit{level-of-increment} parameter $i > 0$ controls the number of additional levels of detail that are used to increase the resolution of the point cloud. As for all interactions, a candidate set is derived that contains a rough filtering of octree nodes. The set is subsequently refined until only those nodes are left that actually contribute to the level-of-detail increment. 
+Section \ref{sec:octree_culling} describes the culling heuristic to create an octree that only contains nodes that are rendered for the current frame. This heuristic uses view-frustum culling paired with a level-of-detail culling decision. However, for the \textit{Shape-assisted local level-of-detail increment} the culled octree is not sufficient, and more detailed point information needs to be fetched from the original octree. 
 
 \par
 
-For this interaction, the culled octree is not sufficient, and more detailed point information needs to be fetched from the original octree. Each node of the culled octree is compared with its counterpart in the original octree. All children of the counterpart node that were culled by the level-of-detail decision are collected. Hence, each node from this set is not present in the culled octree and contains more detailed information that can be used directly to increment the level of detail of the scene. This set corresponds to the candidate set for $i = 1$ as it contains one additional generation of nodes. The candidate set for a level-of-increment parameter $i > 1$ is obtained by taking each $(i-1)^{\text{th}}$ successor of the nodes from the set for $i = 1$. By adding smaller nodes with a higher level of detail, the overall detail in the scene is increased. However, by adding nodes without additional point filtering to the rendered scene, noise and unwanted structures are amplified as well. 
+Each node of the culled octree is compared with its counterpart in the original octree. All children of the counterpart node that were culled by the level-of-detail decision, but not by view-frustum culling, are collected in an initial set. These nodes share the property that each of them could be rendered on the screen, but its level of detail is too high for the current scene. The same property applies to the successors of each node as well. A \textit{level-of-increment} parameter $i > 0$ controls the number of additional levels of detail that should be displayed for this interaction. For $i=1$, e.g. the children, the initial set needs no further processing. Thus, it can be used as candidate set for the next step directly. For a level-of-increment parameter $i>1$, all $(i-1)^{\text{th}}$ successors of the nodes from the initial set are taken as candidate set instead. 
 
 \par
-    
-\textit{Shape-assisted local level-of-detail increment} utilizes a selected shape cluster to amplify detail only on structures of interest. The user selects a primitive shape as support shape. Instead of performing a raycast, the nodes of the candidate set that intersect the support shape are collected. From these nodes, only those points that are approximated by the support shape are added to the scene. 
-    
+
+By adding smaller nodes with a higher level of detail, the overall detail in the scene is increased. However, by adding nodes without additional point filtering, noise and unwanted structures are amplified as well. Therefore, this interaction utilizes a shape cluster, selected by the user, to amplify detail only on structures of interest. The candidate set is filtered further, such that only those nodes remain that intersect the support shape. For each node from this final set, only those points that are approximated by the support shape are added to the scene.
+
     \begin{figure}
         \centering
         \subcaptionbox{ \label{fig:lod_increment1}}{%
@@ -291,6 +291,6 @@ For this interaction, the culled octree is not sufficient, and more detailed poi
         \label{fig:lod_increment}
     \end{figure}
     
-    Figure \ref{fig:lod_increment} showcases the difference in a scene with and without amplified details along a wall. The selected support shape is rendered in transparent red, while the additional points are rendered without lighting to appear brighter. In the intersecting octree nodes, only those points are rendered that fulfill the shape's score function. 
+Figure \ref{fig:lod_increment} showcases the difference in a scene with and without amplified details along a wall. The selected support shape is rendered in transparent red, while the additional points are rendered without lighting to appear brighter. In the intersecting octree nodes, only those points are rendered that fulfill the shape's score function. 
     
     
