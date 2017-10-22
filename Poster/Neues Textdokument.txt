@@ -3,7 +3,16 @@ The point cloud is stored at multiple resolutions in an octree structure. The le
 
 User-Guided Shape Detection
 Instead of performing the shape detection on the entire dataset at once, only single octree node is segmented by the procedure at a time. The node with the highest level-of-detail closest to the camera under the cursor is selected. The small amount of points per node allows the shape detection to produce results in interactive time. 
-The size of a single shape is limited to the extent of its source node. A shape clustering algorithm creates a larger coherent shape from multiple matching primitive shapes prior to be used as support shape to to assist user interactions.
+
+
+1.
+The user picks a shape from the octree using the mouse cursor.
+2. 
+Since the size of a single shape is limited to the extent of its source node, a shape clustering algorithm creates a larger coherent shape from multiple matching primitive shapes from different levels o detail. 
+
+
+3. 
+to be used as support shape to assist user interactions.
 
 
 Shape-Assisted Region Selection
