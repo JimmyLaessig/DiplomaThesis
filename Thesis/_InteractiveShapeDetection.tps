@@ -11,14 +11,14 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1588
-NormalPos.bottom=839
+NormalPos.right=1562
+NormalPos.bottom=692
 Class=LaTeXView
 Document=System_Design\System_Design.tex
 
 [Frame0_View0,0]
-TopLine=379
-Cursor=29110
+TopLine=399
+Cursor=29998
 
 [Frame1]
 Flags=0
@@ -29,8 +29,8 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1588
-NormalPos.bottom=839
+NormalPos.right=1562
+NormalPos.bottom=692
 Class=BibTeXView
 Document=intro.bib
 
@@ -47,13 +47,13 @@ MaxPos.x=-1
 MaxPos.y=-1
 NormalPos.left=4
 NormalPos.top=26
-NormalPos.right=1588
-NormalPos.bottom=839
+NormalPos.right=1562
+NormalPos.bottom=692
 Class=LaTeXView
 Document=_InteractiveShapeDetection.tex
 
 [Frame2_View0,0]
-TopLine=119
+TopLine=120
 Cursor=5974
 
 [SessionInfo]

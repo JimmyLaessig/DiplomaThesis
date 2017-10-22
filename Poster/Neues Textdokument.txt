@@ -1,0 +1,20 @@
+Out-of-Core Octree
+The point cloud is stored at multiple resolutions in an octree structure. The leaf nodes contain the exact model, whereas the intermediate nodes contain a random subset of points from its children. to accelerate point queries, the point set within each node is stored as an rkd-tree [1], making the structure suitable not only for rendering but also for fast processing on multiple levels of detail. 
+
+User-Guided Shape Detection
+Instead of performing the shape detection on the entire dataset at once, only single octree node is segmented by the procedure at a time. The node with the highest level-of-detail closest to the camera under the cursor is selected. The small amount of points per node allows the shape detection to produce results in interactive time. 
+The size of a single shape is limited to the extent of its source node. A shape clustering algorithm creates a larger coherent shape from multiple matching primitive shapes prior to be used as support shape to to assist user interactions.
+
+
+Shape-Assisted Region Selection
+A user-selected support shape is used to improve region selection for point clouds. The classic lasso selection selects all points, whose proection lies inside the lasso on the image plane. Hence, the user selects ´through´ the point cloud and multiple view changes are neccessary to reduce a selection to the desired region. When using a support shape, only points are selected that are approximated by the shape. Thus, it is easy to select only points that, for example, are located on the same wall.
+
+
+Shape-Assisted Point Picking
+
+Point picking describes an interaction where the user is interested in selecting a single point from the scene. The point closest to the cursor (in screen space) is selected. The benefit of using a support shape for this interaction is that only points are pickable that are approximated by this shape. Hence, picking points on edges is improved in particular since the picking result follows the edge rather than jumping to a point in the background.
+
+Shape-Assisted Level-of-Detail Increment
+
+
+The level-of-detail rendering of the point cloud displays only a subset of points that can be rendered by the graphics card in real time. Thus, details may get culled and are not rendered. The interaction technique collects points from nodes that are not rendered due to their level-of-detail and that are approximated by the support shape. Along this shape, additional points are rendered, therefore, allowing the user to get a more detailed look at at the particular structure.
